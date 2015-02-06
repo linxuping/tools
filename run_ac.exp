@@ -1,0 +1,74 @@
+#!/usr/tcl/bin/expect
+
+# This script is used to run all ac module in 4500 or 2210 COME
+
+set ip      [lindex $argv 0]
+set passwd    123456 
+
+spawn ssh root@$ip
+expect "*password:"
+send "$passwd\r"
+
+sleep 1 
+
+# Kill all module
+send "killall -9 /AC/amfs /AC/sys /AC/apm httpd dhcpd ntpd\r"
+send "killall -9 /AC/amfs /AC/sys /AC/apm httpd dhcpd ntpd\r"
+
+# Set environment 
+send "cd /\r"
+send "rm -rf /AC;tar xvf /ac.tar.gz;cp /ac_cavium.tar.gz /AC/ac_cavium.tar.gz\r"
+send "mkdir -p /var/db;touch /var/db/dhcpd.leases\r"
+send "rm -rf /default.xml;cp -f /AC/default.xml /\r"
+send "rm -rf /usr/local/php/lib/php/extensions/no-debug-zts-20060613/acphp.so;cp -f /AC/acphp.so /usr/local/php/lib/php/extensions/no-debug-zts-20060613/acphp.so\r"
+send "touch /var/run/fruinfo/frus/chassis/chassis_type;echo 16 /var/run/fruinfo/frus/chassis/chassis_type\r"
+send "touch /var/run/fruinfo/frus/fru-slot;echo 1 /var/run/fruinfo/frus/fru-slot"
+
+send "echo \"export LD_LIBRARY_PATH=/AC:/AC/thirdpart\" > path.sh;chmod +x path.sh;mv path.sh /AC/\r"
+send "export LD_LIBRARY_PATH=/AC:/AC/thirdpart\r"
+send "echo export LD_LIBRARY_PATH=/AC:/AC/thirdpart >> /etc/profile\r"
+
+# Run all module
+send "cd /AC\r"
+send "(/AC/amfs&)\r"
+sleep 15
+send "(/AC/amfc&)\r"
+#send "(/AC/sys&)\r"
+#sleep 1
+#send "(/AC/apm&)\r"
+#send "/usr/local/apache/bin/apachectl start\r"
+
+# Configure tftp server
+send "echo \"
+# default: off
+# description: The tftp server serves files using the trivial file transfer \
+#       protocol.  The tftp protocol is often used to boot diskless \
+#       workstations, download configuration files to network-aware printers, \
+#       and to start the installation process for some operating systems.
+service tftp
+{
+        socket_type             = dgram
+        protocol                = udp
+        wait                    = yes
+        user                    = root
+        server                  = /usr/sbin/in.tftpd
+        server_args             = -s -c /AC
+        disable                 = no
+        per_source              = 11
+        cps                     = 100 2
+        flags                   = IPv4
+}
+\" > /etc/xinetd.d/tftp\r"
+#send "cp /etc/xinetd.d/tftp /tmp/tftp.bak\r"
+#send "awk '/^server_args/ {print \"server_args\t= -s -c /AC;next\"}\
+#    /^disable/ {print \"disable\t = no\";next}\
+#    {print}' /etc/xinetd.d/tftp > /tmp/tftp\r"
+#send "cp -r /tmp/tftp /etc/xinetd.d/tftp"
+
+# Run tftp server
+send "service xinetd restart"
+
+expect eof
+#interact
+
+
