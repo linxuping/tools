@@ -1,0 +1,45 @@
+<html>
+<head>
+<script type="text/javascript" src="http://www.uploadify.com/wp-content/plugins/crayon-syntax-highlighter/js/fancybox/jquery.fancybox.pack.js?ver=1.12"></script>
+<script type="text/javascript" src="http://www.uploadify.com/wp-content/themes/uploadify/js/jquery.uploadify.min.js"></script>
+<script>
+$("#uploadify").uploadify({
+    //'buttonImage':'../../../templates/storeDefault/seller/res/img/fileadd.jpg',
+    //'swf':'../../../bower_components/uploadify/uploadify.swf',
+    //'cancelImg':'../../../bower_components/uploadify/cancel.png',
+    'width':70,
+    'height':70,
+    'uploader':$scope.uploaderURL,
+    'formData':operateLog,
+    'queueID':'fileQueue',
+    'multi':false,
+    'fileSizeLimit':0,//'20000KB',//不限制大小
+    'fileTypeDesc':'.tar/.gz/.zip',//描述
+    'fileTypeExts':'*.tar; *.gz; *.zip',
+    'removeTimeout':600,
+    'buttonText':'SELECT',
+    'uploadLimit':0,
+    //开始上传
+    'onUploadStart': function(file) {
+        //禁掉提交按钮
+    },
+    //上传成功
+    'onUploadSuccess' : function(file, data, response) {
+        //开放提交按钮
+    },
+    'onSelect' : function(file) {
+        var files = $('#uploadify').data('uploadify').queueData.files;
+        for (var _file in files){
+            console.log(files[_file].name);
+            if (files[_file].name != file.name)
+                $("#uploadify").uploadify('cancel', _file);
+        }
+    } 
+});
+</script>
+
+</head>
+<body>
+<input type="file" id="uploadify">file upload</input>
+</body>
+</html>
