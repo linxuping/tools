@@ -6,6 +6,7 @@ class Stack;
 
 int main()
 {
+    int m = 100;
     //1.
     const int a1 = 1;    
     const int* p1 = &a1;
@@ -14,6 +15,7 @@ int main()
     int a2 = 2;    
     int* const p2 = &a2; //not int const *
     *p2 = 22;
+    //p2 = &m;   //error !(error: assignment of read-only variable ‘p2’)
     printf("const int *:%p, int const *:%p \n", p1, p2);
     //3.
     const int a3 = get_const_int();
