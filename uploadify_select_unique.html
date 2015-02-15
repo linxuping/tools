@@ -1,8 +1,10 @@
+<!--http://www.uploadify.com/documentation/,默认是在文件上传之前做上传文件的选择，下面是针对已经上传文件的情况-->
 <html>
 <head>
 <script type="text/javascript" src="http://www.uploadify.com/wp-content/plugins/crayon-syntax-highlighter/js/fancybox/jquery.fancybox.pack.js?ver=1.12"></script>
 <script type="text/javascript" src="http://www.uploadify.com/wp-content/themes/uploadify/js/jquery.uploadify.min.js"></script>
 <script>
+var file_newest = null;
 $("#uploadify").uploadify({
     //'buttonImage':'../../../templates/storeDefault/seller/res/img/fileadd.jpg',
     //'swf':'../../../bower_components/uploadify/uploadify.swf',
@@ -26,6 +28,8 @@ $("#uploadify").uploadify({
     //上传成功
     'onUploadSuccess' : function(file, data, response) {
         //开放提交按钮
+        //TODO.这里必须更新最后一次上传的文件信息
+        file_newest = file;
     },
     'onSelect' : function(file) {
         var files = $('#uploadify').data('uploadify').queueData.files;
