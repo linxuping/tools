@@ -2,7 +2,7 @@
 
 const int get_const_int();
 const char* get_const_str();
-class Stack;
+class Test1;
 
 int main()
 {
@@ -37,9 +37,10 @@ const char* get_const_str(){
     return "test";
 }
 
-class Stack
+class Test1
 {
 public:
+    int m_test;
     mutable int m_mt;
     void Push(int elem);
     int Pop(void);
@@ -48,11 +49,13 @@ private:
     int m_num;
     int m_data[100];
 };
-int Stack::GetCount(void) const
+int Test1::GetCount(void) const
 {
     //++m_num; // 编译错误，企图修改数据成员m_num
     //Pop(); // 编译错误，企图调用非const 函数
     m_mt = 100; //ok, for it is mutable
     return m_num;
 }
+
+
 
