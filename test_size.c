@@ -48,7 +48,11 @@ void test_string_capacity() //test capacity swap
 {
     printf("string size:%d \n",sizeof(string));
     string s1 = "he";
-    printf("s1 capacity:%d \n",s1.capacity());
+    printf("s1=he     capacity*2:%d \n",s1.capacity());
+    s1 = "hehe";
+    printf("s1=hehe   capacity*2:%d \n",s1.capacity());
+    s1 = "hehehe";
+    printf("s1=hehehe capacity*2:%d \n",s1.capacity());
     s1 = "hello                                                                                                       ";
     printf("s1 capacity:%d \n",s1.capacity());
     s1 = "he";
