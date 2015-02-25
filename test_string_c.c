@@ -53,7 +53,14 @@ void test_strcpy()
 }
 void test_char_stack()
 {
+    //array
+    char arr[6] = "hello";
+    *arr = 'a';
+    printf("arr changed: %s \n",arr);
+    printf("arr address    (stack):%p \n",&arr[0]);
+    //pointer
     char *buf = "hello";//这个指针指向的是全局的const内存区，const内存区当然不会让你想改就改的
+    printf("buf address    (constant distinct):%p \n",buf);
     //*buf = 'a'; //error
     /*//error
     char *tmp = const_cast<char*>(buf);
@@ -76,7 +83,6 @@ void test_char_heap()
     printf("%s buf:%s \n",__FUNCTION__,buf);
 }
 
-
 void test_strstr()
 {
   char str[] ="This is a simple string";
@@ -85,5 +91,12 @@ void test_strstr()
   strncpy (pch,"sample",6);
   puts (str);
 }
+char* loopmove(char* orig, int steps)
+{
+    unsigned int len = strlen(orig); 
+}
+void test_loopmove()
+{
 
+}
 
