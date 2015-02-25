@@ -6,6 +6,7 @@ using namespace std;
 
 void test_string_capacity();
 void test_vector_capacity();
+void test_struct_offset();
 
 struct A{
   char b,c,d;
@@ -38,6 +39,8 @@ int main()
     test_string_capacity();
     //
     test_vector_capacity();
+    //
+    test_struct_offset();
 
     return 0;
 }
@@ -77,6 +80,26 @@ void test_vector_capacity() //test capacity swap
     vec.pop_back();
     vector<int>(vec).swap(vec);
     printf("vec size:%d \n",vec.capacity());
+}
+typedef struct TStruct TStruct;
+struct TStruct{
+    int m1;
+    char c1;
+    float f1;
+    int m2;
+}; 
+//#define tsoffset(i) (char*)&(((TStruct*)0)->i)-(char*)0  //pointer step: 1by1, if int* is 4by1
+#define tsoffset(i) &(((TStruct*)0)->i)  //score here
+#define tsoffset2(type, member) (unsigned int)(&(((type *)0)->member))
+void test_struct_offset()
+{
+    printf("offset of c1:%d \n",tsoffset(c1));
+    printf("offset of f1:%d \n",tsoffset(f1));
+    printf("offset of m2:%d \n",tsoffset(m2));
+    //online
+    printf("offset2 of c1:%d \n",tsoffset2(TStruct, c1));
+    printf("offset2 of f1:%d \n",tsoffset2(TStruct, f1));
+    printf("offset2 of m2:%d \n",tsoffset2(TStruct, m2));
 }
 
 
