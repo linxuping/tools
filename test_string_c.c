@@ -4,6 +4,8 @@
 #include<assert.h>
 
 void test_strcpy();
+void test_strlen();
+
 void test_char_stack();
 void test_char_heap();
 void test_strstr();
@@ -11,6 +13,8 @@ void test_strstr();
 int main()
 {
     test_strcpy();
+    test_strlen();
+
     test_char_stack();
     test_char_heap();
     test_strstr();
@@ -18,14 +22,26 @@ int main()
 }
 
 //--------- rel ---------->
-char* strcpy_1(char* desc, const char* orig)
+char* strcpy_1(char* desc, const char* orig) //score here
 {
     assert((desc!=NULL)&&(orig!=NULL));
     printf("strcpy_1 desc:%s orig:%s %c %c \n",desc,orig,*desc,*orig);
     while((*desc++=*orig++) != '\0');
     return desc;
 }
+unsigned int strlen_1(const char* orig) //score here
+{
+    assert(orig!=NULL);
+    unsigned int len = 0; 
+    while(*orig++ != '\0')++len;
+    return len;
+}
 
+void test_strlen()
+{
+    char *orig = "hello,world";
+    printf("strlen_1:%d, strlen:%d \n",strlen_1(orig),strlen(orig));
+}
 void test_strcpy()
 {
     char *orig = "hello,world";
