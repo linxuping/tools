@@ -6,12 +6,14 @@
 void test_strcpy();
 void test_char_stack();
 void test_char_heap();
+void test_strstr();
 
 int main()
 {
     test_strcpy();
     test_char_stack();
     test_char_heap();
+    test_strstr();
     return 0;    
 }
 
@@ -57,4 +59,15 @@ void test_char_heap()
     *tmp++ = 'y';  
     printf("%s buf:%s \n",__FUNCTION__,buf);
 }
+
+
+void test_strstr()
+{
+  char str[] ="This is a simple string";
+  char * pch;
+  pch = strstr (str,"simple");
+  strncpy (pch,"sample",6);
+  puts (str);
+}
+
 
