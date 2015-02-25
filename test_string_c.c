@@ -9,6 +9,7 @@ void test_strlen();
 void test_char_stack();
 void test_char_heap();
 void test_strstr();
+void test_loopmove();
 
 int main()
 {
@@ -18,6 +19,7 @@ int main()
     test_char_stack();
     test_char_heap();
     test_strstr();
+    test_loopmove();
     return 0;    
 }
 
@@ -53,12 +55,12 @@ void test_strcpy()
 }
 void test_char_stack()
 {
-    //array
+    //数组，存放在栈，可改(array to stack)
     char arr[6] = "hello";
     *arr = 'a';
     printf("arr changed: %s \n",arr);
     printf("arr address    (stack):%p \n",&arr[0]);
-    //pointer
+    //指针，在rodata，不可改(pointer to rodata)
     char *buf = "hello";//这个指针指向的是全局的const内存区，const内存区当然不会让你想改就改的
     printf("buf address    (constant distinct):%p \n",buf);
     //*buf = 'a'; //error
@@ -91,12 +93,34 @@ void test_strstr()
   strncpy (pch,"sample",6);
   puts (str);
 }
-char* loopmove(char* orig, int steps)
+char* loopmove(char* orig, int steps) //error 
 {
-    unsigned int len = strlen(orig); 
+    assert(orig!=NULL);
+    unsigned int len = strlen(orig);  //not sizeof, it is nk
+    steps = steps%len;
+    const unsigned int MAX = 65535; //c++
+    char tmp[MAX];
+    /*
+    memcpy(tmp, orig+(len-steps),steps);
+    printf("--1-- %s %s \n",tmp,orig);
+    memcpy(orig+steps, orig, len-steps);  //self memcpy, some problems
+    printf("--2-- %s \n",orig);  //helloworld -> hehellllor
+    memcpy(orig, tmp, steps);
+    */
+    strcpy(tmp, orig+(len-steps));
+    strcpy(tmp+steps, orig);
+    *(tmp+len) = '\0';
+    strcpy(orig,tmp);
+    return orig;
 }
 void test_loopmove()
 {
-
+    char buf[11] = "helloworld";
+    char *desc = loopmove(buf,2);
+    printf("steps:%d, loopmove:%s \n",2,desc);
+    desc = loopmove(buf,10);
+    printf("steps:%d, loopmove:%s \n",10,desc);
+    desc = loopmove(buf,12);
+    printf("steps:%d, loopmove:%s \n",12,desc);
 }
 
