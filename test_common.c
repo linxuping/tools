@@ -3,12 +3,16 @@
 void test_domain();
 void test_swap();
 void test_class_obj();
+void test_operator();
+void test_switch();
 
 int main()
 {
     test_domain();
     test_swap();
     test_class_obj();
+    test_operator();
+    test_switch();
     return 0;    
 }
 
@@ -45,4 +49,45 @@ void test_swap()
     printf("1,2 after swap_1, a:%d, b:%d \n",a,b);
 }
 
+int _test1(){ 
+    int tmp=1; 
+    return tmp; //like operator++(int) return tmp
+}
+void test_operator()
+{
+    int a = 0;
+    //(a++) += a; //赋值运算的左操作数必须是左值  why ??
+    //(a++) = 0; 
+    //_test1() = a;
+}
+
+class Test2{
+public:
+    int operator()(){ return 1; }
+};
+void test_switch()
+{
+    int i = 3;
+    switch(i){
+        default:
+            printf("switch(int)\n");
+    }
+    char c = 'a';
+    switch(c){
+        default:
+            printf("switch(char)\n");
+    }
+    /*
+    char *buf = "he";
+    switch(buf){
+        case "he"://switch 语句中的值不是一个整数
+            printf("switch(char)\n");
+    }
+    */
+    Test2 t2;
+    switch(t2()){
+        case 1:
+            printf("switch( int class::operator() )\n");
+    }
+}
 
