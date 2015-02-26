@@ -100,17 +100,24 @@ char* loopmove(char* orig, int steps) //error
     steps = steps%len;
     const unsigned int MAX = 65535; //c++
     char tmp[MAX];
-    /*
+    /*//1 error
     memcpy(tmp, orig+(len-steps),steps);
     printf("--1-- %s %s \n",tmp,orig);
     memcpy(orig+steps, orig, len-steps);  //self memcpy, some problems
     printf("--2-- %s \n",orig);  //helloworld -> hehellllor
     memcpy(orig, tmp, steps);
     */
+    /*
+    //2 ok
     strcpy(tmp, orig+(len-steps));
     strcpy(tmp+steps, orig);
     *(tmp+len) = '\0';
     strcpy(orig,tmp);
+    */
+    //3 ok
+    memmove(tmp, orig+(len-steps),steps);
+    memmove(orig+steps, orig, len-steps);  
+    memmove(orig, tmp, steps);
     return orig;
 }
 void test_loopmove()
