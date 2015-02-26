@@ -3,11 +3,13 @@
 class Base{
 public:
     typedef void (Base::*PRUN)();
-    virtual void run(){ printf("base\n"); }
+    virtual void run(){ printf("base run\n"); }
+private:
+    virtual void run_private(){ printf("base run in private\n"); }
 };
 class Derived:public Base{
 public:
-    void run(){ printf("derived\n"); }
+    void run(){ printf("derived run\n"); }
 };
 
 typedef void(*PFUN2)(void);
@@ -21,5 +23,12 @@ int main()
     pfun2();
     //pfun2 = (PFUN2)*((void*)*(void*)pb+0); //error: ‘void*’ is not a pointer-to-object type
     //pfun2();
+    //
+    Derived* pb2 = new Derived();
+    pfun2 = (PFUN2)*((int*)*(int*)pb2+0); 
+    pfun2();
+    pfun2 = (PFUN2)*((int*)*(int*)pb2+1);  //fuck, run Base::private function, like pb2->run_private()
+    pfun2();
+    //
     return 0;
 }
