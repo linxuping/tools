@@ -8,7 +8,7 @@ void test_string_capacity();
 void test_vector_capacity();
 void test_struct_offset();
 void test_size_32or64();
-void test_size_type();
+void test_type_size();
 
 struct A{
   char b,c,d;
@@ -20,24 +20,6 @@ struct B{
 
 int main()
 {
-    //printf("WORD:%d \n",sizeof(WORD));
-    printf("size of A:%d \n",sizeof(A)); //not 4,why
-    printf("size of B:%d \n",sizeof(B));
-    printf("size of size_t:%d \n",sizeof(size_t));
-    //
-    char buf[10] = "hello";
-    printf("buf size:%d, strlen:%d \n",sizeof(buf),strlen(buf));
-    //
-    char **a[3][4];
-    char *b[3][4];
-    char c[3][4];
-    printf("**a[3][4] size:%d \n",sizeof(a)); //??? int a[2] vs int* a[2]
-    printf("b[3][4] size:%d \n",sizeof(b));   //???
-    printf("c[3][4] size:%d \n",sizeof(c));
-    /*//size overflow
-    for (unsigned char i=0; i<=255; ++i) 
-    	printf("unsigned char i:%d \n",i); */
-    //
     test_string_capacity();
     //
     test_vector_capacity();
@@ -46,7 +28,7 @@ int main()
     //
     test_size_32or64();
     //
-    test_size_type();
+    test_type_size();
 
     return 0;
 }
@@ -113,8 +95,30 @@ void test_size_32or64()
     printf("Type SIze:  char:%d, int:%d, float:%d, short:%d, double:%d, long:%d \n",sizeof(char),sizeof(int),sizeof(float),sizeof(short),sizeof(double),sizeof(long));
 }
 
-void test_size_type() 
+#define printme(hint,size) do{printf("%s %s:%d \n",__FUNCTION__,hint,size);}while(0)
+void test_type_size() 
 {
+    //printf("WORD:%d \n",sizeof(WORD));
+    printf("size of A:%d \n",sizeof(A)); //not 4,why
+    printf("size of B:%d \n",sizeof(B));
+    printf("size of size_t:%d \n",sizeof(size_t));
+    //
+    char buf[10] = "hello";
+    printf("buf size:%d, strlen:%d \n",sizeof(buf),strlen(buf));
+    //
+    char **a[3][4];
+    char *b[3][4];
+    char c[3][4];
+    printf("**a[3][4] size:%d \n",sizeof(a)); //??? int a[2] vs int* a[2]
+    printf("b[3][4] size:%d \n",sizeof(b));   //???
+    printf("c[3][4] size:%d \n",sizeof(c));
+    /*//size overflow
+    for (unsigned char i=0; i<=255; ++i)  //hello,dead cycle... ...
+    	printf("unsigned char i:%d \n",i); */
+    //
+    char buf1[] = "hello";
+    printme("buf1[] size:",sizeof(buf1) );
+
     printf("%s intptr_t size:%d \n",__FUNCTION__,sizeof(intptr_t) );
     printf("%s ssize_t size:%d \n",__FUNCTION__,sizeof(ssize_t) );
     printf("%s size_t size:%d \n",__FUNCTION__,sizeof(size_t) );
