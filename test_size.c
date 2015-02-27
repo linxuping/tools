@@ -8,6 +8,7 @@ void test_string_capacity();
 void test_vector_capacity();
 void test_struct_offset();
 void test_size_32or64();
+void test_size_type();
 
 struct A{
   char b,c,d;
@@ -44,6 +45,8 @@ int main()
     test_struct_offset();
     //
     test_size_32or64();
+    //
+    test_size_type();
 
     return 0;
 }
@@ -94,7 +97,7 @@ struct TStruct{
 //#define tsoffset(i) (char*)&(((TStruct*)0)->i)-(char*)0  //pointer step: 1by1, if int* is 4by1
 #define tsoffset(i) &(((TStruct*)0)->i)  //score here
 //#define tsoffset2(type, member) (unsigned int)(&(((type *)0)->member)) //error in 64.
-#define tsoffset2(type, member) (long int)(&(((type *)0)->member))
+#define tsoffset2(type, member) (intptr_t)(&(((type *)0)->member))
 void test_struct_offset()
 {
     printf("offset of c1:%d \n",tsoffset(c1));
@@ -108,6 +111,13 @@ void test_struct_offset()
 void test_size_32or64() 
 {
     printf("Type SIze:  char:%d, int:%d, float:%d, short:%d, double:%d, long:%d \n",sizeof(char),sizeof(int),sizeof(float),sizeof(short),sizeof(double),sizeof(long));
+}
+
+void test_size_type() 
+{
+    printf("%s intptr_t size:%d \n",__FUNCTION__,sizeof(intptr_t) );
+    printf("%s ssize_t size:%d \n",__FUNCTION__,sizeof(ssize_t) );
+    printf("%s size_t size:%d \n",__FUNCTION__,sizeof(size_t) );
 }
 
 
