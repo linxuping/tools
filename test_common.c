@@ -123,5 +123,12 @@ void test_union_pointer_to_int()//test union的共享属性
 #include<limits.h>
 void test_add_1_to_MAX()
 {
-    printf("int max:%d \n",INT_MAX);
+    //printf("int max:%d \n",INT_MAX);
+    int count = 0;
+    for(int i=0; i<INT_MAX; ++i)
+        count += i;
+    printf("%s  count:%u > INT_MAX:%d \n",__FUNCTION__,count,INT_MAX);
+    //INT_MAX*2
 }
+
+

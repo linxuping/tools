@@ -118,6 +118,9 @@ void test_type_size()
     //
     char buf1[] = "hello";
     printme("buf1[] size:",sizeof(buf1) );
+    char buf2[10] = {'a','b'};
+    printme("buf2[10]={'a','b'} size",sizeof(buf2) );
+    //printme("void size",sizeof(void) );
 
     printf("%s intptr_t size:%d \n",__FUNCTION__,sizeof(intptr_t) );
     printf("%s ssize_t size:%d \n",__FUNCTION__,sizeof(ssize_t) );
