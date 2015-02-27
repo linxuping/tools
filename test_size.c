@@ -122,9 +122,13 @@ void test_type_size()
     printme("buf2[10]={'a','b'} size",sizeof(buf2) );
     //printme("void size",sizeof(void) );
 
-    printf("%s intptr_t size:%d \n",__FUNCTION__,sizeof(intptr_t) );
+    printf("%s intptr_t size:%d \n",__FUNCTION__,sizeof(intptr_t) );//‘intptr_t’ was not declared in this scope gcc 4.8.1 ??
     printf("%s ssize_t size:%d \n",__FUNCTION__,sizeof(ssize_t) );
     printf("%s size_t size:%d \n",__FUNCTION__,sizeof(size_t) );
+    printf("%s long long size:%d \n",__FUNCTION__,sizeof(long long) );
+    printf("%s long long int size:%d \n",__FUNCTION__,sizeof(long long int) );
+    printf("%s unsigned long long size:%d \n",__FUNCTION__,sizeof(unsigned long long) );
+    printf("%s unsigned long long int size:%d \n",__FUNCTION__,sizeof(unsigned long long int) );
 }
 
 
