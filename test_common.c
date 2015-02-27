@@ -6,6 +6,9 @@ void test_class_obj();
 void test_operator();
 void test_switch();
 void test_type();
+void test_union_pointer_to_int();
+
+void test_add_1_to_MAX();
 
 int main()
 {
@@ -15,6 +18,8 @@ int main()
     test_operator();
     test_switch();
     test_type();
+    test_add_1_to_MAX();
+    test_union_pointer_to_int();
     return 0;    
 }
 
@@ -33,11 +38,11 @@ void test_class_obj()
     Test1 t2(); //both are ok.
 }
 
-void test_type()
+void test_type() // ???
 {
     unsigned int a = 6;
     int b = -6;
-    printf("uint 6 + int -6 = %d \n",a+b);
+    printf("%s uint 6 + int -6 > 6 ? %d \n",__FUNCTION__,a+b>6);
 }
 
 void swap_1(int& a, int& b)
@@ -100,3 +105,23 @@ void test_switch()
     }
 }
 
+union UTest{
+    int val;
+    int *pt;
+    char c;
+    double d;
+};
+void test_union_pointer_to_int()//test union的共享属性
+{
+    int m = 0;
+    UTest t1;
+    t1.pt = &m;
+    printf("%s UTest.pt:%p, UTest.val:%d, UTest.c:%c \n",__FUNCTION__,t1.pt,t1.val,t1.c);
+    printf("%s UTest size:%d \n",__FUNCTION__, sizeof(UTest));
+}
+
+#include<limits.h>
+void test_add_1_to_MAX()
+{
+    printf("int max:%d \n",INT_MAX);
+}
