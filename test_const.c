@@ -95,6 +95,7 @@ void test_class_const()
     /*
     1\const对象rodata?  -> no
     2\const成员函数和非const成员函数存储位置 ->no but .text
+      这两个函数的全局符号是？区别一下 
     3\const对象访问成员函数必须找到'对应的含有const的全局符号'? ->no, 应该是先隐式转换和匹配函数
     const变量 vs 常量区？
     */
