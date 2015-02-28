@@ -121,8 +121,10 @@ void test_class_const()
 class Test3{
 public:
     static const int x;
+    static int y;
     //static const enum Enum{ y=3 };
 };
 const int Test3::x = 10; //static const init.
+int Test3::y = 10;//not: static int Test3::y = 10; //static const init.
 
 
