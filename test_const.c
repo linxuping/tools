@@ -118,4 +118,11 @@ void test_class_const()
     Test2* pt23 = const_cast<Test2*>(&t21); //从类型‘const Test2*’到类型‘Test2*’的转换无效
 }
 
+class Test3{
+public:
+    static const int x;
+    //static const enum Enum{ y=3 };
+};
+const int Test3::x = 10; //static const init.
+
 
