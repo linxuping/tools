@@ -7,6 +7,7 @@ void test_operator();
 void test_switch();
 void test_type();
 void test_union_pointer_to_int();
+void test_addressing();
 
 void test_add_1_to_MAX();
 
@@ -20,6 +21,7 @@ int main()
     test_type();
     test_add_1_to_MAX();
     test_union_pointer_to_int();
+    test_addressing();
     return 0;    
 }
 
@@ -131,4 +133,11 @@ void test_add_1_to_MAX()
     //INT_MAX*2
 }
 
+void test_addressing()
+{
+    int *pt = (int*)0x8048000;
+    printf("%s int* +1:%p \n",__FUNCTION__,(int*)pt+1);
+    pt = (int*)0x8048000;
+    printf("%s char* +1:%p \n",__FUNCTION__,(char*)pt+1);
+}
 
