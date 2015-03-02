@@ -1,6 +1,16 @@
 #include <iostream>      
 using namespace std;    
 
+void test_virtual();
+
+int main()    
+{  
+    test_virtual();
+    return 0;
+}
+
+
+//---- ---- rel ---- ---->
 class Vehicle  
 {    
 	public:    
@@ -32,19 +42,17 @@ class Car:public Vehicle
 	protected:    
 		int aird;  
 };    
-
 void test(Vehicle &temp)  
 {  
 	temp.ShowMember();  
-}  
-
-int main()    
-{  
+}
+void test_virtual()
+{
 	Vehicle a(120,4);  
 	Car b(180,110,4);  
 	test(a);  
 	test(b);  
-    cout << "[ts=4 here]you can tell me why not run with polymorpyic ?\n" << endl;
-	//cin.get();  
-    return 0;
+  cout << "[ts=4 here]you can tell me why not run with polymorpyic ?\n" << endl;
+	//cin.get();
 }
+
