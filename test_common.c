@@ -8,6 +8,8 @@ void test_switch();
 void test_type();
 void test_union_pointer_to_int();
 void test_addressing();
+void test_typedef();
+void test_define();
 
 void test_add_1_to_MAX();
 
@@ -22,6 +24,8 @@ int main()
     test_add_1_to_MAX();
     test_union_pointer_to_int();
     test_addressing();
+    test_typedef();
+    test_define();
     return 0;    
 }
 
@@ -140,4 +144,20 @@ void test_addressing()
     pt = (int*)0x8048000;
     printf("%s char* +1:%p \n",__FUNCTION__,(char*)pt+1);
 }
+
+void test_typedef()
+{
+    typedef char *pStr; //can 'char *pStr', merge together
+    const pStr pt = "hello,world";
+    //pt++;  //type pStr has '++' ???   baidu typedef for answer
+    printf("%s buf:%s \n",__FUNCTION__,pt);
+}
+
+void test_define()
+{
+    #define f(x) x*x 
+    int m = 1;
+    printf("%s m:%d, end:%d \n",__FUNCTION__,m,f(m++));
+}
+
 
