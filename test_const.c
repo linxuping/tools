@@ -4,6 +4,7 @@ const int get_const_int();
 const char* get_const_str();
 void test_class_const_function();
 void test_class_const();
+void test_const_in_4k_readonly_page();
 class Test1;
 
 int main()
@@ -29,6 +30,8 @@ int main()
     test_class_const_function();
     //
     test_class_const();
+    //
+    test_const_in_4k_readonly_page();
     return 0;
 }
 
@@ -128,3 +131,11 @@ const int Test3::x = 10; //static const init.
 int Test3::y = 10;//not: static int Test3::y = 10; //static const init.
 
 
+void test_const_in_4k_readonly_page()
+{
+    int a1 = 0;
+    const int a2 = 0;
+    int a3 = 0;
+    printf("%s a1:%p, a2:%p, a3:%p in sequence ??? \n",__FUNCTION__,&a1,&a2,&a3);
+    //so it is not 4k_readonly_page, but pointer mark
+}
