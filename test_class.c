@@ -2,11 +2,13 @@
 
 void test_operator_overlap();
 void test_structor_virtual();
+void test_class_mem_fun_ptr();
 
 int main()
 {
     test_operator_overlap();
     test_structor_virtual();
+    test_class_mem_fun_ptr();
 }
 
 
@@ -52,5 +54,17 @@ void test_structor_virtual()
 {
     Base* pt = new Derived();
     delete pt;
+}
+
+class Base1{
+public:
+    void run(){ printf("(b.*prun)(); \n"); }
+};
+typedef void(Base1::*PRUN)(); //take care
+void test_class_mem_fun_ptr()
+{
+    Base1 b;
+    PRUN prun= &Base1::run;
+    (b.*prun)(); //(b.(*prun))(); //错误：expected unqualified-id before ‘(’ token
 }
 
