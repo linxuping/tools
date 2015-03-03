@@ -11,7 +11,7 @@ void test_addressing();
 void test_typedef();
 void test_define();
 void test_string();
-
+void test_struct();
 
 int main()
 {
@@ -26,6 +26,8 @@ int main()
     test_typedef();
     test_define();
     test_string();
+    test_struct();
+
     return 0;    
 }
 
@@ -166,6 +168,16 @@ void test_string()
     strcpy(buf2, "hello");
     printf("%s malloc buf2:%s len:%d \n",__FUNCTION__,buf2,strlen(buf2)); //为什么还能寻址到2之后？？？
     delete buf2;
+    //
+}
 
+struct STest1{
+    int m;
+    char buf[0];
+};
+void test_struct()
+{
+    struct STest1 st1;
+    printf("%s st1 size:%d, addr:%p, buf:%p \n", __FUNCTION__,sizeof(struct STest1),(int*)&st1,(int*)( (&st1)->buf ));
 }
 
