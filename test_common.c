@@ -15,6 +15,7 @@ void test_struct();
 
 int main()
 {
+    printf("%s %d %s %s \n",__FILE__, __LINE__, __DATE__, __TIME__);
     test_domain();
     test_swap();
     test_class_obj();
