@@ -10,8 +10,8 @@ void test_union_pointer_to_int();
 void test_addressing();
 void test_typedef();
 void test_define();
+void test_string();
 
-void test_add_1_to_MAX();
 
 int main()
 {
@@ -21,11 +21,11 @@ int main()
     test_operator();
     test_switch();
     test_type();
-    test_add_1_to_MAX();
     test_union_pointer_to_int();
     test_addressing();
     test_typedef();
     test_define();
+    test_string();
     return 0;    
 }
 
@@ -126,16 +126,6 @@ void test_union_pointer_to_int()//test union的共享属性
     printf("%s UTest size:%d \n",__FUNCTION__, sizeof(UTest));
 }
 
-#include<limits.h>
-void test_add_1_to_MAX()
-{
-    //printf("int max:%d \n",INT_MAX);
-    int count = 0;
-    for(int i=0; i<INT_MAX; ++i)
-        count += i;
-    printf("%s  count:%u > INT_MAX:%d \n",__FUNCTION__,count,INT_MAX);
-    //INT_MAX*2
-}
 
 void test_addressing()
 {
@@ -160,4 +150,22 @@ void test_define()
     printf("%s m:%d, end:%d \n",__FUNCTION__,m,f(m++));
 }
 
+#include<string.h>
+#include<stdlib.h>
+void test_string()
+{
+    //char buf[]; //错误：‘buf’的存储大小未知
+    char buf[] = ""; 
+    strcpy(buf, "123");
+    printf("%s buf:%s \n",__FUNCTION__,buf);
+    strcpy(buf, "123444567");
+    printf("%s buf:%s len:%d size:%d dangerous????? \n",__FUNCTION__,buf,strlen(buf),sizeof(buf)); //为什么还能寻址到2之后？？？
+    //
+    char *buf2 = (char*)malloc(100);
+    memset(buf2, 0, 100);
+    strcpy(buf2, "hello");
+    printf("%s malloc buf2:%s len:%d \n",__FUNCTION__,buf2,strlen(buf2)); //为什么还能寻址到2之后？？？
+    delete buf2;
+
+}
 
