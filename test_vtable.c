@@ -53,7 +53,9 @@ class Base2{
 public:
     int m;
 };
-class Derived2:virtual public Base2{
+class Derived21:virtual public Base2{};
+class Derived22:virtual public Base2{};
+class Derived2:virtual public Derived21, virtual public Derived22{
 public:
     virtual void run(){ printf("Derived2::run() \n"); }
 };
@@ -61,11 +63,11 @@ void test_vptr_vbtr()
 {
     printf("%s Derived2 size:%d 12? \n",__FUNCTION__,sizeof(Derived2));
     Derived2 *pt = new Derived2();
-    pt->m = 1;
+    pt->m = 100;
     printf("%s Derived2 m:%d  \n",__FUNCTION__,*((int*)pt+1));
+    printf("%s Derived2 base virtual offset:%d ??? \n",__FUNCTION__,(int)*( (int*)*((int*)pt+2) -1 ));
     //(*((int*)*(int*)pt))(); //‘*(int*)(*(int*)pt)’不能用作函数  不是随便的指针都能做函数使
     ( (PFUN2)*((int*)*(int*)pt) )();
-    //printf("%s Derived2 m:%p vtable -1:%p  \n",__FUNCTION__,&pt->m,(int*)*((int*)*((int*)pt)-1) );
     delete pt; 
 
     /*coredump ?
@@ -73,5 +75,6 @@ void test_vptr_vbtr()
     //Base2  virtual ~Base2(){} // must added, why?
     delete pt2;
     */
+    printf("%s so: 1.vptr 2.member 3.vbtr \n",__FUNCTION__);
 }
 
