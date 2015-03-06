@@ -12,6 +12,7 @@ void test_typedef();
 void test_define();
 void test_string();
 void test_struct();
+void test_pointer_len();
 
 int main()
 {
@@ -28,6 +29,7 @@ int main()
     test_define();
     test_string();
     test_struct();
+    test_pointer_len();
 
     return 0;    
 }
@@ -180,5 +182,11 @@ void test_struct()
 {
     struct STest1 st1;
     printf("%s st1 size:%d, addr:%p, buf:%p \n", __FUNCTION__,sizeof(struct STest1),(int*)&st1,(int*)( (&st1)->buf ));
+}
+
+void test_pointer_len() //指针大小保存在哪里？
+{
+    char *buf = (char*)malloc( sizeof(char)*6 );
+    //printf("%s buf:%p, %d \n",__FUNCTION__,buf,*((int*)(&buf)+1));
 }
 
