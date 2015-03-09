@@ -1,4 +1,5 @@
 #include <stdio.h>  
+#include <stdlib.h>
 #include <iostream>  
 #include <fcntl.h>  
 #include <sys/types.h>  
@@ -8,15 +9,15 @@ using namespace std;
 
 void test_file1(char **pargv);
 void test_file2(char **pargv);
-
+void test_semaphore();
 
 int main(int argc, char *argv[])  
 {  
     //test_file1(argv);
-    test_file2(argv);
+    //test_file2(argv);
+    test_semaphore();
     return 0;  
 }  
-
 
 //---- ---- rel ---- ---->
 void test_file1(char **argv)
@@ -69,4 +70,30 @@ void test_file2(char **argv)
     fclose(fp1);  
     fclose(fp2); 
 }
+
+#include <semaphore.h>
+#include <pthread.h>
+sem_t sem_a;
+void *task1(void*);
+void test_semaphore()
+{
+    int ret=0;
+    pthread_t thrd1;
+    pthread_t thrd2;
+    sem_init(&sem_a,0,10);
+    ret=pthread_create(&thrd1,NULL,task1,NULL); //创建子线程
+    ret=pthread_create(&thrd2,NULL,task1,NULL); //创建子线程
+    pthread_join(thrd1,NULL); //等待子线程结束
+    pthread_join(thrd2,NULL); //等待子线程结束
+}
+void *task1(void*)
+{
+    int sval = 0;
+    sem_wait(&sem_a); //持有信号量
+    //sleep(5); //do_nothing
+    sem_getvalue(&sem_a,&sval);
+    printf("sem value = %d\n",sval);
+    sem_post(&sem_a); //释放信号量
+} 
+
 
