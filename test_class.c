@@ -40,18 +40,19 @@ void test_operator_overlap()
 
 class Base{
 public:
-    Base(){run("construct1");}
+    Base(){run("construct1 >>> ");}
     ~Base(){run("destruct1");}
     virtual void run(const char* f){ printf("base %s\n",f); }
 };
 class Derived: public Base{
 public:
-    Derived(){run("construct2");}
+    Derived(){run("construct2 >>> ");}
     ~Derived(){run("destruct2");}
     void run(const char* f){ printf("derived %s\n",f); }
 };
 void test_structor_virtual()
 {
+    printf("%s 1.derived()2.base() ? \n",__FUNCTION__);
     Base* pt = new Derived();
     delete pt;
 }
