@@ -49,12 +49,18 @@ public:
     Derived(){run("construct2 >>> ");}
     ~Derived(){run("destruct2");}
     void run(const char* f){ printf("derived %s\n",f); }
+    void display(){ printf("only derived display \n"); }
 };
 void test_structor_virtual()
 {
     printf("%s 1.derived()2.base() ? \n",__FUNCTION__);
     Base* pt = new Derived();
     delete pt;
+    //
+    Derived de;
+    Base& bb = de;//基类类型 对子类对象的引用，如果调用子类的非重写方法，就会调不到
+    bb.run("hello";
+    //bb.display();
 }
 
 class Base1{
