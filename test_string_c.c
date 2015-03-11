@@ -10,6 +10,7 @@ void test_char_stack();
 void test_char_heap();
 void test_strstr();
 void test_strcat();
+void test_strcmp();
 void test_loopmove();
 
 int main()
@@ -21,6 +22,7 @@ int main()
     test_char_heap();
     test_strstr();
     test_strcat();
+    test_strcmp();
     test_loopmove();
     return 0;    
 }
@@ -102,6 +104,67 @@ void test_strcat()
     char buf2[5] = "xyz";
     strcat_1(buf1,buf2);
     printf("%s strcat:%s\n",__FUNCTION__,buf1);
+}
+
+//use \0
+int strcmp_1(const char* s1, const char* s2) //>>> >>> you know? \0 is 0 in ascii
+{
+    assert((s1!=NULL)&&(s2!=NULL)); 
+    while((*s1++==*s2++)&&('\0'!=*s1)&&('\0'!=*s2)); //while(*s1++ == *s2++); p *s1 => Cannot access memory at address 0xbffff000
+    if ('\0'==*s1 && '\0'==*s2)
+        return 0;
+    else if (*s1 == '\0')
+        return -1;
+    else if(*s2 == '\0')
+        return 1;
+    return *s1>*s2?1:-1;
+}
+//use 0
+int strcmp_2(const char* s1, const char* s2) 
+{
+    assert((s1!=NULL)&&(s2!=NULL)); 
+    while(*s1 && *s2 && (*s1++)*(*s2++)); //bug 1.  if a=a => while((*s1++!=0) && (*s2++!=0)) 2. ''='' s1++ will stack overflow
+    if ((*s1==0) && (*s2==0)) return 0;
+    return *s1>*s2?1:-1;
+     
+}
+int strcmp_baidu(const char *str1,const char *str2)
+{
+    /*不可用while(*str1++==*str2++)来比较，当不相等时仍会执行一次++，
+    return返回的比较值实际上是下一个字符。应将++放到循环体中进行。*/
+    while(*str1 == *str2)
+    {
+        if(*str1 == '\0')
+            return 0;
+         
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
+}
+void test_strcmp()
+{
+    char buf[] = "";
+    char buf1[] = "12";
+    char buf2[] = "1234";
+    printf("buf[] sizeof:%d \n ", sizeof(buf));
+    printf("%s_1 12>1234? %d \n",__FUNCTION__,strcmp_1(buf1,buf2));
+    printf("%s 1234>12? %d \n",__FUNCTION__,strcmp_1(buf2,buf1));
+    printf("%s 12=12? %d \n",__FUNCTION__,strcmp_1(buf1,buf1));
+    printf("%s ''=''? %d \n",__FUNCTION__,strcmp_1(buf,buf));
+    printf("%s ''=12? %d \n",__FUNCTION__,strcmp_1(buf,buf1));
+
+    printf("%s_2 12>1234? %d \n",__FUNCTION__,strcmp_2(buf1,buf2));
+    printf("%s 1234>12? %d \n",__FUNCTION__,strcmp_2(buf2,buf1));
+    printf("%s 12=12? %d \n",__FUNCTION__,strcmp_2(buf1,buf1));
+    printf("%s ''=''? %d \n",__FUNCTION__,strcmp_2(buf,buf));
+    printf("%s ''=12? %d \n",__FUNCTION__,strcmp_2(buf,buf1));
+
+    printf("%s_baidu 12>1234? %d \n",__FUNCTION__,strcmp_baidu(buf1,buf2));
+    printf("%s 1234>12? %d \n",__FUNCTION__,strcmp_baidu(buf2,buf1));
+    printf("%s 12=12? %d \n",__FUNCTION__,strcmp_baidu(buf1,buf1));
+    printf("%s ''=''? %d \n",__FUNCTION__,strcmp_baidu(buf,buf));
+    printf("%s ''=12? %d \n",__FUNCTION__,strcmp_baidu(buf,buf1));
 }
 
 void test_strstr()
