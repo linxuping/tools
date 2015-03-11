@@ -135,13 +135,23 @@ void test_union_pointer_to_int()//test union的共享属性
     printf("%s UTest size:%d \n",__FUNCTION__, sizeof(UTest));
 }
 
-
+class Base{};
+class Derived:public Base{
+    int m;
+};
 void test_addressing()
-{
+{//sizeof是C/C++中的一个操作符（operator），简单的说其作用就是返回一个对象或者类型所占的内存字节数。
     int *pt = (int*)0x8048000;
     printf("%s int* +1:%p \n",__FUNCTION__,(int*)pt+1);
     pt = (int*)0x8048000;
     printf("%s char* +1:%p \n",__FUNCTION__,(char*)pt+1);
+    //尝试使用sizeof(*pt)来获取类的size
+    Base *pbase = new Derived();
+    Derived *pderived = new Derived();
+    printf("%s pbase size:%d \n",__FUNCTION__,sizeof(*pbase)); //汇编层面应该知道pt的寻址？
+    printf("%s pderived size:%d \n",__FUNCTION__,sizeof(*pderived));
+    delete pbase;
+    delete pderived;
 }
 
 void test_typedef()
