@@ -9,6 +9,7 @@ void test_strlen();
 void test_char_stack();
 void test_char_heap();
 void test_strstr();
+void test_strcat();
 void test_loopmove();
 
 int main()
@@ -19,6 +20,7 @@ int main()
     test_char_stack();
     test_char_heap();
     test_strstr();
+    test_strcat();
     test_loopmove();
     return 0;    
 }
@@ -35,7 +37,7 @@ unsigned int strlen_1(const char* orig) //score here
 {
     assert(orig!=NULL);
     unsigned int len = 0; 
-    while(*orig++ != '\0')++len;
+    while(*orig++ != '\0')++len; //使用*pt++
     return len;
 }
 
@@ -74,7 +76,7 @@ void test_char_heap()
 {
     int ssize = 10;
     char *buf = (char*)malloc(sizeof(char)*ssize+1); //with \0 ?
-    memset(buf,'c',10);
+    memset(buf,'.',10);
     /*
     *buf++ = 'x';  //after buf++, it will output from current pointer
     *buf++ = 'y';  //
@@ -83,6 +85,23 @@ void test_char_heap()
     *tmp++ = 'x';  
     *tmp++ = 'y';  
     printf("%s buf:%s \n",__FUNCTION__,buf);
+}
+
+//how to return -> strDest
+char* strcat_1(char* strDest, const char* strSrc) //最好传len_dest进来判断,以防栈溢出
+{
+    //if beyond strDesc size, how to solve... ... 
+    assert((strDest!=NULL)&&(strSrc!=NULL));
+    char* pt = strDest + strlen(strDest);
+    memcpy(pt, strSrc, strlen(strSrc));
+    return strDest;//为了实现链式操作，将目的地址返回 
+}
+void test_strcat()
+{
+    char buf1[20] = "hello,world";
+    char buf2[5] = "xyz";
+    strcat_1(buf1,buf2);
+    printf("%s strcat:%s\n",__FUNCTION__,buf1);
 }
 
 void test_strstr()
