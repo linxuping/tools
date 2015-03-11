@@ -160,6 +160,11 @@ void test_typedef()
     const pStr pt = "hello,world";
     //pt++;  //type pStr has '++' ???   baidu typedef for answer
     printf("%s buf:%s \n",__FUNCTION__,pt);
+
+    //typedef 0x01 NULL; //error. expected unqualified-id before numeric constant
+    #define NULL (void*)0x01
+    int *pt2 = NULL;
+    printf("%s (#define NULL (int*)0x01) pt2:%p \n",__FUNCTION__,pt2);
 }
 
 void test_define()
