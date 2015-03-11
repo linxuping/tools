@@ -57,6 +57,7 @@ void test_type() // ???
 {
     unsigned int a = 6;
     int b = -6;
+    //int *p = nullptr; //需开启-std=c++0x编译选项
     printf("%s uint 6 + int -6 > 6 ? %d \n",__FUNCTION__,a+b>6);
 }
 
@@ -162,7 +163,7 @@ void test_typedef()
     printf("%s buf:%s \n",__FUNCTION__,pt);
 
     //typedef 0x01 NULL; //error. expected unqualified-id before numeric constant
-    #define NULL (void*)0x01
+    #define NULL (int*)0x01
     int *pt2 = NULL;
     printf("%s (#define NULL (int*)0x01) pt2:%p \n",__FUNCTION__,pt2);
 }
