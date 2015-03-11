@@ -172,6 +172,15 @@ void test_string()
     printf("%s malloc buf2:%s len:%d \n",__FUNCTION__,buf2,strlen(buf2)); //为什么还能寻址到2之后？？？
     delete buf2;
     //
+    if ('\0')
+        printf("gan 0 is true \n");
+    else
+        printf("gan 0 is false \n");
+
+    if ('\n')
+        printf("gan n is true \n");
+    else
+        printf("gan n is false \n");
 }
 
 struct STest1{
