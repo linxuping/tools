@@ -89,6 +89,9 @@ void test_operator()
     //(a++) += a; //赋值运算的左操作数必须是左值  why ??
     //(a++) = 0; 
     //_test1() = a;
+    int b=1,c=2;
+    a = b+++c;
+    printf("%s a=b+++c a:%d b:%d c:%d \n",__FUNCTION__,a,b,c); //operator priority
 }
 
 class Test2{
