@@ -13,6 +13,8 @@ void test_define();
 void test_string();
 void test_struct();
 void test_pointer_len();
+void test_ascii();
+void test_if();
 
 int main()
 {
@@ -30,6 +32,8 @@ int main()
     test_string();
     test_struct();
     test_pointer_len();
+    test_ascii();
+    test_if();
 
     return 0;    
 }
@@ -53,6 +57,7 @@ void test_type() // ???
 {
     unsigned int a = 6;
     int b = -6;
+    //int *p = nullptr; //需开启-std=c++0x编译选项
     printf("%s uint 6 + int -6 > 6 ? %d \n",__FUNCTION__,a+b>6);
 }
 
@@ -84,6 +89,9 @@ void test_operator()
     //(a++) += a; //赋值运算的左操作数必须是左值  why ??
     //(a++) = 0; 
     //_test1() = a;
+    int b=1,c=2;
+    a = b+++c;
+    printf("%s a=b+++c a:%d b:%d c:%d \n",__FUNCTION__,a,b,c); //operator priority
 }
 
 class Test2{
@@ -131,13 +139,23 @@ void test_union_pointer_to_int()//test union的共享属性
     printf("%s UTest size:%d \n",__FUNCTION__, sizeof(UTest));
 }
 
-
+class Base{};
+class Derived:public Base{
+    int m;
+};
 void test_addressing()
-{
+{//sizeof是C/C++中的一个操作符（operator），简单的说其作用就是返回一个对象或者类型所占的内存字节数。
     int *pt = (int*)0x8048000;
     printf("%s int* +1:%p \n",__FUNCTION__,(int*)pt+1);
     pt = (int*)0x8048000;
     printf("%s char* +1:%p \n",__FUNCTION__,(char*)pt+1);
+    //尝试使用sizeof(*pt)来获取类的size
+    Base *pbase = new Derived();
+    Derived *pderived = new Derived();
+    printf("%s pbase size:%d \n",__FUNCTION__,sizeof(*pbase)); //汇编层面应该知道pt的寻址？
+    printf("%s pderived size:%d \n",__FUNCTION__,sizeof(*pderived));
+    delete pbase;
+    delete pderived;
 }
 
 void test_typedef()
@@ -146,6 +164,11 @@ void test_typedef()
     const pStr pt = "hello,world";
     //pt++;  //type pStr has '++' ???   baidu typedef for answer
     printf("%s buf:%s \n",__FUNCTION__,pt);
+
+    //typedef 0x01 NULL; //error. expected unqualified-id before numeric constant
+    #define NULL (int*)0x01
+    int *pt2 = NULL;
+    printf("%s (#define NULL (int*)0x01) pt2:%p \n",__FUNCTION__,pt2);
 }
 
 void test_define()
@@ -189,4 +212,30 @@ void test_pointer_len() //指针大小保存在哪里？
     char *buf = (char*)malloc( sizeof(char)*6 );
     //printf("%s buf:%p, %d \n",__FUNCTION__,buf,*((int*)(&buf)+1));
 }
+
+void test_ascii()
+{
+    printf("%s gan 0 is %d \n",__FUNCTION__,int('\0'));
+    printf("%s gan 1 is %d \n",__FUNCTION__,int('\1'));
+    printf("%s ' ' is %d \n",__FUNCTION__,int(' '));
+}
+
+void test_if()
+{
+    if ('\0')
+        printf("gan 0 is true \n");
+    else
+        printf("gan 0 is false \n");
+
+    if ('\n')
+        printf("gan n is true \n");
+    else
+        printf("gan n is false \n");   
+
+    if (-1)
+        printf("-1 is true \n");
+    else
+        printf("-1 is false \n");   
+}
+
 
