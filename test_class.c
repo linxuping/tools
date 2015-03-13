@@ -59,7 +59,7 @@ void test_structor_virtual()
     //
     Derived de;
     Base& bb = de;//基类类型 对子类对象的引用，如果调用子类的非重写方法，就会调不到
-    bb.run("hello";
+    bb.run("hello");
     //bb.display();
 }
 
