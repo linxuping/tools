@@ -2,34 +2,35 @@
 void test_obj_assign();
 void test_vptr_vbtr();
 
+typedef void(*PVFUN)(void); //普通指针类型访问 类成员变量 ?
+
 class Base{
 public:
+    enum Enum{ m_start=101, m_end=102 }; //not m_start=1;
     typedef void (Base::*PRUN)();
-    virtual void run(){ printf("base run\n"); }
+    virtual void run(){ printf("base run m_start:%d \n",m_start); }
 private:
-    virtual void run_private(){ printf("base run in private\n"); }
+    virtual void run_private(){ printf("base run in private, cannot run in derived ?\n"); }
 };
 class Derived:public Base{
 public:
-    void run(){ printf("derived run\n"); }
+    void run(){ printf("derived run m_start:%d \n",m_start); }
 };
-
-typedef void(*PFUN2)(void);
 
 int main()
 {
     Base* pb = new Derived();
     printf("vtable:%p \n", (int*)*(int*)pb); //check objdump -h a.out to .rodata
     //( (Base::PRUN)((int*)*(int*)pb+0) )();
-    PFUN2 pfun2 = (PFUN2)*((int*)*(int*)pb+0); //error: (PFUN2)((int*)*(int*)pb+0)
+    PVFUN pfun2 = (PVFUN)*((int*)*(int*)pb+0); //error: (PVFUN)((int*)*(int*)pb+0)
     pfun2();
-    //pfun2 = (PFUN2)*((void*)*(void*)pb+0); //error: ‘void*’ is not a pointer-to-object type
+    //pfun2 = (PVFUN)*((void*)*(void*)pb+0); //error: ‘void*’ is not a pointer-to-object type
     //pfun2();
     //
     Derived* pb2 = new Derived();
-    pfun2 = (PFUN2)*((int*)*(int*)pb2+0); 
+    pfun2 = (PVFUN)*((int*)*(int*)pb2+0); 
     pfun2();
-    pfun2 = (PFUN2)*((int*)*(int*)pb2+1);  //fuck, run Base::private function, like pb2->run_private()
+    pfun2 = (PVFUN)*((int*)*(int*)pb2+1);  //fuck, run Base::private function, like pb2->run_private()
     pfun2();
     //
     test_obj_assign();
@@ -67,7 +68,7 @@ void test_vptr_vbtr()
     printf("%s Derived2 m:%d  \n",__FUNCTION__,*((int*)pt+1));
     printf("%s Derived2 base virtual offset:%d ??? \n",__FUNCTION__,(int)*( (int*)*((int*)pt+2) -1 ));
     //(*((int*)*(int*)pt))(); //‘*(int*)(*(int*)pt)’不能用作函数  不是随便的指针都能做函数使
-    ( (PFUN2)*((int*)*(int*)pt) )();
+    ( (PVFUN)*((int*)*(int*)pt) )();
     delete pt; 
 
     /*coredump ?
