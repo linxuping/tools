@@ -42,7 +42,7 @@ int main()
 //---- rel ---->
 void test_obj_assign()
 {
-    printf("%s run\n",__FUNCTION__);
+    printf("%s => test 'Base b=derived' \n",__FUNCTION__);
     Derived de;
     Base be = de; //vptr直接覆盖，还是operator=会再更新be的vptr ? 和c++模型里面讲的对照
     de.run();
@@ -52,7 +52,7 @@ void test_obj_assign()
 
 class Base2{
 public:
-    int m;
+    int m_a;
 };
 class Derived21:virtual public Base2{};
 class Derived22:virtual public Base2{};
@@ -62,10 +62,10 @@ public:
 };
 void test_vptr_vbtr()
 {
-    printf("%s Derived2 size:%d 12? \n",__FUNCTION__,sizeof(Derived2));
+    printf("%s Derived2 size:%d 12=member+vptr+vbtr? \n",__FUNCTION__,sizeof(Derived2)); //vbtr就能够辨识出m_a
     Derived2 *pt = new Derived2();
-    pt->m = 100;
-    printf("%s Derived2 m:%d  \n",__FUNCTION__,*((int*)pt+1));
+    pt->m_a = 100;
+    printf("%s Derived2 m_a:%d  \n",__FUNCTION__,*((int*)pt+1));
     printf("%s Derived2 base virtual offset:%d ??? \n",__FUNCTION__,(int)*( (int*)*((int*)pt+2) -1 ));
     //(*((int*)*(int*)pt))(); //‘*(int*)(*(int*)pt)’不能用作函数  不是随便的指针都能做函数使
     ( (PVFUN)*((int*)*(int*)pt) )();
