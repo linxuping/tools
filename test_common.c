@@ -180,6 +180,14 @@ void test_define()
 
 #include<string.h>
 #include<stdlib.h>
+char* get_str_from_constant_area(){
+    char *buf = "hello";
+    return buf;
+}
+char* get_str_from_stack(){
+    char buf[] = "hello";
+    return buf;
+}
 void test_string()
 {
     //char buf[]; //错误：‘buf’的存储大小未知
@@ -195,6 +203,15 @@ void test_string()
     printf("%s malloc buf2:%s len:%d \n",__FUNCTION__,buf2,strlen(buf2)); //为什么还能寻址到2之后？？？
     delete buf2;
     //
+    //得到函数返回的字符串常量指针？ http://blog.csdn.net/n567656756765676567/article/details/6908929
+    printf("%s get from contant area:%s \n",__FUNCTION__,get_str_from_constant_area()); 
+    printf("%s get from stack:%s \n",__FUNCTION__,get_str_from_stack()); 
+    //不同定义会引用到同一个字符串常量吗? oh my god, it is
+    printf("%s contant area p1:%p \n",__FUNCTION__,get_str_from_constant_area()); 
+    char *buf11 = "hello";
+    printf("%s contant area p2:%p (p2=p1?oh my god, really it is !)\n",__FUNCTION__,buf11); 
+    char *buf12 = "hell";
+    printf("%s contant area p3:%p \n",__FUNCTION__,buf12); 
 }
 
 struct STest1{
