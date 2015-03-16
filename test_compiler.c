@@ -59,5 +59,13 @@ $1 = {m = 9}
 Can't take address of "tt" which isn't an lvalue.
 (gdb) p tt.getcount2()
 Can't take address of "tt" which isn't an lvalue.
+--------------------
+g++ -g test_compiler.c -O3 -fno-inline
+(gdb) p tt.getcount()
+run count 
+$2 = 9
+(gdb) p tt.getcount2()
+run count2 
+$3 = 9
 
 */
