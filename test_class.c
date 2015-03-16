@@ -3,12 +3,14 @@
 void test_operator_overlap();
 void test_structor_virtual();
 void test_class_mem_fun_ptr();
+void test_class_method_hide();
 
 int main()
 {
     test_operator_overlap();
     test_structor_virtual();
     test_class_mem_fun_ptr();
+    test_class_method_hide();
 }
 
 
@@ -74,4 +76,25 @@ void test_class_mem_fun_ptr()
     PRUN prun= &Base1::run;
     (b.*prun)(); //(b.(*prun))(); //错误：expected unqualified-id before ‘(’ token
 }
+
+
+class Base2{
+public:
+    void run(int a){ printf("base value:%d \n",a); }
+};
+class Derived2{
+public:
+    void run(float f){ printf("derive value:%f \n",f); }
+};
+void test_class_method_hide()
+{
+    Derived2 de;
+    int a = 1;
+    int f = 1.0f;
+    de.run(a);
+    de.run(f);
+}
+
+
+
 
