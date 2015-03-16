@@ -1,5 +1,6 @@
 #include<stdio.h>
 
+#define run(n) n*n
 class Test{
 public:
     Test():m(9){}
@@ -24,7 +25,7 @@ int main()
     printf("getcount2:%d \n",tt.getcount2());
     return 0;
 }
-/*
+/* gcc 4.8.1
 g++ -g test_compiler.c or -O0
 (gdb) p tt
 $1 = {m = 9}
@@ -34,7 +35,7 @@ $2 = 9
 (gdb) p tt.getcount2()
 run count2 
 $3 = 9
--------------------
+---------------------
 g++ -g test_compiler.c -O1 [尝试优化编译时间和可执行文件大小]
 (gdb) p tt
 $1 = {m = 9}
@@ -67,5 +68,20 @@ $2 = 9
 (gdb) p tt.getcount2()
 run count2 
 $3 = 9
+---------------------
+g++ -g test_compiler.c -ggdb3 / -O1
+(gdb) info macro run
+Defined at /home/linxp/test/tools/tools/test_compiler.c:3
+#define run(n) n*n
+----------
+g++ -g test_compiler.c -ggdb3 -O1/-O2
+(gdb) info macro run
+The symbol `run' has no definition as a C/C++ preprocessor macro
+at /usr/include/i386-linux-gnu/bits/stdio2.h:104
+  included at /usr/include/stdio.h:937
+  included at /home/linxp/test/tools/tools/test_compiler.c:1
+----------------------
+
+
 
 */
