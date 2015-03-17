@@ -5,6 +5,7 @@ void test_arrange();
 void test_add_1_to_MAX();
 void test_add_MAX_MAX();
 void test_links_merge();
+void test_greaterthan_without_operator();
 
 int main()
 {
@@ -12,6 +13,7 @@ int main()
 		//test_add_1_to_MAX();
 		test_add_MAX_MAX();
 		test_links_merge();
+    test_greaterthan_without_operator();
 
 		return 0;
 }
@@ -167,6 +169,19 @@ void test_links_merge()
 		//links_merge(&l10, &l20, &lnew);
 		links_merge2(&l10, &l20, &lnew);
 		print_LNode(lnew.next);
+}
+
+//00000000 00000000 00000000 00000000
+bool greaterthan_without_operator(int a, int b)
+{
+    a = a - b;
+    return (a>>31) == 0;
+}
+void test_greaterthan_without_operator()
+{
+    printf("%s 1 2 :%d \n",__FUNCTION__,greaterthan_without_operator(1,2));
+    printf("%s 1 -2 :%d \n",__FUNCTION__,greaterthan_without_operator(1,-2));
+    printf("%s 1 1 :%d \n",__FUNCTION__,greaterthan_without_operator(1,1));
 }
 
 
