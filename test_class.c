@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 void test_operator_overlap();
 void test_structor_virtual();
@@ -43,26 +44,54 @@ void test_operator_overlap()
 class Base{
 public:
     Base(){run("construct1 >>> ");}
-    ~Base(){run("destruct1");}
+    virtual ~Base(){run("destruct1");}
     virtual void run(const char* f){ printf("base %s\n",f); }
 };
 class Derived: public Base{
 public:
-    Derived(){run("construct2 >>> ");}
+    Derived():m(2){run("construct2 >>> ");}
     ~Derived(){run("destruct2");}
     void run(const char* f){ printf("derived %s\n",f); }
     void display(){ printf("only derived display \n"); }
+
+    int m;
+};
+class TClass1{
+public:
+    enum Enum{ EItem=2,EItem2=32767,EItem3=32769 }; //不占内存  ????
 };
 void test_structor_virtual()
 {
-    printf("%s 1.derived()2.base() ? \n",__FUNCTION__);
+    printf("%s 基类构造->子类构造? 虚析构掉用虚函数没有多态! \n",__FUNCTION__);
     Base* pt = new Derived();
     delete pt;
+    printf("%s 测试结束! \n",__FUNCTION__);
     //
+    printf("%s 截断后的多态! \n",__FUNCTION__);
     Derived de;
     Base& bb = de;//基类类型 对子类对象的引用，如果调用子类的非重写方法，就会调不到
     bb.run("hello");
+    printf("%s 测试结束! \n",__FUNCTION__);
     //bb.display();
+    printf("%s 直接delete通过base指向derived的指针,内存泄露? \n",__FUNCTION__);
+    Derived* pd = new Derived();
+    Base *pb = pd;
+    printf("Derived size:%d m:%d  \n", sizeof(Derived), *((int*)pb+1));
+    delete pb;
+    printf("Derived after del m:%d  \n", *((int*)pb+1));
+    printf("%s 测试结束! \n",__FUNCTION__);
+
+    printf("%s 连续调用~destruct! \n",__FUNCTION__);
+    pd = new Derived();
+    pd->~Derived();
+    pd->~Derived();
+    pd->~Derived();
+    free(pd);
+    printf("%s 测试结束! \n",__FUNCTION__);
+
+    printf("%s enum占内存吗? \n",__FUNCTION__);
+    printf("%d TClass1 size:%d item1:%d item2:%d item3:%d \n",sizeof(TClass1),TClass1::EItem, TClass1::EItem2, TClass1::EItem3); //2 ???????
+    printf("%s 测试结束! \n",__FUNCTION__);
 }
 
 class Base1{
