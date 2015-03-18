@@ -1,6 +1,7 @@
 #include <stdio.h>
 void test_obj_assign();
 void test_vptr_vbtr();
+void test_multi_inheritance();
 
 typedef void(*PVFUN)(void); //普通指针类型访问 类成员变量 ?
 
@@ -36,6 +37,8 @@ int main()
     test_obj_assign();
     //
     test_vptr_vbtr();
+    //
+    test_multi_inheritance();
     return 0;
 }
 
@@ -77,5 +80,42 @@ void test_vptr_vbtr()
     delete pt2;
     */
     printf("%s so: 1.vptr 2.member 3.vbtr \n",__FUNCTION__);
+}
+
+class Base31{
+public:
+    virtual void run1(){}
+    int m1;
+};
+class Base32{
+public:
+    Base32():m2(2){}
+    int m2;
+};
+class Base33{
+public:
+    virtual void run3(){}
+    int m3;
+};
+class Base34{
+};
+class Base35{
+    int m5; //private
+public:
+    Base35():m5(5){}
+    int get(){ return m5; }
+};
+class Derived3:public Base31,public Base32,public Base33,public Base34,public Base35{
+public:
+    int d;
+};
+void test_multi_inheritance()
+{
+    printf("%s Derived3 size:%d =?= 8+4+8+0+4 +4 \n",__FUNCTION__,sizeof(Derived3));
+    Derived3 d3;
+    printf("%s Derived3 基类public 变量被继承过来 m2:%d \n",__FUNCTION__,*((int*)((char*)&d3+8)) );
+    printf("%s Derived3 基类private变量被继承过来 m5:%d \n",__FUNCTION__,*((int*)((char*)&d3+8+4+8+0)) );
+    Base35 b35 = d3;
+    printf("%s Base35 m5:%d \n",__FUNCTION__,b35.get(),&b35 );
 }
 
