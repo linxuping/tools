@@ -8,6 +8,7 @@ void test_class_mem_fun_ptr();
 void test_class_method_hide();
 void test_get_base_offset();
 void test_cast();
+void test_nullptr_visit_memfun();
 
 int main()
 {
@@ -19,6 +20,8 @@ int main()
     test_get_base_offset();
     //
     test_cast();
+    //
+    test_nullptr_visit_memfun();
 }
 
 
@@ -173,6 +176,24 @@ void test_cast()
 
     long long m = 4;
     printf("%s (longlong*)m:%p (int*)m:%p (char*)m:%p \n",__FUNCTION__,&m, (int*)&m, (char*)&m);
+}
+
+class Test1{
+public:
+    void run(){ printf("Test1 run ... ... \n"); } 
+    void run2(){ printf("Test1 run ... ... %d \n",Item1); } 
+    void run3(){ printf("Test1 run ... ... %d \n",m); } 
+    enum Enum{ Item1=1 };
+    int m;
+};
+void test_nullptr_visit_memfun()
+{
+    printf("%s 空指针也能调用成员函数哦! \n",__FUNCTION__);
+    Test1* pt = NULL;
+    pt->run();
+    pt->run2();
+    pt->run3(); //this = (Test1 * const) 0x0
+    //printf("尝试获取空对象的成员变量m:%d \n",pt->m);
 }
 
 
