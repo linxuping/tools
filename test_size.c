@@ -9,6 +9,7 @@ void test_vector_capacity();
 void test_struct_offset();
 void test_size_32or64();
 void test_type_size();
+void test_enum_size();
 
 struct A{
   char b,c,d;
@@ -29,6 +30,8 @@ int main()
     test_size_32or64();
     //
     test_type_size();
+    //
+    test_enum_size();
 
     return 0;
 }
@@ -129,6 +132,21 @@ void test_type_size()
     printf("%s long long int size:%d \n",__FUNCTION__,sizeof(long long int) );
     printf("%s unsigned long long size:%d \n",__FUNCTION__,sizeof(unsigned long long) );
     printf("%s unsigned long long int size:%d \n",__FUNCTION__,sizeof(unsigned long long int) );
+}
+
+enum Enum{
+    EItem1=1,
+    EItem2=2,
+};
+class Test1{
+    enum Enum1{
+        EItem1=1,
+    };
+};
+void test_enum_size()
+{
+    printf("%s 枚举的size EItem1:%d,EItem2:%d,Enum:%d \n",__FUNCTION__,sizeof(EItem1),sizeof(EItem2),sizeof(Enum));
+    printf("%s 枚举的size Test1:%d \n",__FUNCTION__,sizeof(Test1));
 }
 
 
