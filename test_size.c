@@ -143,10 +143,15 @@ class Test1{
         EItem1=1,
     };
 };
+class Test2{
+public:
+    enum Enum{ EItem=2,EItem2=32767,EItem3=32769 }; //不占内存  ????
+};
 void test_enum_size()
 {
     printf("%s 枚举的size EItem1:%d,EItem2:%d,Enum:%d \n",__FUNCTION__,sizeof(EItem1),sizeof(EItem2),sizeof(Enum));
     printf("%s 枚举的size Test1:%d \n",__FUNCTION__,sizeof(Test1));
+    printf("%s 枚举的size Test2:%d \n",__FUNCTION__,sizeof(Test2));
 }
 
 

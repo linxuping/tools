@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 void test_operator_overlap();
 void test_structor_virtual();
@@ -64,7 +65,7 @@ public:
 };
 class TClass1{
 public:
-    enum Enum{ EItem=2,EItem2=32767,EItem3=32769 }; //不占内存  ????
+    enum Enum{ EItem=2,EItem2=32767,EItem3=UINT_MAX+200 }; //不占内存  ????
 };
 void test_structor_virtual()
 {
@@ -96,7 +97,7 @@ void test_structor_virtual()
     printf("%s 测试结束! \n",__FUNCTION__);
 
     printf("%s enum占内存吗? \n",__FUNCTION__);
-    printf("%d TClass1 size:%d item1:%d item2:%d item3:%d \n",sizeof(TClass1),TClass1::EItem, TClass1::EItem2, TClass1::EItem3); //2 ???????
+    printf("%s TClass1 size:%d item1:%d item2:%d item3:%d \n",__FUNCTION__, sizeof(TClass1),TClass1::EItem, TClass1::EItem2, TClass1::EItem3); //2 ???????
     printf("%s 测试结束! \n",__FUNCTION__);
 }
 
@@ -152,9 +153,14 @@ class Derived3:public Base31,public Base32{
 //char 一个字节的步长  
 #define offset(derived,base) int( reinterpret_cast<char*>(static_cast<base*>((derived*)0x1000)) -\
                                   reinterpret_cast<char*>((derived*)0x1000) )
+//应该可以使用dynamic_cast，仅仅是data read noly！没有写没问题, 但是如果是在运行期，可能改了进程空间某些有意义的内存，结果就不能预料了
 void test_get_base_offset()
 {
     printf("%s 对象内存模型 基类偏移量 Derived3 Base32 offset:%d \n",__FUNCTION__,offset(Derived3,Base32));
+    printf("%s 对象内存模型 基类偏移量 static_cast<base*>((derived*)0x10):%p \n",__FUNCTION__,static_cast<Base32*>((Derived3*)0x10) );
+    printf("%s 对象内存模型 基类偏移量 static_cast<base*>((derived*)0x0):%p \n",__FUNCTION__,static_cast<Base32*>((Derived3*)0x0) );
+    printf("%s 对象内存模型 基类偏移量 (base*)((derived*)0x0):%p \n",__FUNCTION__,(Base32*)((Derived3*)0x0) );
+    printf("%s 对象内存模型 基类偏移量 (derived*)0x0:%p \n",__FUNCTION__,((Derived3*)0x0) );
 }
 
 void test_cast()

@@ -2,6 +2,7 @@
 void test_obj_assign();
 void test_vptr_vbtr();
 void test_multi_inheritance();
+void test_vir_inheritance_complex();
 
 typedef void(*PVFUN)(void); //普通指针类型访问 类成员变量 ?
 
@@ -39,6 +40,9 @@ int main()
     test_vptr_vbtr();
     //
     test_multi_inheritance();
+    //
+    test_vir_inheritance_complex();
+    //
     return 0;
 }
 
@@ -118,4 +122,58 @@ void test_multi_inheritance()
     Base35 b35 = d3;
     printf("%s Base35 m5:%d \n",__FUNCTION__,b35.get(),&b35 );
 }
+
+
+class B{
+public:
+    virtual void f(){}
+    void bf(){}
+
+    int ib;
+    int cb;
+};
+class B1:virtual public B{
+public:
+    void f(){}
+    virtual void f1(){}
+    void bf1(){}
+
+    int ib1;
+    int cb1;
+};
+class B2:virtual public B{
+public:
+    void f(){}
+    virtual void f2(){}
+    void bf2(){}
+
+    int ib2;
+    int cb2;
+};
+class D:public B1,public B2{
+public:
+    //D():ib(1),cb(2),ib1(3),cb1(4),ib2(5),cb2(6),id(7),cd(8){} 错误：类‘D’没有名为‘ib’...的字段
+    void f(){}
+    void f1(){}
+    void f2(){}
+    void df(){}
+
+    int id;
+    int cd;
+};
+void test_vir_inheritance_complex()
+{
+    //refer: http://coolshell.cn/articles/12176.html
+    printf("%s D size:%d =?= [B1/B2 in D:(vptr)4+4+4]*2+(vbtr)4+4+4 \n",__FUNCTION__,sizeof(D) );
+    D d;
+    for(int i=0; i<11; ++i)
+        printf("%d: %d \n",i,*((int*)&d+i) );
+}
+
+
+
+void test_this()
+{
+}
+
 
