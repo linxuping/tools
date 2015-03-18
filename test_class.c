@@ -5,6 +5,8 @@ void test_operator_overlap();
 void test_structor_virtual();
 void test_class_mem_fun_ptr();
 void test_class_method_hide();
+void test_get_base_offset();
+void test_cast();
 
 int main()
 {
@@ -12,6 +14,10 @@ int main()
     test_structor_virtual();
     test_class_mem_fun_ptr();
     test_class_method_hide();
+    //
+    test_get_base_offset();
+    //
+    test_cast();
 }
 
 
@@ -124,6 +130,43 @@ void test_class_method_hide()
     de.run(f);
 }
 
+class Base31{
+public:
+    virtual void run1(){}
+    int m1;
+};
+class Base32{
+public:
+    Base32():m2(2){}
+    int m2;
+};
+class Derived3:public Base31,public Base32{
+};
+/* ???? (typedef PRInt32 PROffset32; typedef int PRInt32;)  mozilla/xpcom/glue/nsISupportsImpl.h, CPP, unix, cp936
+622 #define NS_INTERFACE_TABLE_ENTRY(_class, _interface)                          \
+623   { &_interface::COMTypeInfo<int>::kIID,                                      \
+624     PROffset32( reinterpret_cast<char*>(static_cast<_interface*>((_class*)0x1000)) -         \
+626                 reinterpret_cast<char*>((_class*)0x1000) )
+627   },
+*/
+//char 一个字节的步长  
+#define offset(derived,base) int( reinterpret_cast<char*>(static_cast<base*>((derived*)0x1000)) -\
+                                  reinterpret_cast<char*>((derived*)0x1000) )
+void test_get_base_offset()
+{
+    printf("%s 对象内存模型 基类偏移量 Derived3 Base32 offset:%d \n",__FUNCTION__,offset(Derived3,Base32));
+}
 
+void test_cast()
+{
+    Derived3 de;
+    printf("%s derived:%p \n",__FUNCTION__,&de);
+    printf("%s base2:%p 基类指向子类的指针地址，和原来指针地址不一致 \n",__FUNCTION__,(Base32*)&de);
+    printf("%s base2:%p static_cast \n",__FUNCTION__,static_cast<Base32*>(&de) );
+    printf("%s base2:%p dynamic_cast \n",__FUNCTION__,dynamic_cast<Base32*>(&de) );
+
+    long long m = 4;
+    printf("%s (longlong*)m:%p (int*)m:%p (char*)m:%p \n",__FUNCTION__,&m, (int*)&m, (char*)&m);
+}
 
 
