@@ -1,4 +1,6 @@
 #include<stdio.h>
+#include "test.h"
+#include "test.h" //multiple
 
 void test_domain();
 void test_swap();
