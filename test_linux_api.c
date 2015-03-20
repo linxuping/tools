@@ -10,12 +10,16 @@ using namespace std;
 void test_file1(char **pargv);
 void test_file2(char **pargv);
 void test_semaphore();
+void test_parent_pid();
+void test_deamon();
 
 int main(int argc, char *argv[])  
 {  
     //test_file1(argv);
     //test_file2(argv);
     test_semaphore();
+    test_parent_pid();
+    test_deamon();
     return 0;  
 }  
 
@@ -96,4 +100,17 @@ void *task1(void*)
     sem_post(&sem_a); // Õ∑≈–≈∫≈¡ø
 } 
 
+void test_parent_pid()
+{
+    for (int i=0; i<1; ++i){
+        pid_t pid = fork();
+        printf("ret pid:%d(return child pid if not 0) getpid:%d getppid:%d \n",pid,getpid(),getppid());
+    }
+}
+
+void test_deamon()
+{
+    //http://baike.baidu.com/link?url=hbDWuKM0brP-OvhK7uoFEwsP6_9cTnOeagZJlQ47cuwPPomSGTTqvyvAfPWMw60gQ3AAiFHh3Uy-ZUmzUoV5sK
+    printf("%s think think... ... \n", __FUNCTION__);
+}
 
