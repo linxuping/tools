@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "common.h"
 void test_obj_assign();
 void test_vptr_vbtr();
 void test_multi_inheritance();
@@ -49,6 +49,7 @@ int main()
 //---- rel ---->
 void test_obj_assign()
 {
+    ENTER_TEST();
     printf("%s => test 'Base b=derived' \n",__FUNCTION__);
     Derived de;
     Base be = de; //vptr直接覆盖，还是operator=会再更新be的vptr ? 和c++模型里面讲的对照
@@ -66,9 +67,11 @@ class Derived22:virtual public Base2{};
 class Derived2:public Derived21, public Derived22{
 public:
     virtual void run(){ printf("Derived2::run() \n"); }
+    //int nn;
 };
 void test_vptr_vbtr()
 {
+    ENTER_TEST();
     printf("%s Derived2 size:%d 12=member+vptr+vbtr? \n",__FUNCTION__,sizeof(Derived2)); //vbtr就能够辨识出m_a
     Derived2 *pt = new Derived2();
     pt->m_a = 100;
@@ -77,8 +80,8 @@ d21
 d22
 vbtr
 */
-    printf("%s Derived2 0:%d - %p     (有virtual时这是一个vptr，无时这是啥?) \n",__FUNCTION__,*((int*)pt+0),(int*)pt);
-    printf("%s Derived2 1:%d - %p  \n",__FUNCTION__,*((int*)pt+1),(int*)pt+1);
+    printf("%s Derived2 0:%d - %p     (有virtual时这是一个vptr，无时这是啥? 标识这个子类空对象的？发现，用一个virtual或者一个int成员变量，大小都一致!!! ) \n",__FUNCTION__,*((int*)pt+0),(int*)pt);
+    printf("%s Derived2 1:%d - %p  (vbtr here !!! !!!! ) \n",__FUNCTION__,*((int*)pt+1),(int*)pt+1);
     printf("%s Derived2 2:%d  \n",__FUNCTION__,*((int*)pt+2));
     printf("%s Derived2 base virtual offset:%d ??? \n",__FUNCTION__,(int)*( (int*)*((int*)pt+0) ));
     //(*((int*)*(int*)pt))(); //‘*(int*)(*(int*)pt)’不能用作函数  不是随便的指针都能做函数使
@@ -122,6 +125,7 @@ public:
 };
 void test_multi_inheritance()
 {
+    ENTER_TEST();
     printf("%s Derived3 size:%d =?= 8+4+8+0+4 +4 \n",__FUNCTION__,sizeof(Derived3));
     Derived3 d3;
     printf("%s Derived3 基类public 变量被继承过来 m2:%d \n",__FUNCTION__,*((int*)((char*)&d3+8)) );
@@ -189,6 +193,7 @@ void test_vir_inheritance_complex()
 9: 1 
 10: 2
 */
+    ENTER_TEST();
     //refer: http://coolshell.cn/articles/12176.html
     printf("%s D size:%d =?= [B1/B2 in D:(vptr)4+4+4]*2+(vbtr)4+4+4 \n",__FUNCTION__,sizeof(D) );
     D d;
