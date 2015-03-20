@@ -40,7 +40,17 @@ public:
     }
     void display(){ printf("i am singleton \n"); }
 };
-Singleton* Singleton::m_pInstance = NULL; //err. if miss, will (.text._ZN9Singleton11GetInstanceEv[_ZN9Singleton11GetInstanceEv]+0x8): undefined reference to `Singleton::m_pInstance'
+Singleton* volatile Singleton::m_pInstance = NULL; //err. if miss, will (.text._ZN9Singleton11GetInstanceEv[_ZN9Singleton11GetInstanceEv]+0x8): undefined reference to `Singleton::m_pInstance'
+/*if no add volatile:
+test_designpattern.c:43:23: error: conflicting declaration ‘Singleton* Singleton::m_pInstance’
+ Singleton* Singleton::m_pInstance = NULL; //err. if miss, will (.text._ZN9Singleton11GetInstanceEv[_ZN9Singleton11GetInstanceEv]+0x8): undefined reference to `Singleton::m_pInstance'
+                       ^
+test_designpattern.c:29:32: error: ‘Singleton::m_pInstance’ has a previous declaration as ‘Singleton* volatile Singleton::m_pInstance’
+     static Singleton* volatile m_pInstance;//err. static Singleton* ms_instance;
+                                ^
+test_designpattern.c:43:23: error: declaration of ‘Singleton* volatile Singleton::m_pInstance’ outside of class is not definition [-fpermissive]
+ Singleton* Singleton::m_pInstance = NULL; //err. if miss, will (.text._ZN9Singleton11GetInstanceEv[_ZN9Singleton11GetInstanceEv]+0x8): undefined reference to `Singleton::m_pInstance'
+*/
 void test_singleton()
 {
     Singleton::GetInstance()->display();
