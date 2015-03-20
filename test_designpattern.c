@@ -19,20 +19,24 @@ private:
 
     //err. how to destruct ?
     static void Destroy(){
+        printf("Singleton::Destroy() \n");
         if (NULL == m_pInstance)
-	     delete m_pInstance;
-	m_pInstance = NULL;
+            delete m_pInstance;
+        m_pInstance = NULL;
     }
 public:
-    static Singleton* m_pInstance;//err. static Singleton* ms_instance;
+    //static volatile Singleton* m_pInstance;//err. static Singleton* ms_instance;
+    static Singleton* volatile m_pInstance;//err. static Singleton* ms_instance;
     static Singleton* GetInstance(){
-        //Lock()
         if (NULL == m_pInstance){
-	    m_pInstance = new Singleton();
-	    atexit(Singleton::Destroy);
-	}
-        //UnLock()
-	return m_pInstance;
+            //Lock()
+            if (NULL == m_pInstance){
+                m_pInstance = new Singleton();
+                atexit(Singleton::Destroy);
+            }
+            //UnLock()
+        }
+        return m_pInstance;
     }
     void display(){ printf("i am singleton \n"); }
 };

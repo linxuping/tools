@@ -1,13 +1,13 @@
 #include <unistd.h>
-#include <stdio.h>
+#include "common.h" 
 
 void test_vfork1();
 void test_vfork2();
 
 int main(void)
 {
-    test_vfork1();
-    //test_vfork2();
+    //test_vfork1();
+    test_vfork2();
     return 0;
 }
 
@@ -17,6 +17,7 @@ int main(void)
 //---- ---- rel ---- ---->
 void test_vfork1() 
 {
+    ENTER_TEST();
     pid_t pid;
     int count=0;
     printf("vfork1 parent pid:%d\n",getpid());
@@ -29,6 +30,7 @@ void test_vfork1()
 
 void test_vfork2()
 {
+    ENTER_TEST();
     pid_t pid;
     int count=0;
     pid=vfork();
