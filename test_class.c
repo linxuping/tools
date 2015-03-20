@@ -1,6 +1,6 @@
-#include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
+#include "common.h"
 
 void test_operator_overlap();
 void test_structor_virtual();
@@ -44,6 +44,7 @@ public:
 };
 void test_operator_overlap()
 {
+    ENTER_TEST();
     Arr a1;
     char* buf1 = a1[1];
     printf("%s const member:%d \n", __FUNCTION__,a1.a);
@@ -72,6 +73,7 @@ public:
 };
 void test_structor_virtual()
 {
+    ENTER_TEST();
     printf("%s 基类构造->子类构造? 虚析构掉用虚函数没有多态! \n",__FUNCTION__);
     Base* pt = new Derived();
     delete pt;
@@ -100,7 +102,7 @@ void test_structor_virtual()
     printf("%s 测试结束! \n",__FUNCTION__);
 
     printf("%s enum占内存吗? \n",__FUNCTION__);
-    printf("%s TClass1 size:%d item1:%d item2:%d item3:%d \n",__FUNCTION__, sizeof(TClass1),TClass1::EItem, TClass1::EItem2, TClass1::EItem3); //2 ???????
+    printf("%s TClass1 size:%d item1:%d item2:%d item3:%d(这里有异常，看来enum不能超过UINT_MAX ! ) \n",__FUNCTION__, sizeof(TClass1),TClass1::EItem, TClass1::EItem2, TClass1::EItem3); //2 ???????
     printf("%s 测试结束! \n",__FUNCTION__);
 }
 
@@ -111,6 +113,7 @@ public:
 typedef void(Base1::*PRUN)(); //take care
 void test_class_mem_fun_ptr()
 {
+    ENTER_TEST();
     Base1 b;
     PRUN prun= &Base1::run;
     (b.*prun)(); //(b.(*prun))(); //错误：expected unqualified-id before ‘(’ token
@@ -127,6 +130,7 @@ public:
 };
 void test_class_method_hide()
 {
+    ENTER_TEST();
     Derived2 de;
     int a = 1;
     int f = 1.0f;
@@ -159,6 +163,7 @@ class Derived3:public Base31,public Base32{
 //应该可以使用dynamic_cast，仅仅是data read noly！没有写没问题, 但是如果是在运行期，可能改了进程空间某些有意义的内存，结果就不能预料了
 void test_get_base_offset()
 {
+    ENTER_TEST();
     printf("%s 对象内存模型 基类偏移量 Derived3 Base32 offset:%d \n",__FUNCTION__,offset(Derived3,Base32));
     printf("%s 对象内存模型 基类偏移量 static_cast<base*>((derived*)0x10):%p \n",__FUNCTION__,static_cast<Base32*>((Derived3*)0x10) );
     printf("%s 对象内存模型 基类偏移量 static_cast<base*>((derived*)0x0):%p \n",__FUNCTION__,static_cast<Base32*>((Derived3*)0x0) );
@@ -168,6 +173,7 @@ void test_get_base_offset()
 
 void test_cast()
 {
+    ENTER_TEST();
     Derived3 de;
     printf("%s derived:%p \n",__FUNCTION__,&de);
     printf("%s base2:%p 基类指向子类的指针地址，和原来指针地址不一致 \n",__FUNCTION__,(Base32*)&de);
@@ -188,12 +194,12 @@ public:
 };
 void test_nullptr_visit_memfun()
 {
+    ENTER_TEST();
     printf("%s 空指针也能调用成员函数哦! \n",__FUNCTION__);
     Test1* pt = NULL;
     pt->run();
     pt->run2();
-    pt->run3(); //this = (Test1 * const) 0x0
-    //printf("尝试获取空对象的成员变量m:%d \n",pt->m);
+    //pt->run3(); //coredump!!! this = (Test1 * const) 0x0
 }
 
 
