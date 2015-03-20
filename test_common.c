@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include "common.h"
 #include "test.h"
 #include "test.h" //multiple
 
@@ -17,6 +17,7 @@ void test_struct();
 void test_pointer_len();
 void test_ascii();
 void test_if();
+void test_headers_sequence();
 
 int main()
 {
@@ -36,6 +37,7 @@ int main()
     test_pointer_len();
     test_ascii();
     test_if();
+    test_headers_sequence();
 
     return 0;    
 }
@@ -44,6 +46,7 @@ int main()
 int num = 1;
 void test_domain()
 {
+    ENTER_TEST();
     int num = 2;
     printf("num local:%d, num global:%d \n", num, ::num);
 }
@@ -51,12 +54,14 @@ class Test1{
 };
 void test_class_obj()
 {
+    ENTER_TEST();
     Test1 t1;
     Test1 t2(); //both are ok.
 }
 
 void test_type() // ???
 {
+    ENTER_TEST();
     unsigned int a = 6;
     int b = -6;
     //int *p = nullptr; //需开启-std=c++0x编译选项
@@ -76,6 +81,7 @@ void swap_1(int& a, int& b)
 }
 void test_swap()
 {
+    ENTER_TEST();
     int a=1, b=2;
     swap_1(a, b);
     printf("1,2 after swap_1, a:%d, b:%d \n",a,b);
@@ -87,6 +93,7 @@ int _test1(){
 }
 void test_operator()
 {
+    ENTER_TEST();
     int a = 0;
     //(a++) += a; //赋值运算的左操作数必须是左值  why ??
     //(a++) = 0; 
@@ -102,6 +109,7 @@ public:
 };
 void test_switch()
 {
+    ENTER_TEST();
     int i = 3;
     switch(i){
         default:
@@ -134,6 +142,7 @@ union UTest{
 };
 void test_union_pointer_to_int()//test union的共享属性
 {
+    ENTER_TEST();
     int m = 0;
     UTest t1;
     t1.pt = &m;
@@ -147,6 +156,7 @@ class Derived:public Base{
 };
 void test_addressing()
 {//sizeof是C/C++中的一个操作符（operator），简单的说其作用就是返回一个对象或者类型所占的内存字节数。
+    ENTER_TEST();
     int *pt = (int*)0x8048000;
     printf("%s int* +1:%p \n",__FUNCTION__,(int*)pt+1);
     pt = (int*)0x8048000;
@@ -162,6 +172,7 @@ void test_addressing()
 
 void test_typedef()
 {
+    ENTER_TEST();
     typedef char *pStr; //can 'char *pStr', merge together
     const pStr pt = "hello,world";
     //pt++;  //type pStr has '++' ???   baidu typedef for answer
@@ -175,6 +186,7 @@ void test_typedef()
 
 void test_define()
 {
+    ENTER_TEST();
     #define f(x) x*x 
     int m = 1;
     printf("%s m:%d, end:%d \n",__FUNCTION__,m,f(m++));
@@ -192,6 +204,7 @@ char* get_str_from_stack(){
 }
 void test_string()
 {
+    ENTER_TEST();
     //char buf[]; //错误：‘buf’的存储大小未知
     char buf[] = ""; 
     strcpy(buf, "123");
@@ -222,18 +235,21 @@ struct STest1{
 };
 void test_struct()
 {
+    ENTER_TEST();
     struct STest1 st1;
     printf("%s st1 size:%d, addr:%p, buf:%p \n", __FUNCTION__,sizeof(struct STest1),(int*)&st1,(int*)( (&st1)->buf ));
 }
 
 void test_pointer_len() //指针大小保存在哪里？
 {
+    ENTER_TEST();
     char *buf = (char*)malloc( sizeof(char)*6 );
     //printf("%s buf:%p, %d \n",__FUNCTION__,buf,*((int*)(&buf)+1));
 }
 
 void test_ascii()
 {
+    ENTER_TEST();
     printf("%s gan 0 is %d \n",__FUNCTION__,int('\0'));
     printf("%s gan 1 is %d \n",__FUNCTION__,int('\1'));
     printf("%s ' ' is %d \n",__FUNCTION__,int(' '));
@@ -241,6 +257,7 @@ void test_ascii()
 
 void test_if()
 {
+    ENTER_TEST();
     if ('\0')
         printf("gan 0 is true \n");
     else
@@ -256,5 +273,24 @@ void test_if()
     else
         printf("-1 is false \n");   
 }
+
+/*
+#include "test.h"
+#include <math.h>
+从最特殊到最一般 http://blog.csdn.net/clever101/article/details/7269058
+In file included from /usr/include/math.h:71:0,
+                 from test_common.c:278:
+test.h:4:8: 错误：‘double acos(double)’的早先声明有‘C++’链接
+/usr/include/bits/mathcalls.h:55:1: 错误：与带有‘C’链接的新声明冲突
+/usr/include/bits/mathcalls.h:55:1: 错误：declaration of ‘double acos(double) throw ()’ has a different exception specifier
+test.h:4:8: 错误：从先前的声明‘double acos(double)
+double acos(double num){
+    return 1.0;
+}
+void test_headers_sequence()
+{
+    double a = acos(0.5); 
+}
+*/
 
 

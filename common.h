@@ -3,5 +3,5 @@
 # define LXP_TEST 0
 
 # include <stdio.h>
-# define ENTER_TEST() printf("+---- ---- %s ---- ---- ---- ---- ---- ----> \n",__FUNCTION__)
+# define ENTER_TEST() printf("\n+---- ---- %s ---- ---- ---- ---- ---- ----> \n",__FUNCTION__)
 #endif
