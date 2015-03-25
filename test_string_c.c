@@ -1,7 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include "common.h"
 
 void test_strcpy();
 void test_strlen();
@@ -45,11 +45,13 @@ unsigned int strlen_1(const char* orig) //score here
 
 void test_strlen()
 {
+    ENTER_TEST();
     char *orig = "hello,world";
     printf("strlen_1:%d, strlen:%d \n",strlen_1(orig),strlen(orig));
 }
 void test_strcpy()
 {
+    ENTER_TEST();
     char *orig = "hello,world";
     char *desc = (char*)malloc(strlen(orig)+1); //not 'char* desc="", it is constant distinct'
     printf("desc before :%s \n",desc);   
@@ -59,6 +61,7 @@ void test_strcpy()
 }
 void test_char_stack()
 {
+    ENTER_TEST();
     //数组，存放在栈，可改(array to stack)
     char arr[6] = "hello";
     *arr = 'a';
@@ -76,6 +79,7 @@ void test_char_stack()
 }
 void test_char_heap()
 {
+    ENTER_TEST();
     int ssize = 10;
     char *buf = (char*)malloc(sizeof(char)*ssize+1); //with \0 ?
     memset(buf,'.',10);
@@ -87,6 +91,7 @@ void test_char_heap()
     *tmp++ = 'x';  
     *tmp++ = 'y';  
     printf("%s buf:%s \n",__FUNCTION__,buf);
+    free(buf);
 }
 
 //how to return -> strDest
@@ -100,6 +105,7 @@ char* strcat_1(char* strDest, const char* strSrc) //最好传len_dest进来判�
 }
 void test_strcat()
 {
+    ENTER_TEST();
     char buf1[20] = "hello,world";
     char buf2[5] = "xyz";
     strcat_1(buf1,buf2);
@@ -144,6 +150,7 @@ int strcmp_baidu(const char *str1,const char *str2)
 }
 void test_strcmp()
 {
+    ENTER_TEST();
     char buf[] = "";
     char buf1[] = "12";
     char buf2[] = "1234";
@@ -169,6 +176,7 @@ void test_strcmp()
 
 void test_strstr()
 {
+  ENTER_TEST();
   char str[] ="This is a simple string";
   char * pch;
   pch = strstr (str,"simple");
@@ -203,7 +211,8 @@ char* loopmove(char* orig, int steps) //error
     return orig;
 }
 void test_loopmove()
-{
+{  
+    ENTER_TEST();
     char buf[11] = "helloworld";
     char *desc = loopmove(buf,2);
     printf("steps:%d, loopmove:%s \n",2,desc);
