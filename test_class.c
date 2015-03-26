@@ -9,6 +9,8 @@ void test_class_method_hide();
 void test_get_base_offset();
 void test_cast();
 void test_nullptr_visit_memfun();
+void test_assignment_or_copy();
+void test_initilize_list_seq();
 
 int main()
 {
@@ -22,6 +24,10 @@ int main()
     test_cast();
     //
     test_nullptr_visit_memfun();
+    //
+    test_assignment_or_copy();
+    //
+    test_initilize_list_seq();
 }
 
 
@@ -200,6 +206,58 @@ void test_nullptr_visit_memfun()
     pt->run();
     pt->run2();
     //pt->run3(); //coredump!!! this = (Test1 * const) 0x0
+}
+
+class Test2 {
+public:
+    Test2() {}
+    ~Test2() {}
+    Test2(const Test2 &) { printf("copy construct\n"); }
+    Test2 &operator=(const Test2 &) { printf(" = operator\n"); return *this; }
+};
+void test_assignment_or_copy()   //A b(a);和A c = a;都调用的是拷贝构造函数  ？？
+{
+    ENTER_TEST();
+    Test2 a;
+    printf("Test2 b(a) =>   ");
+    Test2 b(a);
+    printf("Test2 c=a  => ???? "); 
+    Test2 c = a;        //为什么A c=a;也调用的是拷贝构造函数呢？其实这种写法只是一种语法糖，是为了兼容C的写法。
+    Test2 d;
+    printf("d = a      =>   ");
+    d = a;
+}
+
+
+class Stick {
+public:
+    int n;
+    const int &length; // 一个const的引用，能够读取但无法修改
+    Stick(): true_length(100), length(true_length),m(true_length) {}
+    Stick(Stick &st): true_length(st.true_length), length(true_length) {}
+    Stick(int a): true_length(a), length(true_length),m(true_length),n(true_length) {}
+    void setLength(int b) { true_length = b; }
+    // int getLength() { return true_length; }
+private:
+    int true_length;
+    int m;
+
+    friend void test_initilize_list_seq(); 
+};
+struct foo
+{
+    int i ;
+    int j ;
+    foo(int x):j(x), i(j){} // i值未定义
+};
+void test_initilize_list_seq()   //A b(a);和A c = a;都调用的是拷贝构造函数  ？？
+{
+    ENTER_TEST();
+    Stick s(1000);
+    printf("s.true_length:%d  s.length:%d  s.m:%d s.n:%d ??? ??? \n",s.true_length,s.length,s.m,s.n);
+    struct foo f(20);
+    printf("f.i:%d  f.j:%d \n",f.i,f.j);
+
 }
 
 
