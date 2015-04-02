@@ -1,0 +1,4 @@
+# .bash_profile
+
+export SALMON_INSTALL_TARGET='salmon@devz.ucweb.local'
+export SALMON_INSTALL_RSA=$HOME/.ssh/id_rsa.salmon@devz
