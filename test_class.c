@@ -6,6 +6,8 @@ void test_operator_overlap();
 void test_structor_virtual();
 void test_class_mem_fun_ptr();
 void test_class_method_hide();
+void test_class_method_hide_solved();
+void test_class_method_hide_solved2();
 void test_get_base_offset();
 void test_cast();
 void test_nullptr_visit_memfun();
@@ -28,6 +30,10 @@ int main()
     test_assignment_or_copy();
     //
     test_initilize_list_seq();
+    //
+    test_class_method_hide_solved();
+    test_class_method_hide_solved2();
+    //
 }
 
 
@@ -128,9 +134,9 @@ void test_class_mem_fun_ptr()
 
 class Base2{
 public:
-    void run(int a){ printf("base value:%d \n",a); }
+    virtual void run(int a){ printf("base value:%d \n",a); }
 };
-class Derived2{
+class Derived2:public Base2{
 public:
     void run(float f){ printf("derive value:%f \n",f); }
 };
@@ -143,6 +149,39 @@ void test_class_method_hide()
     de.run(a);
     de.run(f);
 }
+
+class Derived20:public Base2{
+public:
+    void run(float f){ printf("derive value:%f \n",f); }
+    using Base2::run;
+};
+void test_class_method_hide_solved()
+{
+    ENTER_TEST();
+    Derived20 de;
+    int a = 1;
+    int f = 1.0f;
+    de.run(a);
+    de.run(f);
+}
+
+class Base21{
+public:
+    virtual void run(){ printf("virtual void run\n"); }
+    void run(int m){ printf("void run(int) \n"); }
+};
+class Derived21: private Base21{
+public:
+    void CallBaseRun(){ Base21::run(1); } 
+};
+
+void test_class_method_hide_solved2()
+{
+    ENTER_TEST();
+    Derived21 de;
+    //de.run(); //‘virtual void Base21::run()’无法访问,错误：‘Base21’是‘Derived21’的一个不可访问的基类
+}
+
 
 class Base31{
 public:
