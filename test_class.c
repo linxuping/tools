@@ -13,6 +13,7 @@ void test_cast();
 void test_nullptr_visit_memfun();
 void test_assignment_or_copy();
 void test_initilize_list_seq();
+void test_private_inheritance();
 
 int main()
 {
@@ -34,6 +35,7 @@ int main()
     test_class_method_hide_solved();
     test_class_method_hide_solved2();
     //
+    test_private_inheritance();
 }
 
 
@@ -232,8 +234,8 @@ void test_cast()
 class Test1{
 public:
     void run(){ printf("Test1 run ... ... \n"); } 
-    void run2(){ printf("Test1 run ... ... %d \n",Item1); } 
-    void run3(){ printf("Test1 run ... ... %d \n",m); } 
+    void run2(){ printf("Test1 run ... ... %d can visit Enum\n",Item1); } 
+    void run3(){ printf("Test1 run ... ... %d cannot visit int\n",m); } 
     enum Enum{ Item1=1 };
     int m;
 };
@@ -260,7 +262,7 @@ void test_assignment_or_copy()   //A b(a);和A c = a;都调用的是拷贝构造
     Test2 a;
     printf("Test2 b(a) =>   ");
     Test2 b(a);
-    printf("Test2 c=a  => ???? "); 
+    printf("Test2 c=a  => ???????????????? "); 
     Test2 c = a;        //为什么A c=a;也调用的是拷贝构造函数呢？其实这种写法只是一种语法糖，是为了兼容C的写法。
     Test2 d;
     printf("d = a      =>   ");
@@ -297,6 +299,25 @@ void test_initilize_list_seq()   //A b(a);和A c = a;都调用的是拷贝构造
     struct foo f(20);
     printf("f.i:%d  f.j:%d \n",f.i,f.j);
 
+}
+
+class Base4
+{
+public:
+    void run1(){ printf("Base3::run1() \n"); }
+};
+class Derived4:private Base4
+{
+public:
+    void run2(){ printf("Derived4::run2() \n"); }
+};
+void test_private_inheritance()
+{
+    ENTER_TEST();
+    Derived4 de;
+    //de.run1(); 
+    de.run2(); 
+    //Base4 *pt = &de; //error: ‘Base4’ is an inaccessible base of ‘Derived4’
 }
 
 
