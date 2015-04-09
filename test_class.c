@@ -154,16 +154,16 @@ void test_class_method_hide()
 
 class Derived20:public Base2{
 public:
-    void run(float f){ printf("derive value:%f \n",f); }
+    void run(char *buf){ printf("derive value:%s \n",buf); }
     using Base2::run;
 };
 void test_class_method_hide_solved()
 {
-    ENTER_TEST();
+    ENTER_TEST2("用using把隐藏的函数加回来！");
     Derived20 de;
-    int a = 1;
+    char buf[] = "hello";
     int f = 1.0f;
-    de.run(a);
+    de.run(buf);
     de.run(f);
 }
 
