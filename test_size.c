@@ -3,6 +3,7 @@
 #include <string> //string in c++
 using namespace std;
 #include <vector>
+#include "common.h"
 
 void test_string_capacity();
 void test_vector_capacity();
@@ -10,6 +11,7 @@ void test_struct_offset();
 void test_size_32or64();
 void test_type_size();
 void test_enum_size();
+void test_string_size();
 
 struct A{
   char b,c,d;
@@ -32,6 +34,8 @@ int main()
     test_type_size();
     //
     test_enum_size();
+    //
+    test_string_size();
 
     return 0;
 }
@@ -153,5 +157,15 @@ void test_enum_size()
     printf("%s 枚举的size Test1:%d \n",__FUNCTION__,sizeof(Test1));
     printf("%s 枚举的size Test2:%d \n",__FUNCTION__,sizeof(Test2));
 }
+
+void test_string_size()
+{
+    ENTER_TEST();
+    string ss[3] = {"aa","bb","cc"};
+    printf("string size:%d \n", sizeof(string));
+    printf("string ss[3] size:%d \n", sizeof(ss));
+    printf("string ss[3] count:%d \n", sizeof(ss)/sizeof(string));
+}
+
 
 
