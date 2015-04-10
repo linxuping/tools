@@ -17,7 +17,7 @@ void test_struct();
 void test_pointer_len();
 void test_ascii();
 void test_if();
-void test_headers_sequence();
+//void test_headers_sequence();
 
 int main()
 {
@@ -37,7 +37,7 @@ int main()
     test_pointer_len();
     test_ascii();
     test_if();
-    test_headers_sequence();
+    //test_headers_sequence();
 
     return 0;    
 }
@@ -64,8 +64,10 @@ void test_type() // ???
     ENTER_TEST();
     unsigned int a = 6;
     int b = -6;
+    short s = -2;
     //int *p = nullptr; //需开启-std=c++0x编译选项
-    printf("%s uint 6 + int -6 > 6 ? %d \n",__FUNCTION__,a+b>6);
+    printf("%s uint 6 + int -6 > 6 -> %d \n",__FUNCTION__,a+b);
+    printf("%s uint 6 + short -2 > 6 -> %d \n",__FUNCTION__,a+s);
 }
 
 void swap_1(int& a, int& b)
@@ -252,6 +254,8 @@ void test_ascii()
     ENTER_TEST();
     printf("%s gan 0 is %d \n",__FUNCTION__,int('\0'));
     printf("%s gan 1 is %d \n",__FUNCTION__,int('\1'));
+    printf("%s gan r is %d \n",__FUNCTION__,int('\r'));
+    printf("%s gan n is %d \n",__FUNCTION__,int('\n'));
     printf("%s ' ' is %d \n",__FUNCTION__,int(' '));
 }
 
