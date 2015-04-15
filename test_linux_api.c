@@ -5,6 +5,7 @@
 #include <sys/types.h>  
 #include <sys/stat.h>  
 #include <unistd.h>  
+#include <signal.h>  
 using namespace std;  
 
 void test_file1(char **pargv);
@@ -12,14 +13,17 @@ void test_file2(char **pargv);
 void test_semaphore();
 void test_parent_pid();
 void test_deamon();
+void test_fork_zombie();
 
 int main(int argc, char *argv[])  
 {  
+    signal(SIGCHLD, SIG_IGN); // if > 2.4.22, no zombie process
     //test_file1(argv);
     //test_file2(argv);
     test_semaphore();
     test_parent_pid();
     test_deamon();
+    test_fork_zombie();
     return 0;  
 }  
 
@@ -112,5 +116,21 @@ void test_deamon()
 {
     //http://baike.baidu.com/link?url=hbDWuKM0brP-OvhK7uoFEwsP6_9cTnOeagZJlQ47cuwPPomSGTTqvyvAfPWMw60gQ3AAiFHh3Uy-ZUmzUoV5sK
     printf("%s think think... ... \n", __FUNCTION__);
+}
+
+void test_fork_zombie()
+{
+    pid_t pid = fork();
+    if (pid < 0)
+        exit(0);
+    else if (pid == 0){
+        printf("child:%d \n",getpid());
+        exit(0);
+    }
+    else{
+        printf("parent:%d \n",getpid());
+    }
+    for (int i=0; i<100; ++i)
+        sleep(1);
 }
 

@@ -18,14 +18,14 @@ int main()
     int a2 = 2;    
     int* const p2 = &a2; //not int const *
     *p2 = 22;
-    //p2 = &m;   //error !(error: assignment of read-only variable ‘p2’)
+    //p2 = &m;   //error !(error: assignment of read-only variable ‘p2’) 指针常量不能被修改!
     printf("const int *:%p, int const *:%p \n", p1, p2);
     //3.
     const int a3 = get_const_int();
     int a4 = get_const_int();
     //4.   for pointer
     const char* p3 = get_const_str();
-    //char* p4 = get_const_str(); //error !
+    //char* p4 = get_const_str(); //从类型‘const char*’到类型‘char*’的转换无效 !
     //5.   const class member function
     test_class_const_function();
     //
@@ -70,10 +70,10 @@ int Test1::GetCount(void) const
 {
     //++m_num; // 编译错误，企图修改数据成员m_num
     //Pop(); // 编译错误，企图调用非const 函数
-    m_mt = 100; //ok, for it is mutable
+    m_mt = 100; //ok, for it is mutable   这样都行。。。。。。。。
     //
     //m_pitem = NULL; // member ‘Test1::m_pitem’ in read-only object
-    m_pitem->m_val = 101;
+    m_pitem->m_val = 101; //不修改指针，但是你修改指针对象对应的内容还是可以的.
 
     return m_num;
 }
@@ -106,7 +106,7 @@ void test_class_const()
     const Test2 t21; 
     printf("%s const class obj add:%p \n", __FUNCTION__,&t21);
     printf("%s class const mem fun:%p \n", __FUNCTION__,&Test2::run2);
-    //printf("%s class mem fun:%p \n", &(t21.run1)); //错误：ISO C++ 不允许通过取已绑定的成员函数的地址来构造成员函数指针。请改用‘&Test2::run2’ [-fpermissive]
+    //printf("%s class mem fun:%p \n", &(t21.run1)); //错误：ISO C++ 不允许通过取已绑定的成员函数的地址来构造成员函数指针。请改用‘&Test2::run2’ [-fpermissive]   函数地址本身就是在.text里面
     printf("%s class       mem fun:%p \n", __FUNCTION__,&Test2::run1);
 
     //t21.run1(); //将‘const Test2’作为‘void Test2::run1()’的‘this’实参时丢弃了类型限定   const难转非const? 非const易转const?
