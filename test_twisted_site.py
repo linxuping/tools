@@ -25,11 +25,11 @@ class clsUcwebServer(clsAcceptor, resource.Resource):
     resource.Resource.__init__(self)
   def render_GET(self, request):
     print '>>> clsUcwebServer(clsAcceptor, resource.Resource) render_GET '
-    pass
+    return "render_GET"
   def render_POST(self, request):
     #self.req_process_func_list[0](request) -> several worker threads work.
     print '>>> clsUcwebServer(clsAcceptor, resource.Resource) render_POST '
-    pass
+    return "render_POST"
 
 
 class homeRes(resource.Resource):
@@ -52,6 +52,8 @@ class FHTTPChannel(http.HTTPChannel):
   def connectionMade(self):
     self.setTimeout(self.timeOut)
     print ">>> FHTTPChannel(http.HTTPChannel)::connectionMade "
+  def connectionLost(self, reason):
+    print ">>> ",reason
 
 
 class FRequest(server.Request):
@@ -60,9 +62,13 @@ class FRequest(server.Request):
     self.arrived_time = None
     self.had_req_dump = False
     self.project_type = 0
+'''
   def process(self):
-    self.setHeader("Content-Type",'text/html')
+    #self.setHeader("Content-Type",'text/html')
     print ">>> FRequest(server.Request) "
+    self.write("<h1>Not Found</h1>Sorry, no such page.")
+    self.finish()
+'''
 
 
 class FSite(server.Site):
