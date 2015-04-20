@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+'''README
+Python 2.7.6 (default, Jul 25 2014, 10:59:32)
+Version('twisted', 10, 2, 0)
+'''
 from twisted.web import http, resource, server
 #与“心跳”有关的配置项
 #“心跳”间隔，正整数，单位为秒
