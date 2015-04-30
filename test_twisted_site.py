@@ -85,6 +85,7 @@ class FSite(server.Site):
 
 def ucweb_req_process(http_request):
   print '>>> fun: ucweb_req_process(http_request)'
+  #ucweb_req_processor.put_req(ucweb_req) 将请求放入队列，等待线程池取走执行
   pass
 
 def start_state_agent():
