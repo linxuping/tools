@@ -332,3 +332,7 @@ if __name__ == '__main__':
         except NoResultsPending:
             print "All results collected."
             break
+
+#uc timeweight:
+#req_info['load'] = len(ucweb_req_processor.threadpool.workRequests) - ucweb_req_processor.threadpool.requestsQueue.qsize()
+
