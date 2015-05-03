@@ -316,14 +316,18 @@ void test_pointer()
     *ppm = &n;
     printf("m:%d, pm:%d, ppm:%d\n     pn:%d, ppn:%d \n",m,*pm,**ppm,*pn,**ppn);
     printf("m:%d, pm:%p, ppm:%p\n     pn:%p, ppn:%p \n",m,pm,ppm,pn,ppn);
-/*
-    ppm = ppn;
+/* ppm = ppn;
     printf("m:%d, pm:%p, ppm:%p\nn:%d, pn:%p, ppn:%p \n",m,pm,ppm,n,pn,ppn);
     printf("m:%d, pm:%d, ppm:%d\nn:%d, pn:%d, ppn:%d \n",m,*pm,**ppm,n,*pn,**ppn);
 */
 
 }
  
+class Test{
+public:
+    virtual void run(){ printf("Test::run() in vir \n"); }
+};
+typedef void (*PFUN)();
 #include<typeinfo>
 void test_typeid()
 {
@@ -333,6 +337,16 @@ void test_typeid()
     float *ft;
     printf("Base:%s Derived:%s \n",typeid(Base).name(),typeid(de).name());
     printf("int:%s int*:%s float*:%s \n",typeid(int).name(),typeid(pt).name(),typeid(ft).name() );
+    //printf("type_info::raw_name Derived:%s \n", typeid(de).raw_name());
+ 
+    //test whether only virtual table can find type_info ?
+    Test *pt2 = new Test();
+    ( (PFUN)*((int*)*((int*)pt2)+0) )();//mine: ( (PFUN)*((int*)pt2) )();
+    printf("vtable addr: %p \n",(int*)*((int*)pt2) );
+    printf("vtable index: -1->%p === type_info addr:%p \n",(int*)*((int*)*((int*)pt2)-1), &typeid(Test));
+    printf("vtable index: 1->%p 2->%p \n",(int*)*((int*)*((int*)pt2)+1),  (int*)*((int*)*((int*)pt2)+2));
+    //->so vtable-1 -> type_info and addr of type_info stable when build .
 
+    delete pt2;
 }
 
