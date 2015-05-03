@@ -17,6 +17,8 @@ void test_struct();
 void test_pointer_len();
 void test_ascii();
 void test_if();
+void test_pointer();
+void test_typeid();
 //void test_headers_sequence();
 
 int main()
@@ -38,6 +40,8 @@ int main()
     test_ascii();
     test_if();
     //test_headers_sequence();
+    test_pointer();
+    test_typeid();
 
     return 0;    
 }
@@ -297,4 +301,38 @@ void test_headers_sequence()
 }
 */
 
+void test_pointer()
+{
+    ENTER_TEST();
+    int m = 4;
+    int *pm = &m;
+    int **ppm = &pm;
+    int *pn = &m;
+    int **ppn = &pn;
+    printf("m:%d, pm:%d, ppm:%d\n     pn:%d, ppn:%d \n",m,*pm,**ppm,*pn,**ppn);
+    printf("m:%d, pm:%p, ppm:%p\n     pn:%p, ppn:%p \n",m,pm,ppm,pn,ppn);
+    int n = 8;
+    printf("+try: *ppm = &n \n");
+    *ppm = &n;
+    printf("m:%d, pm:%d, ppm:%d\n     pn:%d, ppn:%d \n",m,*pm,**ppm,*pn,**ppn);
+    printf("m:%d, pm:%p, ppm:%p\n     pn:%p, ppn:%p \n",m,pm,ppm,pn,ppn);
+/*
+    ppm = ppn;
+    printf("m:%d, pm:%p, ppm:%p\nn:%d, pn:%p, ppn:%p \n",m,pm,ppm,n,pn,ppn);
+    printf("m:%d, pm:%d, ppm:%d\nn:%d, pn:%d, ppn:%d \n",m,*pm,**ppm,n,*pn,**ppn);
+*/
+
+}
+ 
+#include<typeinfo>
+void test_typeid()
+{
+    ENTER_TEST();
+    Derived de;
+    int *pt;
+    float *ft;
+    printf("Base:%s Derived:%s \n",typeid(Base).name(),typeid(de).name());
+    printf("int:%s int*:%s float*:%s \n",typeid(int).name(),typeid(pt).name(),typeid(ft).name() );
+
+}
 
