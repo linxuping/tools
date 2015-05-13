@@ -19,6 +19,7 @@ void test_ascii();
 void test_if();
 void test_pointer();
 void test_typeid();
+void test_normal_function_addr();
 //void test_headers_sequence();
 
 int main()
@@ -42,6 +43,7 @@ int main()
     //test_headers_sequence();
     test_pointer();
     test_typeid();
+    test_normal_function_addr();
 
     return 0;    
 }
@@ -348,5 +350,11 @@ void test_typeid()
     //->so vtable-1 -> type_info and addr of type_info stable when build .
 
     delete pt2;
+}
+
+void test_normal_function_addr()
+{
+    ENTER_TEST();
+    printf("normal fun addr:%p \n", &test_typeid);
 }
 

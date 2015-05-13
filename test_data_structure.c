@@ -50,6 +50,30 @@ void delete_link_node_old(LNode* head, PCompare pfun)
         cur = cur->next;
     }
 }
+
+void delete_link_node_new(LNode** head, PCompare pfun)
+{//change the *pt
+    LNode** cur = head;
+	while(*cur != NULL){
+	   if (pfun( (*cur)->value )){
+	       //delete *cur
+	       *cur = (*cur)->next;
+	   }
+	   cur = &((*cur)->next);
+	}
+}
+void delete_link_node_new2(LNode** head, PCompare pfun)
+{//change the *pt
+    for (LNode **curr=head; *curr; ){
+	    LNode *entry = *curr;
+		if (pfun(entry->value)){
+		    *curr = entry->next;
+			//free entry
+		}
+		else
+		    curr = &entry->next;
+	}
+}
 void test_delete_link_node()
 {
     ENTER_TEST();
@@ -63,9 +87,19 @@ void test_delete_link_node()
     delete_link_node_old(&head, compare);
     print_lnode(&head);
 
-    //≥¢ ‘ π”√LNode**∂¯≤ª «prev
-    //delete_link_node_new(&head, compare);
-    //print_lnode(&head);
+    printf("try new method... ...");
+    LNode n30(3,NULL);
+    LNode n20(2,&n30);
+    LNode n10(1,&n20);
+    LNode head0(0,&n10);
+    print_lnode(&head0);
+
+    LNode *ht = &head0;
+    LNode **pt = &ht;
+    delete_link_node_new2(pt, compare);
+    //delete_link_node_new(&(&head0), compare);//error: lvalue required as unary ø&ø operand
+    print_lnode(&head0);
+
 }
 
 
