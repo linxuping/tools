@@ -20,6 +20,7 @@ void test_if();
 void test_pointer();
 void test_typeid();
 void test_normal_function_addr();
+void test_static();
 //void test_headers_sequence();
 
 int main()
@@ -45,6 +46,7 @@ int main()
     test_typeid();
     test_normal_function_addr();
 
+    test_static(); 
     return 0;    
 }
 
@@ -356,5 +358,11 @@ void test_normal_function_addr()
 {
     ENTER_TEST();
     printf("normal fun addr:%p \n", &test_typeid);
+static int s_val = 2;
+void test_static()
+{
+    ENTER_TEST();
+    static int s_val = 3;
+    printf("static value: s_val:%d s_val:%d 所以全局和局部静态变量可以重名 \n",::s_val, s_val);
 }
 
