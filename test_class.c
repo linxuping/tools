@@ -131,6 +131,8 @@ void test_class_mem_fun_ptr()
     Base1 b;
     PRUN prun= &Base1::run;
     (b.*prun)(); //(b.(*prun))(); //错误：expected unqualified-id before ‘(’ token
+    //_ZN5Base13runEv(&b);
+    //Base1::run(&b);
 }
 
 
