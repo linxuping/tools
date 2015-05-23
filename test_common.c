@@ -358,11 +358,28 @@ void test_normal_function_addr()
 {
     ENTER_TEST();
     printf("normal fun addr:%p \n", &test_typeid);
+}
+
 static int s_val = 2;
 void test_static()
 {
     ENTER_TEST();
     static int s_val = 3;
+    s_val = 4;
     printf("static value: s_val:%d s_val:%d 所以全局和局部静态变量可以重名 \n",::s_val, s_val);
+    //1.
+    for (int i=0; i<10; ++i){
+        static int tmp = i*10;
+        printf("tmp static tmp:%d addr:%p \n",tmp,(int*)&tmp); //tmp:0 addr:0x804c140  http://blog.csdn.net/henhen2002/article/details/4602031
+    }
+    //2.
+    {
+        static int tmp2 = 100;
+        printf("tmp static tmp2:%d addr:%p \n",tmp2,(int*)&tmp2); //100 0x804c05c
+    }
+    {
+        static int tmp2 = 200;
+        printf("tmp static tmp2:%d addr:%p \n",tmp2,(int*)&tmp2); //200 0x804c060
+    }
 }
 
