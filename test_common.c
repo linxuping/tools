@@ -385,9 +385,13 @@ void test_static()
     }
 }
 
+#include <time.h>
 void test_time()
 {
     ENTER_TEST();
     printf("time_t size:%d time_t=long ?:%d \n",sizeof(time_t),typeid(long)==typeid(time_t));
+    time_t tt = time(0);
+    struct tm* tm = gmtime(&tt);
+    printf("time_t %d year:%2d month:%2d day:%d \n",time(0),1900+tm->tm_year,1+tm->tm_mon,tm->tm_mday);
 }
 
