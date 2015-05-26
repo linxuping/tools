@@ -21,6 +21,7 @@ void test_pointer();
 void test_typeid();
 void test_normal_function_addr();
 void test_static();
+void test_time(); 
 //void test_headers_sequence();
 
 int main()
@@ -47,6 +48,7 @@ int main()
     test_normal_function_addr();
 
     test_static(); 
+    test_time(); 
     return 0;    
 }
 
@@ -381,5 +383,11 @@ void test_static()
         static int tmp2 = 200;
         printf("tmp static tmp2:%d addr:%p \n",tmp2,(int*)&tmp2); //200 0x804c060
     }
+}
+
+void test_time()
+{
+    ENTER_TEST();
+    printf("time_t size:%d time_t=long ?:%d \n",sizeof(time_t),typeid(long)==typeid(time_t));
 }
 
