@@ -392,6 +392,6 @@ void test_time()
     printf("time_t size:%d time_t=long ?:%d \n",sizeof(time_t),typeid(long)==typeid(time_t));
     time_t tt = time(0);
     struct tm* tm = gmtime(&tt);
-    printf("time_t %d year:%2d month:%2d day:%d \n",time(0),1900+tm->tm_year,1+tm->tm_mon,tm->tm_mday);
+    printf("time_t %d year:%2d month:%2d day:%d hour:%d min:%d sec:%d \n",time(0),1900+tm->tm_year,1+tm->tm_mon,tm->tm_mday, tm->tm_hour+8, tm->tm_min,tm->tm_sec);
 }
 
