@@ -22,6 +22,7 @@ void test_typeid();
 void test_normal_function_addr();
 void test_static();
 void test_time(); 
+void test_bool_return(); 
 //void test_headers_sequence();
 
 int main()
@@ -49,6 +50,7 @@ int main()
 
     test_static(); 
     test_time(); 
+    test_bool_return(); 
     return 0;    
 }
 
@@ -393,5 +395,15 @@ void test_time()
     time_t tt = time(0);
     struct tm* tm = gmtime(&tt);
     printf("time_t %d year:%2d month:%2d day:%d hour:%d min:%d sec:%d \n",time(0),1900+tm->tm_year,1+tm->tm_mon,tm->tm_mday, tm->tm_hour+8, tm->tm_min,tm->tm_sec);
+}
+
+inline bool try_ret_bool(){
+    printf("have no return here. \n");
+}
+void test_bool_return()
+{
+    ENTER_TEST();
+    int ret = try_ret_bool();
+    printf("bool return value:%d \n",ret); //??? ??? ???
 }
 
