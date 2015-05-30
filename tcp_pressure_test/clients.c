@@ -1,3 +1,10 @@
+/*Config
+sysctl -w net.ipv4.tcp_max_tw_buckets=60000
+sysctl -w net.ipv4.tcp_tw_recycle=1
+sysctl -w net.ipv4.tcp_tw_reuse=1
+sysctl -w net.ipv4.ip_local_port_range='1024    65535'
+sysctl -w net.ipv4.ip_local_port_range='50000    55000'
+*/
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -66,4 +73,6 @@ int main()
 	printf("time0:%ld time1:%ld start:%d end:%d count:%d existc:%d \n",t0, time(0), start, end, count, existc);
 	return 0;
 }
+
+
 
