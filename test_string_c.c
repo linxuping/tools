@@ -12,6 +12,8 @@ void test_strstr();
 void test_strcat();
 void test_strcmp();
 void test_loopmove();
+void test_substr();
+void test_unicode(); //中文-char* 和 wchar_t*的差别
 
 int main()
 {
@@ -24,6 +26,8 @@ int main()
     test_strcat();
     test_strcmp();
     test_loopmove();
+    test_substr();
+    test_unicode(); //中文-char* 和 wchar_t*的差别
     return 0;    
 }
 
@@ -220,5 +224,24 @@ void test_loopmove()
     printf("steps:%d, loopmove:%s \n",10,desc);
     desc = loopmove(buf,12);
     printf("steps:%d, loopmove:%s \n",12,desc);
+}
+
+void test_substr()
+{
+    ENTER_TEST();
+    char result[12];
+    char *buf = "hello,world123";
+    strncpy(result, buf+11, strlen(buf)-11);
+    result[3] = '\0';
+    printf("get 123: %s \n",result);
+}
+
+#include <wchar.h>
+void test_unicode() //中文-char* 和 wchar_t*的差别
+{
+    char *buf = "中文";
+    wchar_t *wbuf = L"中文";
+    printf("中文 char* size:%d \n",strlen(buf)*sizeof(char));
+    printf("中文 wchar_t* size:%d \n",wcslen(wbuf)*sizeof(wchar_t));
 }
 
