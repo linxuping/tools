@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''Usage
 python receive_logs_topic.py linxpq1
 python receive_logs_topic.py linxpq2
@@ -9,7 +10,7 @@ import sys
 queuename = sys.argv[1]
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
+        host='192.168.29.131'))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='topic_logs',
@@ -20,20 +21,30 @@ channel.queue_declare(queue='linxpq2', durable=True, exclusive=False, auto_delet
 channel.queue_bind(exchange='topic_logs', queue='linxp1', routing_key="zb.*")
 channel.queue_bind(exchange='topic_logs', queue='linxp2', routing_key="zb")
 '''
-result = channel.queue_declare(queue=queuename, durable=True, exclusive=False, auto_delete=False, arguments={"x-max-priority":10})
-queue_name = result.method.queue
+#result = channel.queue_declare(queue=queuename, durable=True, exclusive=False, auto_delete=False, arguments={"x-max-priority":10})
+#queue_name = result.method.queue
+queue_name = queuename
 
 print ' [*] Waiting for logs. To exit press CTRL+C'
 
-import time
+'''
 def callback(ch, method, properties, body):
     print ch, method, properties, body
     print " [x] %r:%r" % (method.routing_key, body,)
-    time.sleep(1)
-
-channel.basic_consume(callback,
+    #channel.basic_ack(delivery_tag = method.delivery_tag)
+channel.basic_qos(prefetch_count=3)
+channel.basic_consume(callback, #这种做法不能回调取到priority queue items，只能尝试其他方法
                       queue=queue_name,
-                      no_ack=True)
-
+                      no_ack=False)
 channel.start_consuming()
+'''
+import time
+while 1: #blocked reactor
+  r = channel.basic_get(queue=queue_name, no_ack=False) #0
+  if r[0] != None:
+    print r[-1], r[0].delivery_tag
+    channel.basic_nack(delivery_tag=r[0].delivery_tag, multiple=False, requeue=False)
+  time.sleep(0.2)
+
+connection.close()
 
