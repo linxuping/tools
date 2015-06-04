@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''Usage
+python simple_test_send_priority.py 100000
 '''
 import pika
 import sys
@@ -8,8 +9,7 @@ import sys
 credentials = pika.PlainCredentials('test_user', 'test_user')
 connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='192.168.29.131', credentials=credentials))
-channel = connection.channel()
-
+channel = connection.channel() 
 channel.exchange_declare(exchange='topic_logs',
                          type='topic')
 #channel.queue_declare(queue='linxpq', durable=True, exclusive=False, auto_delete=False, arguments={"x-max-priority":10})
@@ -28,38 +28,28 @@ channel.basic_publish(exchange='topic_logs',
                          priority = 9, # make message persistent
                       ))
 '''
+times = 1
+if len(sys.argv) > 1:
+  times = int(sys.argv[1])
+sendstr = "If you're having trouble going through this tutorial you can contact us through the mailing list."
+count = 0
 import time
-for i in range(3):
-    channel.basic_publish(exchange='topic_logs',
-                      routing_key='zb.yy',
-                      body=u'你好!world. 1',
-		      properties=pika.BasicProperties(
-		         delivery_mode = 2,
-                         priority = 1, # make message persistent
-                      ))
-    channel.basic_publish(exchange='topic_logs',
-                      routing_key='zb.yy3',
-                      body=u'你好!world. 2',
-		      properties=pika.BasicProperties(
-		         delivery_mode = 2,
-                         priority = 2, # make message persistent
-                      ))
-    channel.basic_publish(exchange='topic_logs',
-                      routing_key='zb',
-                      body=u'你好!world. 3',
-		      properties=pika.BasicProperties(
-		         delivery_mode = 2,
-                         priority = 3, # make message persistent
-                      ))
-    channel.basic_publish(exchange='topic_logs',
-                      routing_key='zb',
-                      body=u'你好!world. 4',
-		      properties=pika.BasicProperties(
-		         delivery_mode = 2,
-                         priority = 4, # make message persistent
-                      ))
-    print i
-channel.basic_publish(exchange='topic_logs',
+for i in range(times):
+	for j in range(10):
+		rkey = "zb.yy"
+		if j%2 == 0:
+			rkey = "zb"
+		channel.basic_publish(exchange='topic_logs',
+				routing_key=rkey,
+				body=u'%s. %s.%s'%(sendstr, i,j),
+				properties=pika.BasicProperties(
+					delivery_mode = 2,
+					priority = j, # make message persistent
+					))
+		#print "%d.%d"%(i,j)
+		count += 1
+	'''
+	channel.basic_publish(exchange='topic_logs',
 	      routing_key='zb.yy4',
 	      body=u'你好!world. 6',
 	      properties=pika.BasicProperties(
@@ -75,4 +65,8 @@ channel.basic_publish(exchange='topic_logs',
 	      ))
 #print " [x] Sent %r:%r" % (routing_key, message)
 #print "fini."
+'''
+import os
+os.system("date")
+print "count: ",count
 connection.close()

@@ -39,12 +39,15 @@ channel.basic_consume(callback, #这种做法不能回调取到priority queue it
 channel.start_consuming()
 '''
 import time
+count = 0
 while 1: #blocked reactor
   r = channel.basic_get(queue=queue_name, no_ack=False) #0
   if r[0] != None:
-    print r[-1], r[0].delivery_tag
     channel.basic_nack(delivery_tag=r[0].delivery_tag, multiple=False, requeue=False)
-  time.sleep(0.2)
-
+    count += 1
+    if count%100 == 0:
+        print r[-1], r[0].delivery_tag
+    print count
+  #time.sleep(0.2)
 connection.close()
 
