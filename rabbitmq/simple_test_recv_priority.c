@@ -77,7 +77,12 @@ static void run(amqp_connection_state_t conn)
     amqp_maybe_release_buffers(conn);
     ret = amqp_consume_message(conn, &envelope, NULL, 0);
 
+		char buf[1024] = "\0";
+		memcpy(buf, (char*)envelope.message.body.bytes, envelope.message.body.len);
+		buf[envelope.message.body.len] = '\0';
+		printf("buf: %s \n",buf);
     if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
+		  printf("--1--\n");
       if (AMQP_RESPONSE_LIBRARY_EXCEPTION == ret.reply_type &&
           AMQP_STATUS_UNEXPECTED_STATE == ret.library_error) {
         if (AMQP_STATUS_OK != amqp_simple_wait_frame(conn, &frame)) {
@@ -163,7 +168,6 @@ int main(/*int argc, char const *const *argv*/)
 	exchange = "topic_logs";
 	routingkey = "linxpq1";
 	messagebody = "hello,world";
-	printf("body: %s \n",messagebody);
 
 	conn = amqp_new_connection();
 
@@ -180,6 +184,7 @@ int main(/*int argc, char const *const *argv*/)
 	die_on_amqp_error(amqp_login(conn, "/", 0, 131072, 0, AMQP_SASL_METHOD_PLAIN, "test_user", "test_user"), "Logging in");
 	amqp_channel_open(conn, 1);
 	die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
+	printf("body: %s \n",messagebody);
 
   amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
                         0, 0, 0, 0, amqp_empty_table);
