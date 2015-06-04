@@ -65,7 +65,6 @@ int main(/*int argc, char const *const *argv*/)
 	exchange = "topic_logs";
 	routingkey = "linxpq1";
 	messagebody = "hello,world";
-	printf("body: %s \n",messagebody);
 
 	conn = amqp_new_connection();
 
@@ -83,9 +82,9 @@ int main(/*int argc, char const *const *argv*/)
 	amqp_channel_open(conn, 1);
 	die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
 
-  amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
-                        0, 0, 0, 0, amqp_empty_table);
-  die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
+	amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
+			0, 0, 0, 0, amqp_empty_table);
+	die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
 
 	amqp_bytes_t queuename1 = amqp_cstring_bytes("linxpq1");
 	amqp_bytes_t queuename2 = amqp_cstring_bytes("linxpq2");
@@ -99,57 +98,66 @@ int main(/*int argc, char const *const *argv*/)
 	  inner_table.num_entries = 1;
 	  inner_table.entries = inner_entries;
 
-		{
-		  printf("--1--\n");
-		  fflush(stdout);
-		  amqp_queue_declare_ok_t *r = amqp_queue_declare(conn, 1, queuename1, 0, 1, 0, 0, inner_table);
-		  die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring queue");
-		  queuename1 = amqp_bytes_malloc_dup(r->queue);
-		  if (queuename1.bytes == NULL) {
-			  fprintf(stderr, "Out of memory while copying queue name");
-			  return 1;
-		  }
-			amqp_queue_bind(conn, 1, queuename1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("zb.*"),amqp_empty_table);
-		  printf("--2--\n");
-		  fflush(stdout);
-		}
-		{
-		  amqp_queue_declare_ok_t *r = amqp_queue_declare(conn, 1, queuename2, 0, 1, 0, 0, inner_table);
-		  printf("--login--\n");
-		  fflush(stdout);
-		  die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring queue");
-		  queuename2 = amqp_bytes_malloc_dup(r->queue);
-		  if (queuename2.bytes == NULL) {
-			  fprintf(stderr, "Out of memory while copying queue name");
-			  return 1;
-		  }
-			amqp_queue_bind(conn, 1, queuename2, amqp_cstring_bytes(exchange), amqp_cstring_bytes("zb"),amqp_empty_table);
-		}
-
-	  for (int i=0; i<10; ++i){
-	    amqp_basic_properties_t props;
-	    props._flags = AMQP_BASIC_PRIORITY_FLAG | AMQP_BASIC_DELIVERY_MODE_FLAG;
-	    //props.content_type = amqp_cstring_bytes("text/plain");
-	    props.delivery_mode = 2; /* persistent delivery mode */
-	    props.priority = i; /* persistent delivery mode */
-	    die_on_error(amqp_basic_publish(conn,
-				    1,
-				    amqp_cstring_bytes(exchange),
-				    amqp_cstring_bytes("zb.yy"),
-				    0,
-				    0,
-				    &props,
-				    amqp_cstring_bytes("it is zb.yy")),
-			    "Publishing");
+	  {
+	    amqp_queue_declare_ok_t *r = amqp_queue_declare(conn, 1, queuename1, 0, 1, 0, 0, inner_table);
+	    die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring queue");
+	    queuename1 = amqp_bytes_malloc_dup(r->queue);
+	    if (queuename1.bytes == NULL) {
+		    fprintf(stderr, "Out of memory while copying queue name");
+		    return 1;
+	    }
+	    amqp_queue_bind(conn, 1, queuename1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("zb.*"),amqp_empty_table);
     }
-		printf("--end--\n");
-		fflush(stdout);
+	  {
+	    amqp_queue_declare_ok_t *r = amqp_queue_declare(conn, 1, queuename2, 0, 1, 0, 0, inner_table);
+	    die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring queue");
+	    queuename2 = amqp_bytes_malloc_dup(r->queue);
+	    if (queuename2.bytes == NULL) {
+		    fprintf(stderr, "Out of memory while copying queue name");
+		    return 1;
+	    }
+	    amqp_queue_bind(conn, 1, queuename2, amqp_cstring_bytes(exchange), amqp_cstring_bytes("zb"),amqp_empty_table);
+    }
+
+		  amqp_basic_properties_t props;
+		  props._flags = AMQP_BASIC_PRIORITY_FLAG | AMQP_BASIC_DELIVERY_MODE_FLAG;
+		  //props.content_type = amqp_cstring_bytes("text/plain");
+		  props.delivery_mode = 2; /* persistent delivery mode */
+	  for (int i=0; i<2; ++i){
+		  props.priority = i; /* persistent delivery mode */
+		  die_on_error(amqp_basic_publish(conn,
+					  1,
+					  amqp_cstring_bytes(exchange),
+					  amqp_cstring_bytes("zb.yy"),
+					  0,
+					  0,
+					  &props,
+					  amqp_cstring_bytes("it is zb.yy")),
+				  "Publishing");
+			printf("send to zb.yy \n");
+		}
+	  for (int i=0; i<3; ++i){
+		  props.priority = i; /* persistent delivery mode */
+		  die_on_error(amqp_basic_publish(conn,
+					  1,
+					  amqp_cstring_bytes(exchange),
+					  amqp_cstring_bytes("zb"),
+					  0,
+					  0,
+					  &props,
+					  amqp_cstring_bytes("it is zb")),
+				  "Publishing");
+			printf("send to zb \n");
+	  }
+	  printf("++ send finish.\n");
+	  fflush(stdout);
+		/*
 	  {
 	    amqp_basic_properties_t props;
 	    props._flags = AMQP_BASIC_PRIORITY_FLAG | AMQP_BASIC_DELIVERY_MODE_FLAG;
 	    //props.content_type = amqp_cstring_bytes("text/plain");
-	    props.delivery_mode = 2; /* persistent delivery mode */
-	    props.priority = 9; /* persistent delivery mode */
+	    props.delivery_mode = 2; // persistent delivery mode 
+	    props.priority = 9; // persistent delivery mode 
 	    die_on_error(amqp_basic_publish(conn,
 				    1,
 				    amqp_cstring_bytes(exchange),
@@ -160,6 +168,7 @@ int main(/*int argc, char const *const *argv*/)
 				    amqp_cstring_bytes("it is zb high-p")),
 			    "Publishing");
     }
+		*/
 
   }
 

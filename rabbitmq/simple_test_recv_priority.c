@@ -48,102 +48,102 @@
 
 static void run(amqp_connection_state_t conn)
 {
-  uint64_t start_time = now_microseconds();
-  int received = 0;
-  int previous_received = 0;
-  uint64_t previous_report_time = start_time;
-  uint64_t next_summary_time = start_time + SUMMARY_EVERY_US;
+	uint64_t start_time = now_microseconds();
+	int received = 0;
+	int previous_received = 0;
+	uint64_t previous_report_time = start_time;
+	uint64_t next_summary_time = start_time + SUMMARY_EVERY_US;
 
-  amqp_frame_t frame;
+	amqp_frame_t frame;
 
-  uint64_t now;
+	uint64_t now;
 
-  while (1) {
-    amqp_rpc_reply_t ret;
-    amqp_envelope_t envelope;
+	while (1) {
+		amqp_rpc_reply_t ret;
+		amqp_envelope_t envelope;
 
-    now = now_microseconds();
-    if (now > next_summary_time) {
-      int countOverInterval = received - previous_received;
-      double intervalRate = countOverInterval / ((now - previous_report_time) / 1000000.0);
-      printf("%d ms: Received %d - %d since last report (%d Hz)\n",
-             (int)(now - start_time) / 1000, received, countOverInterval, (int) intervalRate);
+		now = now_microseconds();
+		if (now > next_summary_time) {
+			int countOverInterval = received - previous_received;
+			double intervalRate = countOverInterval / ((now - previous_report_time) / 1000000.0);
+			printf("%d ms: Received %d - %d since last report (%d Hz)\n",
+					(int)(now - start_time) / 1000, received, countOverInterval, (int) intervalRate);
 
-      previous_received = received;
-      previous_report_time = now;
-      next_summary_time += SUMMARY_EVERY_US;
-    }
+			previous_received = received;
+			previous_report_time = now;
+			next_summary_time += SUMMARY_EVERY_US;
+		}
 
-    amqp_maybe_release_buffers(conn);
-    ret = amqp_consume_message(conn, &envelope, NULL, 0);
+		amqp_maybe_release_buffers(conn);
+		ret = amqp_consume_message(conn, &envelope, NULL, 0);
 
 		char buf[1024] = "\0";
 		memcpy(buf, (char*)envelope.message.body.bytes, envelope.message.body.len);
 		buf[envelope.message.body.len] = '\0';
 		printf("buf: %s \n",buf);
-    if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
-		  printf("--1--\n");
-      if (AMQP_RESPONSE_LIBRARY_EXCEPTION == ret.reply_type &&
-          AMQP_STATUS_UNEXPECTED_STATE == ret.library_error) {
-        if (AMQP_STATUS_OK != amqp_simple_wait_frame(conn, &frame)) {
-          return;
-        }
+		if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
+			printf("--1--\n");
+			if (AMQP_RESPONSE_LIBRARY_EXCEPTION == ret.reply_type &&
+					AMQP_STATUS_UNEXPECTED_STATE == ret.library_error) {
+				if (AMQP_STATUS_OK != amqp_simple_wait_frame(conn, &frame)) {
+					return;
+				}
 
-        if (AMQP_FRAME_METHOD == frame.frame_type) {
-          switch (frame.payload.method.id) {
-            case AMQP_BASIC_ACK_METHOD:
-              /* if we've turned publisher confirms on, and we've published a message
-               * here is a message being confirmed
-               */
+				if (AMQP_FRAME_METHOD == frame.frame_type) {
+					switch (frame.payload.method.id) {
+						case AMQP_BASIC_ACK_METHOD:
+							/* if we've turned publisher confirms on, and we've published a message
+							 * here is a message being confirmed
+	       */
 
-              break;
-            case AMQP_BASIC_RETURN_METHOD:
-              /* if a published message couldn't be routed and the mandatory flag was set
-               * this is what would be returned. The message then needs to be read.
-               */
-              {
-                amqp_message_t message;
-                ret = amqp_read_message(conn, frame.channel, &message, 0);
-                if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
-                  return;
-                }
+							break;
+						case AMQP_BASIC_RETURN_METHOD:
+							/* if a published message couldn't be routed and the mandatory flag was set
+							 * this is what would be returned. The message then needs to be read.
+	       */
+							{
+		      amqp_message_t message;
+		      ret = amqp_read_message(conn, frame.channel, &message, 0);
+		      if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
+			      return;
+		      }
 
-                amqp_destroy_message(&message);
-              }
+		      amqp_destroy_message(&message);
+	      }
 
-              break;
+							break;
 
-            case AMQP_CHANNEL_CLOSE_METHOD:
-              /* a channel.close method happens when a channel exception occurs, this
-               * can happen by publishing to an exchange that doesn't exist for example
-               *
-               * In this case you would need to open another channel redeclare any queues
-               * that were declared auto-delete, and restart any consumers that were attached
-               * to the previous channel
-               */
-              return;
+						case AMQP_CHANNEL_CLOSE_METHOD:
+							/* a channel.close method happens when a channel exception occurs, this
+							 * can happen by publishing to an exchange that doesn't exist for example
+							 *
+							 * In this case you would need to open another channel redeclare any queues
+							 * that were declared auto-delete, and restart any consumers that were attached
+							 * to the previous channel
+	       */
+							return;
 
-            case AMQP_CONNECTION_CLOSE_METHOD:
-              /* a connection.close method happens when a connection exception occurs,
-               * this can happen by trying to use a channel that isn't open for example.
-               *
-               * In this case the whole connection must be restarted.
-               */
-              return;
+						case AMQP_CONNECTION_CLOSE_METHOD:
+							/* a connection.close method happens when a connection exception occurs,
+							 * this can happen by trying to use a channel that isn't open for example.
+							 *
+							 * In this case the whole connection must be restarted.
+	       */
+							return;
 
-            default:
-              fprintf(stderr ,"An unexpected method was received %d\n", frame.payload.method.id);
-              return;
-          }
-        }
-      }
+						default:
+							fprintf(stderr ,"An unexpected method was received %d\n", frame.payload.method.id);
+							return;
+					}
+				}
+			}
 
-    } else {
-      amqp_destroy_envelope(&envelope);
-    }
+		} else {
+			amqp_destroy_envelope(&envelope);
+		}
 
-    received++;
-  }
+		received++;
+	}
 }
 
 
@@ -170,9 +170,7 @@ int main(/*int argc, char const *const *argv*/)
 	messagebody = "hello,world";
 
 	conn = amqp_new_connection();
-
-	socket = amqp_tcp_socket_new(conn);
-	if (!socket) {
+	socket = amqp_tcp_socket_new(conn); if (!socket) {
 		die("creating TCP socket");
 	}
 
@@ -186,17 +184,17 @@ int main(/*int argc, char const *const *argv*/)
 	die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
 	printf("body: %s \n",messagebody);
 
-  amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
-                        0, 0, 0, 0, amqp_empty_table);
-  die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
+	amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
+			0, 0, 0, 0, amqp_empty_table);
+	die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
 
 	amqp_bytes_t queuename = amqp_cstring_bytes("linxpq1");
 
-  amqp_basic_consume(conn, 1, queuename, amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
+	amqp_basic_consume(conn, 1, queuename, amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
 
-  die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
+	die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
 
-  run(conn);
+	run(conn);
 
 	die_on_amqp_error(amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS), "Closing channel");
 	die_on_amqp_error(amqp_connection_close(conn, AMQP_REPLY_SUCCESS), "Closing connection");
