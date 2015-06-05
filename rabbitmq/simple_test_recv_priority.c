@@ -35,16 +35,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <stdint.h>
+#include <stdarg.h>
+#include <errno.h>
 #include <amqp_tcp_socket.h>
 #include <amqp.h>
 #include <amqp_framing.h>
-
 #include <assert.h>
 #include "utils.h"
 
 #define SUMMARY_EVERY_US 1000000
+
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
 
 static void run(amqp_connection_state_t conn)
 {
@@ -57,7 +61,7 @@ static void run(amqp_connection_state_t conn)
 	amqp_frame_t frame;
 
 	uint64_t now;
-
+	int i=0;
 	while (1) {
 		amqp_rpc_reply_t ret;
 		amqp_envelope_t envelope;
@@ -66,8 +70,8 @@ static void run(amqp_connection_state_t conn)
 		if (now > next_summary_time) {
 			int countOverInterval = received - previous_received;
 			double intervalRate = countOverInterval / ((now - previous_report_time) / 1000000.0);
-			printf("%d ms: Received %d - %d since last report (%d Hz)\n",
-					(int)(now - start_time) / 1000, received, countOverInterval, (int) intervalRate);
+			//printf("%d ms: Received %d - %d since last report (%d Hz)\n",
+			//		(int)(now - start_time) / 1000, received, countOverInterval, (int) intervalRate);
 
 			previous_received = received;
 			previous_report_time = now;
@@ -76,13 +80,12 @@ static void run(amqp_connection_state_t conn)
 
 		amqp_maybe_release_buffers(conn);
 		ret = amqp_consume_message(conn, &envelope, NULL, 0);
+		//printf("recv: %s \n",(char*)envelope.message.body.bytes);
 
-		char buf[1024] = "\0";
-		memcpy(buf, (char*)envelope.message.body.bytes, envelope.message.body.len);
-		buf[envelope.message.body.len] = '\0';
-		printf("buf: %s \n",buf);
+		for(i=0; i<10000000; ++i);
+
 		if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
-			printf("--1--\n");
+			printf("--1----------------------------->>>>\n");
 			if (AMQP_RESPONSE_LIBRARY_EXCEPTION == ret.reply_type &&
 					AMQP_STATUS_UNEXPECTED_STATE == ret.library_error) {
 				if (AMQP_STATUS_OK != amqp_simple_wait_frame(conn, &frame)) {
@@ -94,22 +97,22 @@ static void run(amqp_connection_state_t conn)
 						case AMQP_BASIC_ACK_METHOD:
 							/* if we've turned publisher confirms on, and we've published a message
 							 * here is a message being confirmed
-	       */
+							 */
 
 							break;
 						case AMQP_BASIC_RETURN_METHOD:
 							/* if a published message couldn't be routed and the mandatory flag was set
 							 * this is what would be returned. The message then needs to be read.
-	       */
+							 */
 							{
-		      amqp_message_t message;
-		      ret = amqp_read_message(conn, frame.channel, &message, 0);
-		      if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
-			      return;
-		      }
+								amqp_message_t message;
+								ret = amqp_read_message(conn, frame.channel, &message, 0);
+								if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
+									return;
+								}
 
-		      amqp_destroy_message(&message);
-	      }
+								amqp_destroy_message(&message);
+							}
 
 							break;
 
@@ -120,7 +123,7 @@ static void run(amqp_connection_state_t conn)
 							 * In this case you would need to open another channel redeclare any queues
 							 * that were declared auto-delete, and restart any consumers that were attached
 							 * to the previous channel
-	       */
+							 */
 							return;
 
 						case AMQP_CONNECTION_CLOSE_METHOD:
@@ -128,7 +131,7 @@ static void run(amqp_connection_state_t conn)
 							 * this can happen by trying to use a channel that isn't open for example.
 							 *
 							 * In this case the whole connection must be restarted.
-	       */
+							 */
 							return;
 
 						default:
@@ -145,6 +148,145 @@ static void run(amqp_connection_state_t conn)
 		received++;
 	}
 }
+const char *amqp_server_exception_string(amqp_rpc_reply_t r)
+{
+	int res;
+	static char s[512];
+
+	switch (r.reply.id) {
+		case AMQP_CONNECTION_CLOSE_METHOD: {
+							amqp_connection_close_t *m
+								 = (amqp_connection_close_t *)r.reply.decoded;
+							res = snprintf(s, sizeof(s), "server connection error %d, message: %.*s",
+									m->reply_code,
+									(int)m->reply_text.len,
+									(char *)m->reply_text.bytes);
+							break;
+						}
+
+		case AMQP_CHANNEL_CLOSE_METHOD: {
+							amqp_channel_close_t *m
+								= (amqp_channel_close_t *)r.reply.decoded;
+							res = snprintf(s, sizeof(s), "server channel error %d, message: %.*s",
+									m->reply_code,
+									(int)m->reply_text.len,
+									(char *)m->reply_text.bytes);
+							break;
+						}
+
+		default:
+						res = snprintf(s, sizeof(s), "unknown server error, method id 0x%08X",
+								r.reply.id);
+						break;
+	}
+
+	return res >= 0 ? s : NULL;
+}
+
+const char *amqp_rpc_reply_string(amqp_rpc_reply_t r)
+{
+	switch (r.reply_type) {
+		case AMQP_RESPONSE_NORMAL:
+			return "normal response";
+
+		case AMQP_RESPONSE_NONE:
+			return "missing RPC reply type";
+
+		case AMQP_RESPONSE_LIBRARY_EXCEPTION:
+			return amqp_error_string2(r.library_error);
+
+		case AMQP_RESPONSE_SERVER_EXCEPTION:
+			return amqp_server_exception_string(r);
+
+		default:
+			abort();
+	}
+}
+
+void die_rpc(amqp_rpc_reply_t r, const char *fmt, ...)
+{
+	va_list ap;
+
+	if (r.reply_type == AMQP_RESPONSE_NORMAL) {
+		return;
+	}
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	fprintf(stderr, ": %s\n", amqp_rpc_reply_string(r));
+	exit(1);
+} 
+void die_errno(int err, const char *fmt, ...)
+{
+	va_list ap;
+
+	if (err == 0) {
+		return;
+	}
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	fprintf(stderr, ": %s\n", strerror(err));
+	exit(1);
+}
+
+void die_amqp_error(int err, const char *fmt, ...)
+{
+	va_list ap;
+
+	if (err >= 0) {
+		return;
+	}
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	fprintf(stderr, ": %s\n", amqp_error_string2(err));
+	exit(1);
+}
+
+
+void write_all(int fd, amqp_bytes_t data)
+{ 
+	while (data.len > 0) {
+		ssize_t res = write(fd, data.bytes, data.len);
+		if (res < 0) {
+			die_errno(errno, "write");
+		}
+
+		data.len -= res;  
+		data.bytes = (char *)data.bytes + res;
+		printf("buf:%s \n",(char*)data.bytes);
+	}
+}   
+
+void copy_body(amqp_connection_state_t conn, int fd)
+{
+	size_t body_remaining;
+	amqp_frame_t frame;
+
+	int res = amqp_simple_wait_frame(conn, &frame);
+	die_amqp_error(res, "waiting for header frame");
+	if (frame.frame_type != AMQP_FRAME_HEADER) {
+		die("expected header, got frame type 0x%X",
+				frame.frame_type);
+	}
+
+	body_remaining = frame.payload.properties.body_size;
+	while (body_remaining) {
+		res = amqp_simple_wait_frame(conn, &frame);
+		die_amqp_error(res, "waiting for body frame");
+		if (frame.frame_type != AMQP_FRAME_BODY) {
+			die("expected body, got frame type 0x%X", frame.frame_type);
+		}
+
+		write_all(fd, frame.payload.body_fragment);
+		body_remaining -= frame.payload.body_fragment.len;
+	}
+}
+
 
 
 int main(/*int argc, char const *const *argv*/)
@@ -156,12 +298,14 @@ int main(/*int argc, char const *const *argv*/)
 	char const *messagebody;
 	amqp_socket_t *socket = NULL;
 	amqp_connection_state_t conn;
+	amqp_rpc_reply_t t;
+	int i = 0;
 
 	/*
-     if (argc < 6) {
-     fprintf(stderr, "Usage: amqp_sendstring host port exchange routingkey messagebody\n");
-     return 1;
-     }*/
+	   if (argc < 6) {
+	   fprintf(stderr, "Usage: amqp_sendstring host port exchange routingkey messagebody\n");
+	   return 1;
+	   }*/
 
 	hostname = "192.168.29.131";
 	port = 5672;
@@ -184,20 +328,24 @@ int main(/*int argc, char const *const *argv*/)
 	die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
 	printf("body: %s \n",messagebody);
 
-	amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
-			0, 0, 0, 0, amqp_empty_table);
-	die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
+	//amqp_exchange_declare(conn, 1, amqp_cstring_bytes(exchange), amqp_cstring_bytes("topic"),
+	//		0, 0, 0, 0, amqp_empty_table);
+	//die_on_amqp_error(amqp_get_rpc_reply(conn), "Declaring exchange");
+	//amqp_bytes_t queuename = amqp_cstring_bytes("linxpq1");
+	//amqp_basic_consume(conn, 1, amqp_cstring_bytes("linxpq2"), amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
+	//die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
+	//run(conn);
 
-	amqp_bytes_t queuename = amqp_cstring_bytes("linxpq1");
-
-	amqp_basic_consume(conn, 1, queuename, amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
-
-	die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
-
-	run(conn);
+	while (1){
+		t = amqp_basic_get(conn, 1, amqp_cstring_bytes("linxpq1"), 1);
+		//die_rpc(t, "basic.get");
+		copy_body(conn, 1);	
+		for(i=0; i<1000000000; ++i);
+	}
 
 	die_on_amqp_error(amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS), "Closing channel");
 	die_on_amqp_error(amqp_connection_close(conn, AMQP_REPLY_SUCCESS), "Closing connection");
 	die_on_error(amqp_destroy_connection(conn), "Ending connection");
 	return 0;
 }
+
