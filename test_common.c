@@ -23,6 +23,7 @@ void test_normal_function_addr();
 void test_static();
 void test_time(); 
 void test_bool_return(); 
+void test_while_0(); 
 //void test_headers_sequence();
 
 int main()
@@ -51,6 +52,7 @@ int main()
     test_static(); 
     test_time(); 
     test_bool_return(); 
+    test_while_0(); 
     return 0;    
 }
 
@@ -397,13 +399,25 @@ void test_time()
     printf("time_t %d year:%2d month:%2d day:%d hour:%d min:%d sec:%d \n",time(0),1900+tm->tm_year,1+tm->tm_mon,tm->tm_mday, tm->tm_hour+8, tm->tm_min,tm->tm_sec);
 }
 
+int test_return_1(){
+    return 100;
+}
 inline bool try_ret_bool(){
     printf("have no return here. \n");
+    return true;
 }
 void test_bool_return()
 {
     ENTER_TEST();
-    int ret = try_ret_bool();
-    printf("bool return value:%d \n",ret); //??? ??? ???
+    test_return_1();
+    printf("bool return value:%d \n",try_ret_bool()); //??? ??? ???
+}
+
+#define run() \
+  do{ printf("can add ; after do...while(0) ? YES \n"); }while(0)
+void test_while_0()
+{
+    ENTER_TEST();
+    run();
 }
 
