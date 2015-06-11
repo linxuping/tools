@@ -10,6 +10,7 @@ using namespace std;
 
 void test_file1(char **pargv);
 void test_file2(char **pargv);
+void test_file_write();
 void test_semaphore();
 void test_parent_pid();
 void test_deamon();
@@ -20,6 +21,7 @@ int main(int argc, char *argv[])
     signal(SIGCHLD, SIG_IGN); // if > 2.4.22, no zombie process
     //test_file1(argv);
     //test_file2(argv);
+    test_file_write();
     test_semaphore();
     test_parent_pid();
     test_deamon();
@@ -44,8 +46,7 @@ void test_file1(char **argv)
 
     char buff[1024] = {'\0'};  
     int len = 0;  
-    while((len = read(fin, buff, sizeof(buff))) > 0)  
-    {  
+    while((len = read(fin, buff, sizeof(buff))) > 0)  {  
         printf(">>> read len:%d buff:%s \n",len,buff);
         write(fout, buff, len);  
     }  
@@ -89,19 +90,19 @@ void test_semaphore()
     pthread_t thrd1;
     pthread_t thrd2;
     sem_init(&sem_a,0,10);
-    ret=pthread_create(&thrd1,NULL,task1,NULL); //创建子线程
-    ret=pthread_create(&thrd2,NULL,task1,NULL); //创建子线程
-    pthread_join(thrd1,NULL); //等待子线程结束
-    pthread_join(thrd2,NULL); //等待子线程结束
+    ret=pthread_create(&thrd1,NULL,task1,NULL); //麓麓陆篓脳脫脧脽鲁脤
+    ret=pthread_create(&thrd2,NULL,task1,NULL); //麓麓陆篓脳脫脧脽鲁脤
+    pthread_join(thrd1,NULL); //碌脠麓媒脳脫脧脽鲁脤陆谩脢酶
+    pthread_join(thrd2,NULL); //碌脠麓媒脳脫脧脽鲁脤陆谩脢酶
 }
 void *task1(void*)
 {
     int sval = 0;
-    sem_wait(&sem_a); //持有信号量
+    sem_wait(&sem_a); //鲁脰脫脨脨脜潞脜脕驴
     //sleep(5); //do_nothing
     sem_getvalue(&sem_a,&sval);
     printf("sem value = %d\n",sval);
-    sem_post(&sem_a); //释放信号量
+    sem_post(&sem_a); //脢脥路脜脨脜潞脜脕驴
 } 
 
 void test_parent_pid()
@@ -134,3 +135,31 @@ void test_fork_zombie()
         sleep(1);
 }
 
+#include <string.h>
+#include <stdlib.h>
+void test_file_write()
+{
+    //姝ｇ‘鍐檖id鏂囦欢
+    {
+	    int pfile = open("master.pid", O_WRONLY|O_CREAT|O_TRUNC, 0700);
+	    write(pfile, "123456", strlen("123456"));
+	    close(pfile);
+    }
+    {
+	    int pfile = open("master.pid", O_WRONLY|O_CREAT|O_TRUNC, 0700);
+	    write(pfile, "88", strlen("88"));
+	    close(pfile);
+    }
+    //閿欒鍐檖id鏂囦欢
+    {
+	    int pfile = open("master.pid2", O_WRONLY|O_CREAT, 0700);
+	    write(pfile, "123456", strlen("123456"));
+	    close(pfile);
+    }
+    {
+	    int pfile = open("master.pid2", O_WRONLY|O_CREAT, 0700);
+	    write(pfile, "88", strlen("88"));
+	    close(pfile);
+    }
+    printf("it must be 88 !");
+}
