@@ -14,6 +14,7 @@ void test_strcmp();
 void test_loopmove();
 void test_substr();
 void test_unicode(); //中文-char* 和 wchar_t*的差别
+void test_snprintf();
 
 int main()
 {
@@ -28,6 +29,7 @@ int main()
     test_loopmove();
     test_substr();
     test_unicode(); //中文-char* 和 wchar_t*的差别
+    test_snprintf();
     return 0;    
 }
 
@@ -243,5 +245,15 @@ void test_unicode() //中文-char* 和 wchar_t*的差别
     wchar_t *wbuf = L"中文";
     printf("中文 char* size:%d \n",strlen(buf)*sizeof(char));
     printf("中文 wchar_t* size:%d \n",wcslen(wbuf)*sizeof(wchar_t));
+}
+
+//The  functions  snprintf()  and  vsnprintf() write at most size bytes (including the terminating null byte ('\0')) to str.
+void test_snprintf()
+{
+    ENTER_TEST();
+    char *buf = "123456789";
+    char buf2[4];
+    snprintf(buf2, 4, buf);
+    printf("snprintf: %s\n",buf2);
 }
 
