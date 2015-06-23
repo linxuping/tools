@@ -24,6 +24,7 @@ void test_static();
 void test_time(); 
 void test_bool_return(); 
 void test_while_0(); 
+void test_max_define(); 
 //void test_headers_sequence();
 
 int main()
@@ -53,6 +54,7 @@ int main()
     test_time(); 
     test_bool_return(); 
     test_while_0(); 
+    test_max_define(); 
     return 0;    
 }
 
@@ -419,5 +421,16 @@ void test_while_0()
 {
     ENTER_TEST();
     run();
+}
+
+#include <limits.h>
+#define MY_INT_MAX (~0U)
+void test_max_define()
+{
+    ENTER_TEST();
+    printf("int max:%u \n",INT_MAX);
+    printf("unsigned int max:%u \n",UINT_MAX);
+    printf("unsigned int max mine:%u \n",MY_INT_MAX);
+    printf("~0    %%d:%d   %%u:%u \n",~0,~0);
 }
 
