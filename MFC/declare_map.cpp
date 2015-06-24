@@ -28,7 +28,7 @@ struct AFX_MSGMAP
 };
 
 #define DECLARE_MESSAGE_MAP() \
-protected: \
+public: \
 	static const AFX_MSGMAP* PASCAL GetThisMessageMap(); \
 	virtual const AFX_MSGMAP* GetMessageMap() const; \
 
@@ -55,7 +55,7 @@ protected: \
 
 #define WM_COMMAND                      0x0111
 #define CN_COMMAND              0               // void ()
-#define ID_HELP                         0xE146      // first attempt for F1
+#define ID_HELP                         0xE146      // first attempt for F1  =57670
 typedef unsigned short      WORD;
 enum AfxSig
 {
@@ -68,45 +68,19 @@ enum AfxSig
 		static_cast<AFX_PMSG> (memberFxn) },
 		// ON_COMMAND(id, OnBar) is the same as
 		//   ON_CONTROL(0, id, OnBar) or ON_BN_CLICKED(0, id, OnBar)
+#define ON_COMMAND_END() \
+	{ 0, 0, (WORD)10, (WORD)0, AfxSig_end, 0 },
 
 class AFX_NOVTABLE CCmdTarget{
 	DECLARE_MESSAGE_MAP()
 };
-AFX_MSGMAP_ENTRY CCmdTarget::_messageEntries[]=
-{
-   {0,0,10,0,AfxSig_end,0},
-   {0,0,0,0,AfxSig_end,0}
+BEGIN_MESSAGE_MAP(CCmdTarget, CCmdTarget)
+	ON_COMMAND_END()
+END_MESSAGE_MAP()
+
+
+class base: public CCmdTarget{
 };
-AFX_MSGMAP CCmdTarget::messageMap=
-    {NULL,CCmdTarget::_messageEntries};
-AFX_MSGMAP*CCmdTarget::GetMessageMap()const
-{
-    return &CCmdTarget::messageMap;
-}
-
-
-#define BEGIN_MESSAGE_MAP(theClass, baseClass) \
-	const AFX_MSGMAP* theClass::GetMessageMap() const \
-		{ return GetThisMessageMap(); } \
-	const AFX_MSGMAP* PASCAL theClass::GetThisMessageMap() \
-	{ \
-		typedef theClass ThisClass;						   \
-		typedef baseClass TheBaseClass;					   \
-		static const AFX_MSGMAP_ENTRY _messageEntries[] =  \
-		{
-
-#define END_MESSAGE_MAP() \
-		{0, 0, 0, 0, AfxSig_end, (AFX_PMSG)0 } \
-	}; \
-		static const AFX_MSGMAP messageMap = \
-		{ &TheBaseClass::GetThisMessageMap, &_messageEntries[0] }; \
-		return &messageMap; \
-	}
-
-
-
-
-class base: public CCmdTarget{};
 class derived: public base{
 	DECLARE_MESSAGE_MAP()
 };
@@ -120,8 +94,17 @@ BEGIN_MESSAGE_MAP(derived, base)
 	ON_COMMAND(ID_HELP, &myapp::OnHelp)
 END_MESSAGE_MAP()
 
+//dissect.
 int main()
 {
+	derived* pd = new derived();
+	const AFX_MSGMAP* pmap = pd->GetMessageMap();
+	const AFX_MSGMAP_ENTRY* pentry = pmap->lpEntries;
+	printf("pmap:%p \n",pmap);
+	printf("pentry:%p %u \n",pentry, pentry[0].nID);
+	printf("pentry:%p %u \n",pentry, pentry[1].nID);
+	delete pd;
 	return 0;
 }
+
 
