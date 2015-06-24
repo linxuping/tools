@@ -61,6 +61,7 @@ enum AfxSig
 {
 	AfxSig_end = 0,     // [marks end of message map]
 	AfxSigCmd_v,				// void ()
+	AfxSigCmd_vi,				// void (int)
 };
 
 #define ON_COMMAND(id, memberFxn) \
