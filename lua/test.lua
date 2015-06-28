@@ -119,6 +119,19 @@ table.remove(fruits)
 print("移除后最后一个元素为 ",fruits[4])
 table.sort(fruits)
 
+print("+-------------- meta ---------------+")
+mytable = setmetatable({key1 = "value1"}, { 
+	__index = { key1="key1", key2="metatablevalue" } ,
+	__tostring = function(mytable)
+		for k,v in pairs(mytable) do
+			print("item: ",k,v)
+		end
+    return "元素 len: " .. #mytable
+  end
+} 
+)
+print(mytable.key1,mytable.key2)
+print(mytable)
 
 print("+-------------- module ---------------+")
 local m = require("mymodule")
