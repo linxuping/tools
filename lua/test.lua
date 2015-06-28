@@ -83,6 +83,51 @@ date = 2; month = 1; year = 2014
 print( string.format("日期格式化 %02d/%02d/%03d", date, month, year))
 print( string.rep("xyz",3) )
 
+arr = {3,4,5}
+for i=0, 2 do
+	print(arr[i], arr.i) --Lua 索引值是以 1 为起始  no  arr.i
+end
+for i=-2, 2 do
+	arr[i] = i*2
+end
+for i=-2, 2 do
+	print(arr[i])
+end
 
+function square(iteratorMaxCount,currentNumber)
+   print("args: ",iteratorMaxCount,currentNumber)
+   if currentNumber<iteratorMaxCount
+   then
+      currentNumber = currentNumber+1
+   return currentNumber, currentNumber*currentNumber
+   end
+end
+
+for i,n in square,3,0
+do
+   print(i,n)
+end
+
+fruits = {"banana","orange","apple"}
+print("连接后的字符串 ",table.concat(fruits))
+print("连接后的字符串 ",table.concat(fruits,", "))
+print("连接后的字符串 ",table.concat(fruits,", ", 2,3))
+table.insert(fruits,2,"grapes")
+print("索引为 2 的元素为 ",fruits[2])
+print("最后一个元素为 ",fruits[4])
+table.remove(fruits)
+print("移除后最后一个元素为 ",fruits[4])
+table.sort(fruits)
+
+
+print("+-------------- module ---------------+")
+local m = require("mymodule")
+print(m.constant)
+m.func1()
+
+print("+-------------- io ---------------+")
+io.input("mymodule.lua")  
+t=io.read(6)  --io.read("*line")  --io.read("*all")  
+io.write(t, '\n')  ------输出整个 hello.lua 文件的内容到 stdin
 
 
