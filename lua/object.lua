@@ -7,14 +7,16 @@ end
 print(Rectangle)
 Rectangle:print_this()
 
+
 --test new methods.  
 function Rectangle:new (o, length, breadth)
 	o = o or {}
 	setmetatable(o, self)
 	self.__index = self
-	self.area = 2
-	self.length = 3
-	self.breadth = 4
+	self.area = 111
+	self.length = length
+	self.breadth = breadth
+	self.baseelem = 1000000001
 	return o
 end
 function Rectangle:getArea()
@@ -22,6 +24,7 @@ function Rectangle:getArea()
 end
 obj=Rectangle:new(nil, 10, 20)
 print(obj:getArea(), obj.length)
+
 
 --test: derive method
 Derived=Rectangle:new(nil, 10, 20)
@@ -32,9 +35,12 @@ function Derived:new (o, length,breadth)
 	return o
 end
 function Derived:print_this()
-	print("Derived:print_this do.")
+	print("Derived:print_this doing ...")
 end
+--lua本身没有类功能，它的类功能是通过元表来实现的。类的函数调用通过obj:function方式。
 d=Derived:new(nil, 100, 200)
 d:print_this()
+d.print_this(d) -- : and . are diff
+print(d.baseelem) -- find parent's __index and check.
 
 
