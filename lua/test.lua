@@ -119,26 +119,52 @@ table.remove(fruits)
 print("移除后最后一个元素为 ",fruits[4])
 table.sort(fruits)
 
-print("+-------------- meta ---------------+")
+print("\n+-------------- table len ---------------+")
+tbl = {[1] = "a", [2] = "b", [3] = "c", [26] = "z", ["fun"]="x"}
+for k,v in pairs(tbl) do
+	print("tbl item: ", k,v)
+end
+print("tbl 长度 ????  ", #tbl) -- 因为26和之前的数字不连续, 所以不算在数组部分内 !!!
+--print("tbl 长度   ", table.getn(tbl)) 
+--a = { [f(1)] = g; "x", "y"; x = 1, f(x), [30] = 23; 45 }
+
+
+print("\n+-------------- string ---------------+") --http://www.cnblogs.com/whiteyun/archive/2009/08/10/1543139.html
+tbl = {"alpha", "beta", "gamma"}
+print(table.concat(tbl, ":"))
+print(table.concat(tbl, nil, 1, 2))
+print(table.concat(tbl, "\n", 2, 3))
+table.insert(tbl, 3, "zeta")
+print(table.concat(tbl, ", ") )
+table.sort(tbl)
+--table.sort(guild, sortLevelNameAsc)
+
+print("\n+--------------- table ---------------+")
+temp = 2
+tab = {[temp] = 1, 11}
+temp = 1
+print(tab[temp])
+
+print("\n+-------------- metatable ---------------+")
 mytable = setmetatable({key1 = "value1"}, { 
 	__index = { key1="key1", key2="metatablevalue" } ,
 	__tostring = function(mytable)
 		for k,v in pairs(mytable) do
 			print("item: ",k,v)
 		end
-    return "元素 len: " .. #mytable
-  end
+		return "元素 len: " .. #mytable
+	end
 } 
 )
 print(mytable.key1,mytable.key2)
-print(mytable)
+print(mytable, #mytable)
 
-print("+-------------- module ---------------+")
+print("\n+-------------- module ---------------+")
 local m = require("mymodule")
 print(m.constant)
 m.func1()
 
-print("+-------------- io ---------------+")
+print("\n+-------------- io ---------------+")
 io.input("mymodule.lua")  
 t=io.read(6)  --io.read("*line")  --io.read("*all")  
 io.write(t, '\n')  ------输出整个 hello.lua 文件的内容到 stdin
