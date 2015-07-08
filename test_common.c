@@ -377,8 +377,24 @@ void test_static()
     printf("static value: s_val:%d s_val:%d 所以全局和局部静态变量可以重名 \n",::s_val, s_val);
     //1.
     for (int i=0; i<10; ++i){
+        static int tmp = i*10; //only iniitialize once.
+        printf("tmp static tmp:%d should be:%d addr:%p \n",tmp,i*10,(int*)&tmp); //tmp:0 addr:0x804c140  http://blog.csdn.net/henhen2002/article/details/4602031
+    }
+		for (int i=0; i<10; ++i){
         static int tmp = i*10;
-        printf("tmp static tmp:%d addr:%p \n",tmp,(int*)&tmp); //tmp:0 addr:0x804c140  http://blog.csdn.net/henhen2002/article/details/4602031
+				tmp += 1;    //tmp will not be 0 never.
+        printf("tmp static tmp:%d addr:%p (tmp will not be 0 never)\n",tmp,(int*)&tmp); 
+    }
+		for (int i=0; i<10; ++i){
+        static int tmp = i*10+5;
+        printf("tmp static tmp:%d addr:%p (tmp=0 later)\n",tmp,(int*)&tmp); 
+				tmp == 0;    //tmp will be treated as uninitialized.
+    }
+		for (int i=0; i<10; ++i){  //http://blog.csdn.net/xiaowall/article/details/7763214   ???
+        static int tmp = i*10+5;
+        printf("tmp static tmp:%d addr:%p (*(&tmp++)=0 later)\n",tmp,(int*)&tmp); 
+				int *pt = &tmp;
+				*(++pt) = 0; 
     }
     //2.
     {
