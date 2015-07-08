@@ -122,9 +122,13 @@ table.sort(fruits)
 print("\n+-------------- table len ---------------+")
 tbl = {[1] = "a", [2] = "b", [3] = "c", [26] = "z", ["fun"]="x"}
 for k,v in pairs(tbl) do
-	print("tbl item: ", k,v)
+	print("tbl item(pairs): ", k,v)
 end
 print("tbl 长度 ????  ", #tbl) -- 因为26和之前的数字不连续, 所以不算在数组部分内 !!!
+
+for k,v in ipairs(tbl) do
+	print("tbl item(ipairs, if nil will break): ", k,v)
+end
 --print("tbl 长度   ", table.getn(tbl)) 
 --a = { [f(1)] = g; "x", "y"; x = 1, f(x), [30] = 23; 45 }
 
@@ -162,7 +166,16 @@ print(mytable, #mytable)
 print("\n+-------------- module ---------------+")
 local m = require("mymodule")
 print(m.constant)
-m.func1()
+opts = {ip="localhost"}
+ret = m.init( opts )
+print("init: ", ret, ret.key1, ret.ip)
+
+print("\n+-------------- module2 ---------------+")
+--local m = require("mymodule2")
+--opts = { buf = "my.buf" }
+--sender = gen_sender(opts)
+--print("sender: ", sender, sender.buf)
+--sender:send()
 
 print("\n+-------------- io ---------------+")
 io.input("mymodule.lua")  
