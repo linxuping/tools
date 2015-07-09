@@ -50,10 +50,10 @@ int main()
 void test_obj_assign()
 {
     ENTER_TEST();
-    printf("%s => test 'Base b=derived' \n",__FUNCTION__);
+    printf("after assign, must be base's run method !!!  \n");
     Derived de;
     Base be = de; //vptr直接覆盖，还是operator=会再更新be的vptr ? 和c++模型里面讲的对照
-    de.run();
+    be.run();
     //Derived de2 = static_cast<Derived>(be);
     //de2.run();
 }
