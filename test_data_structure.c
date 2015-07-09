@@ -62,7 +62,11 @@ void delete_link_node_new(LNode** head, PCompare pfun)
 	   cur = &((*cur)->next);
 	}
 }
-void delete_link_node_new2(LNode** head, PCompare pfun)
+
+/*
+ * refer to http://coolshell.cn/articles/8990.html
+ */
+void delete_link_node_by_LinusTorvalds(LNode** head, PCompare pfun)
 {//change the *pt
     for (LNode **curr=head; *curr; ){
 	    LNode *entry = *curr;
@@ -87,7 +91,7 @@ void test_delete_link_node()
     delete_link_node_old(&head, compare);
     print_lnode(&head);
 
-    printf("try new method... ...");
+    printf("Ready for LinusTorvalds's method... ...\n");
     LNode n30(3,NULL);
     LNode n20(2,&n30);
     LNode n10(1,&n20);
@@ -96,7 +100,8 @@ void test_delete_link_node()
 
     LNode *ht = &head0;
     LNode **pt = &ht;
-    delete_link_node_new2(pt, compare);
+    printf("try LinusTorvalds's method... ...\n");
+    delete_link_node_by_LinusTorvalds(pt, compare);
     //delete_link_node_new(&(&head0), compare);//error: lvalue required as unary ¿&¿ operand
     print_lnode(&head0);
 
