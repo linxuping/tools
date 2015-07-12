@@ -26,7 +26,7 @@ class HashRing(object):
             key = self.gen_key('%s:%s' % (node, i))
             self.ring[key] = node
             self._sorted_keys.append(key)
-	    print '+insert: ',i,key
+	    #print '+insert: ',i,key
 
         self._sorted_keys.sort()
 
@@ -35,6 +35,7 @@ class HashRing(object):
         """
         for i in xrange(0, self.replicas):
             key = self.gen_key('%s:%s' % (node, i))
+            print "+ ", '%s:%s' % (node, i), key
             del self.ring[key]
             self._sorted_keys.remove(key)
 
@@ -92,22 +93,32 @@ class HashRing(object):
         m.update(key)
         return long(m.hexdigest(), 16)
 
-
+def print_ring(desc):
+    print "\nstart [%s]. "%desc
+    for k,v in ring.ring.items():
+        print " ",k,v
+    print "end. \n"
 
 
 memcache_servers = ['192.168.0.1:11212',
                     '192.168.0.2:11212']
 
 ring = HashRing(memcache_servers)
+print_ring("before add")
 ring.add_node('192.168.0.3:11212')
+print_ring("after add")
+
 server = ring.get_node('my_key')
 print '+try get server: ',server
 server = ring.get_node('my_key2')
 print '+try get server: ',server
 server = ring.get_node('my_key3')
 print '+try get server: ',server
+#print '\n+before remove node: \n','\n'.join( [str(x) for x in ring.ring.keys()] )
+print_ring("before remove")
 ring.remove_node('192.168.0.2:11212')
-print '+after remove node: ',ring.ring
+print_ring("after remove")
+#print '\n+after remove node: \n','\n'.join( [str(x) for x in ring.ring.keys()] )
 
 
 
