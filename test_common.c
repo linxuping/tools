@@ -13,7 +13,6 @@ void test_addressing();
 void test_typedef();
 void test_define();
 void test_string();
-void test_struct();
 void test_pointer_len();
 void test_ascii();
 void test_if();
@@ -25,6 +24,8 @@ void test_time();
 void test_bool_return(); 
 void test_while_0(); 
 void test_max_define(); 
+void test_struct();
+void test_array();
 //void test_headers_sequence();
 
 int main()
@@ -41,7 +42,6 @@ int main()
     test_typedef();
     test_define();
     test_string();
-    test_struct();
     test_pointer_len();
     test_ascii();
     test_if();
@@ -55,6 +55,8 @@ int main()
     test_bool_return(); 
     test_while_0(); 
     test_max_define(); 
+    test_struct();
+    test_array();
     return 0;    
 }
 
@@ -251,11 +253,32 @@ struct STest1{
     int m;
     char buf[0];
 };
+struct STest11{
+    int m;
+    char* buf;
+};
+struct STest2{
+    int i;
+		float f;
+		int j;
+		struct STest11 *pst1;
+};
 void test_struct()
 {
     ENTER_TEST();
     struct STest1 st1;
-    printf("%s st1 size:%d, addr:%p, buf:%p \n", __FUNCTION__,sizeof(struct STest1),(int*)&st1,(int*)( (&st1)->buf ));
+    printf("%s st1 size(sh be 4):%d, addr:%p, buf:%p \n", __FUNCTION__,sizeof(struct STest1),(int*)&st1,(int*)( (&st1)->buf ));
+		struct STest2 st2 = { 1,2,3 };
+		st2.pst1->buf;
+    printf("st2={1,2,3} st2 %d %f %d %p \n", st2.i, st2.f, st2.j, &(st2.pst1->buf));
+		//
+		struct STest1 *pst1 = NULL;
+		printf("&s = %x \n", &pst1->m);
+		//printf("&s = %x \n", pst1->m);
+		printf("&c = %x \n", &pst1->buf);
+		struct STest11 *pst2 = NULL;
+		printf("&s = %x \n", &pst2->m);
+		printf("&c = %x \n", &pst2->buf);
 }
 
 void test_pointer_len() //指针大小保存在哪里？
@@ -444,9 +467,17 @@ void test_while_0()
 void test_max_define()
 {
     ENTER_TEST();
-    printf("int max:%u \n",INT_MAX);
+    printf("int max:%d \n",INT_MAX);
+    printf("int max:%d, %x \n",~0,~0); //FFFF FFFF
     printf("unsigned int max:%u \n",UINT_MAX);
     printf("unsigned int max mine:%u \n",MY_INT_MAX);
     printf("~0    %%d:%d   %%u:%u \n",~0,~0);
+}
+
+void test_array()
+{
+    ENTER_TEST();
+		int a[3] = { 1,2,3 };
+		printf("a:%p &a:%p &a[0]:%p \n", a,&a,&a[0]);
 }
 
