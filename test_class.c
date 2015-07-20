@@ -2,6 +2,9 @@
 #include<limits.h>
 #include "common.h"
 
+/*
+ * test area
+ */
 void test_operator_overlap();
 void test_structor_virtual();
 void test_class_mem_fun_ptr();
@@ -14,6 +17,10 @@ void test_nullptr_visit_memfun();
 void test_assignment_or_copy();
 void test_initilize_list_seq();
 void test_private_inheritance();
+class class_test_static;
+/*
+ * test area end.
+ */
 
 int main()
 {
@@ -36,6 +43,7 @@ int main()
     test_class_method_hide_solved2();
     //
     test_private_inheritance();
+		//
 }
 
 
@@ -321,5 +329,13 @@ void test_private_inheritance()
     de.run2(); 
     //Base4 *pt = &de; //error: ‘Base4’ is an inaccessible base of ‘Derived4’
 }
+
+class class_test_static
+{
+	void fun_non_static(){ fun_static(); }
+	static void fun_static(){ 
+		fun_non_static(); //cannot call member function ‘void class_test_static::fun_non_static()’ without object.  在类的非静态成员不存在的时候类的静态成员就已经存在了，访问一个内存中不存在的东西当然会出错
+	} 
+};
 
 
