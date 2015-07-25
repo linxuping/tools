@@ -4,7 +4,8 @@
 #include <assert.h>
 #include "common.h"
 
-void test_base();
+void test_base1();
+void test_base2();
 
 void test_strcpy();
 void test_strlen();
@@ -34,7 +35,8 @@ int main()
 	test_substr();
 	test_unicode(); //中文-char* 和 wchar_t*的差别
 	test_snprintf();
-	test_base();
+	test_base1();
+	test_base2();
 	return 0;    
 }
 
@@ -42,7 +44,7 @@ int main()
 /*
  *http://www.cnblogs.com/alaigle/archive/2012/05/24/2516062.html
  */
-void test_base()
+void test_base1()
 {
 	ENTER_TEST();
 	char* str = "127.0.0.1";
@@ -68,12 +70,20 @@ void test_base()
 	//printf("stricmp: %s==%s: %d \n",buf01,buf02,strcmpi(buf01,buf02));
 
 	printf("strncmp: '0.0': %d \n", strncmp(str+4, "0.0", 3));
+	printf("strcasecmp: abc==ABC? %d \n", strcasecmp("abc", "AbC"));
 	char *tmp = strpbrk(str, "789");
 	printf("strpbrk: '0.0': %c %p-%p\n", *tmp, str, tmp);
 
 	//strnset
 	//strsep   todo...
 	//strtok   todo...
+	printf("strspn: 27:%d \n", strspn(str, "27"));
+	printf("strspn: 127:%d \n", strspn(str, "127"));
+	printf("strspn: 0.1:%d \n", strspn(str, "0.1"));
+
+	printf("strcspn: 27:%d \n", strcspn(str, "27"));
+	printf("strcspn: 127:%d \n", strcspn(str, "127"));
+	printf("strcspn: 0.1:%d \n", strcspn(str, "0.1"));
 
 	//http://blog.chinaunix.net/uid-26284412-id-3189214.html
 	char buf[100]="123:asdfasd:2342342:liman:host:34234:hello";
@@ -88,6 +98,18 @@ void test_base()
 	printf("%d-%d-%d-%d \n",a,b,c,d);
 
 }
+
+#include <ctype.h>
+void test_base2()
+{
+	ENTER_TEST();
+	printf("isalpha: a:%d \n", isalpha('a'));
+	printf("isalpha: *:%d \n", isalpha('*'));
+	printf("isupper: a:%d \n", isupper('a'));
+	printf("islower: a:%d \n", islower('a'));
+	printf("islower: *:%d \n", islower('*'));
+}
+
 
 char* strcpy_1(char* desc, const char* orig) //score here
 {
