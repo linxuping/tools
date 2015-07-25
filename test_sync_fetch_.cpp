@@ -9,7 +9,7 @@ int main()
 {
 	int val=0, val2=10;
 	printf("init:0  val:%d val2:%d\n",val,val2);
-	__sync_add_and_fetch(&val ,1);
+	__sync_add_and_fetch(&val ,1); //used for atomic counting.
 	printf("add:1  %d\n",val);
 	__sync_sub_and_fetch(&val ,1);
 	printf("sub:0  %d\n",val);
