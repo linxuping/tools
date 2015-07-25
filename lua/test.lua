@@ -3,7 +3,7 @@
 comment 
 multiple
 --]]
-print("Hello from ".._VERSION)
+print("lua version: ".._VERSION)
 
 --Lua中有8个基本类型分别为：nil、boolean、number、string、userdata、function、thread和table
 print(b, type(b))
@@ -68,7 +68,7 @@ end
 a=10
 print(a^3)
 
-print( string.gsub("aaaaaa","a","b",3) )
+print( "string.gsub: ", string.gsub("aaaaaa","a","b",3) )
 a = string.find("aaa abc abcd","abc",3)
 print( a,type(a) )
 print( string.format("format:%d ", 8) )
@@ -76,12 +76,12 @@ print( string.char(97,98,99) )
 print( string.byte("ABCD", 4) )
 print( "ascii, A and a :", string.byte("ABCDZ"), string.byte("abcdz") )
 print( "ascii, Z and z :", string.byte("ABCDZ",-1), string.byte("abcdz",-1) )
-print( string.len("ABCDefg") )
+print( "string.len", string.len("ABCDefg") )
 print( "find: ", string.find("abcdefg", "cde") )
 print( "find: ", string.find("abcdefg", "cdm") )
 date = 2; month = 1; year = 2014
 print( string.format("日期格式化 %02d/%02d/%03d", date, month, year))
-print( string.rep("xyz",3) )
+print( "string.rep ", string.rep("xyz",3) )
 
 arr = {3,4,5}
 for i=0, 2 do
