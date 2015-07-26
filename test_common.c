@@ -26,6 +26,7 @@ void test_while_0();
 void test_max_define(); 
 void test_struct();
 void test_array();
+void test_bit();
 //void test_headers_sequence();
 
 int main()
@@ -57,6 +58,7 @@ int main()
     test_max_define(); 
     test_struct();
     test_array();
+    test_bit();
     return 0;    
 }
 
@@ -481,3 +483,11 @@ void test_array()
 		printf("a:%p &a:%p &a[0]:%p \n", a,&a,&a[0]);
 }
 
+void test_bit()
+{
+	ENTER_TEST();
+	int m = 10; //1010
+	printf("10&2: %d \n",m&2);
+	printf("10&4: %d \n",m&4);
+
+}
