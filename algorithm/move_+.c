@@ -8,7 +8,7 @@ void move(char* str)
 {
 	int start=0, count=0;
 	int len = strlen(str);
-	for (int i=0; i<len-1; ++i){
+	for (int i=0; i<len; ++i){
 		if (str[i] != '+'){
 			if (count == 0)
 				start = i;
@@ -24,7 +24,7 @@ void move(char* str)
 
 int main()
 {
-	char str[] = "+A++B+CD+E+FGH";
+	char str[] = "+A++B+CD+E+FGH++";
 	printf("from: %s \n",str);
 	move(str);
 	printf("to: %s \n",str);
