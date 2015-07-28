@@ -85,6 +85,9 @@ void test_base1()
 	printf("strcspn: 127:%d \n", strcspn(str, "127"));
 	printf("strcspn: 0.1:%d \n", strcspn(str, "0.1"));
 
+	char tmp2[16];
+	//printf("sscanf ret:%d \n", sscanf("abc123abc","%d",tmp2));
+	printf("sscanf ret:%d \n", sscanf("123456abc","%[^a-z]",tmp2));
 	//http://blog.chinaunix.net/uid-26284412-id-3189214.html
 	char buf[100]="123:asdfasd:2342342:liman:host:34234:hello";
 	char user[20]="";
@@ -96,6 +99,18 @@ void test_base1()
 	int a,b,c,d;
 	sscanf("127.0.0.1", "%d.%d.%d.%d", &a,&b,&c,&d); //not a,b,c,d
 	printf("%d-%d-%d-%d \n",a,b,c,d);
+
+	char s[]="Goldenx Global View";
+	char dest[20];
+	char *p;
+	p=(char *)memccpy(dest,s,'x',strlen(s));
+	if(p)
+	{
+	   *p='\0'; // MUST Do This
+	   printf("Char found: %s.\n",dest);
+	}
+	else
+	   printf("Char not found.\n");
 
 }
 
