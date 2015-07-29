@@ -2,6 +2,9 @@
 #include "test.h"
 #include "test.h" //multiple
 
+void test_main_before();
+void test_main_end();
+
 void test_domain();
 void test_swap();
 void test_class_obj();
