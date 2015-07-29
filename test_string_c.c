@@ -100,17 +100,30 @@ void test_base1()
 	sscanf("127.0.0.1", "%d.%d.%d.%d", &a,&b,&c,&d); //not a,b,c,d
 	printf("%d-%d-%d-%d \n",a,b,c,d);
 
-	char s[]="Goldenx Global View";
-	char dest[20];
-	char *p;
-	p=(char *)memccpy(dest,s,'x',strlen(s));
-	if(p)
-	{
-	   *p='\0'; // MUST Do This
-	   printf("Char found: %s.\n",dest);
+	{//memccpy
+		char s[]="Goldenx Global View";
+		char dest[20];
+		char *p;
+		p=(char *)memccpy(dest,s,'x',strlen(s));
+		if(p)
+		{
+		   *p='\0'; // MUST Do This
+		   printf("Char found: %s.\n",dest);
+		}
+		else
+		   printf("Char not found.\n");
 	}
-	else
-	   printf("Char not found.\n");
+
+	{//strtok
+		char ip[50] = "192.168.0.8";
+		char f[] = ".";
+		char *a, *b, *c, *d;
+		a = strtok(ip, f);
+		b = strtok(NULL, f);
+		c = strtok(NULL, f);
+		d = strtok(NULL, f);
+		printf("[%s][%s][%s][%s]\n", a, b, c, d);
+	}
 
 }
 
