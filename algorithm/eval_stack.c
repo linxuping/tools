@@ -1,5 +1,7 @@
 /*
  * https://www.chenlq.net/books/c-mate/learn-the-c-language-how-to-write-a-more-advanced-calculator-how-to-calculate-the-value-of-a-string-representation-formula-the-use-of-stack-stack-according-to-the-operator-precedence-method.html
+ * case: 2+3*(4-2)/6
+ * 先从栈撤出来计算，再入栈 
  */
 #include <stdio.h>
 #include <iostream>
@@ -8,6 +10,7 @@
 #include <stack>  // 栈容器
  
 using namespace std;
+
  
 // 返回两个操作符之间的优先级关系
 char cmp(char a, char b)     
