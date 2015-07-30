@@ -1,9 +1,10 @@
+#include <stdlib.h>
 #include "common.h"
 #include "test.h"
 #include "test.h" //multiple
 
 void test_main_before();
-void test_main_end();
+void test_main_after();
 
 void test_domain();
 void test_swap();
@@ -34,6 +35,7 @@ void test_bit();
 
 int main()
 {
+		atexit(test_main_after);
     printf("%s %d %s %s \n",__FILE__, __LINE__, __DATE__, __TIME__);
     test_domain();
     test_swap();
@@ -494,3 +496,14 @@ void test_bit()
 	printf("10&4: %d \n",m&4);
 
 }
+
+void test_main_before()
+{
+	printf("before main ---->>>>\n");
+}
+
+void test_main_after()
+{
+	printf("\nafter main call %s\n\n",__FUNCTION__);
+}
+
