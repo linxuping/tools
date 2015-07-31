@@ -3,6 +3,7 @@ void test_obj_assign();
 void test_vptr_vbtr();
 void test_multi_inheritance();
 void test_vir_inheritance_complex();
+void test_special_arg_init();
 
 typedef void(*PVFUN)(void); //普通指针类型访问 类成员变量 ?
 
@@ -43,6 +44,7 @@ int main()
     //
     test_vir_inheritance_complex();
     //
+    test_special_arg_init();
     return 0;
 }
 
@@ -220,4 +222,23 @@ void test_this()
 {
 }
 
+class A0{
+public:
+    virtual void Fun(int number = 10){
+        printf("A0::Fun with number %d \n",number);
+    }
+};
+class B0: public A0{
+public:
+    virtual void Fun(int number = 20){
+        printf("B0::Fun with number %d \n",number);
+    }
+};
+//虚函数动态绑定=>B，非A，缺省实参是编译时候确定的=>10，非20 
+void test_special_arg_init()
+{
+    B0 b;
+    A0 &a = b;
+    a.Fun();
+}
 
