@@ -19,6 +19,7 @@ void test_loopmove();
 void test_substr();
 void test_unicode(); //中文-char* 和 wchar_t*的差别
 void test_snprintf();
+void test_0();
 
 int main()
 {
@@ -35,6 +36,7 @@ int main()
 	test_substr();
 	test_unicode(); //中文-char* 和 wchar_t*的差别
 	test_snprintf();
+	test_0();
 	test_base1();
 	test_base2();
 	return 0;    
@@ -360,5 +362,15 @@ void test_snprintf()
 	char buf2[4];
 	snprintf(buf2, 4, buf);
 	printf("snprintf: %s\n",buf2);
+}
+
+void test_0()
+{
+	ENTER_TEST();
+	//char str[] = "hello";
+	char *str = "hello";
+	printf("before: %s \n",str);
+	str[0] = 0;
+	printf("before: %s \n",str);
 }
 
