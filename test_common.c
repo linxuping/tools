@@ -3,8 +3,16 @@
 #include "test.h"
 #include "test.h" //multiple
 
-void test_main_before();
-void test_main_after();
+__attribute__((constructor))
+void test_main_before(){
+	printf("__attribute__((constructor))\n");
+}
+__attribute__((destructor))
+void test_main_after(){
+	printf("__attribute__((destructor))\n");
+}
+
+void test_main_after1();
 
 void test_domain();
 void test_swap();
@@ -13,6 +21,7 @@ void test_operator();
 void test_switch();
 void test_type();
 void test_union_pointer_to_int();
+void test_union_size();
 void test_addressing();
 void test_typedef();
 void test_define();
@@ -35,7 +44,7 @@ void test_bit();
 
 int main()
 {
-		atexit(test_main_after);
+		atexit(test_main_after1);
     printf("%s %d %s %s \n",__FILE__, __LINE__, __DATE__, __TIME__);
     test_domain();
     test_swap();
@@ -44,6 +53,7 @@ int main()
     test_switch();
     test_type();
     test_union_pointer_to_int();
+    test_union_size();
     test_addressing();
     test_typedef();
     test_define();
@@ -175,6 +185,17 @@ void test_union_pointer_to_int()//test union的共享属性
     t1.pt = &m;
     printf("%s UTest.pt:%p, UTest.val:%d, UTest.c:%c \n",__FUNCTION__,t1.pt,t1.val,t1.c);
     printf("%s UTest size:%d \n",__FUNCTION__, sizeof(UTest));
+}
+union U2{
+	char buf[10];
+	double d;
+};
+#include<string>
+using namespace std;
+void test_union_size()
+{
+    ENTER_TEST();
+		printf("sizeof U2:%d string size:%d  \n",sizeof(U2),sizeof(std::string));
 }
 
 class Base{};
@@ -497,12 +518,7 @@ void test_bit()
 
 }
 
-void test_main_before()
-{
-	printf("before main ---->>>>\n");
-}
-
-void test_main_after()
+void test_main_after1()
 {
 	printf("\nafter main call %s\n\n",__FUNCTION__);
 }
