@@ -9,6 +9,7 @@ char* get_memory_stack();
 void get_memory_temp_pt(char *buf);
 void test_mmap_address();
 void test_stack_overflow();
+void test_stack_4m_overornot();
 
 int main()
 {
@@ -32,6 +33,8 @@ int main()
     test_mmap_address();
     //
     test_stack_overflow();
+    
+    test_stack_4m_overornot();
     return 0;   
 }
 
@@ -105,5 +108,19 @@ void test_stack_overflow()
 	printf("take care: %s,  %s \n",buf1, buf2);
 }
 
-
+void test_stack_4m_overornot()
+{
+	ENTER_TEST();
+	char buf0[4*1024*1024*2];
+	char buf[4*1024*1024];
+	char buf2[4*1024*1024];
+	char buf3[4*1024*1024];
+	char buf4[4*1024*1024];
+	char buf5[4*1024*1024];
+	char buf6[4*1024*1024];
+	char buf7[4*1024*1024];
+	char buf8[4*1024*1024];
+	char buf9[4*1024*1024];
+	char buf10[4*1024*1024];
+}
 
