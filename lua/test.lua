@@ -182,4 +182,16 @@ io.input("mymodule.lua")
 t=io.read(6)  --io.read("*line")  --io.read("*all")  
 io.write(t, '\n')  ------输出整个 hello.lua 文件的内容到 stdin
 
+print("\n+-------------- __index ---------------+")
+obj={}
+function obj:ftest()
+	print("ftest... ...", self.__index)
+end
+obj:ftest()
+
+print("\n+---------------------------- __G for -----------------------------+")
+for k,v in pairs(_G) do print(k,v) end
+for i=100,95,-5 do print(i) end
+
+
 
