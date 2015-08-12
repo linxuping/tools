@@ -379,7 +379,10 @@ void test_0()
 void test_printf()
 {
 	ENTER_TEST();
-	printf("%s, %S\n","char",L"wchar");
+	printf("printf: %s, %S\n","char",L"wchar");
+	char buf[255];
+	sprintf(buf, "sprintf: %s, %S" ,"char",L"wchar");
+	printf(buf);
 }
 
 
