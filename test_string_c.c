@@ -20,6 +20,7 @@ void test_substr();
 void test_unicode(); //中文-char* 和 wchar_t*的差别
 void test_snprintf();
 void test_0();
+void test_printf();
 
 int main()
 {
@@ -36,9 +37,10 @@ int main()
 	test_substr();
 	test_unicode(); //中文-char* 和 wchar_t*的差别
 	test_snprintf();
-	test_0();
 	test_base1();
 	test_base2();
+	test_printf();
+	test_0();
 	return 0;    
 }
 
@@ -373,4 +375,11 @@ void test_0()
 	str[0] = 0;
 	printf("before: %s \n",str);
 }
+
+void test_printf()
+{
+	ENTER_TEST();
+	printf("%s, %S\n","char",L"wchar");
+}
+
 
