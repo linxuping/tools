@@ -297,6 +297,8 @@ void test_strstr()
 	pch = strstr (str,"simple");
 	strncpy (pch,"sample",6);
 	puts (str);
+
+	printf("check addr: orig:%p find ret:%p \n",str,strstr(str,"This"));
 }
 char* loopmove(char* orig, int steps) //error 
 {
