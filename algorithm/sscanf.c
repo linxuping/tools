@@ -46,6 +46,14 @@ int main()
 	sscanf("123#linxp@126.com&", "%*[^#]#%[^&]", buf);  
 	printf("%s\n",buf);
 
+	//ntoa 16777343 - 127.0.0.1
+	char _buf[24];
+	sprintf(_buf, "%08x", 16777343);
+	printf("str:%s \n",_buf);
+	sscanf(_buf, "%02x%02x%02x%02x", &a,&b,&c,&d); 
+	printf("d:%d \n",d);
+	printf("ntoa: %d.%d.%d.%d\n", d,c,b,a);
+
 	//字符串"127.0.0.2"转成atol的结果
 	sscanf("127.0.0.2", "%d.%d.%d.%d",&a,&b,&c,&d);  
 	printf("%d.%d.%d.%d\n", a,b,c,d);
