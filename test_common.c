@@ -40,6 +40,7 @@ void test_max_define();
 void test_struct();
 void test_array();
 void test_bit();
+void test_array_size();
 //void test_headers_sequence();
 
 int main()
@@ -74,6 +75,7 @@ int main()
     test_struct();
     test_array();
     test_bit();
+    test_array_size();
     return 0;    
 }
 
@@ -522,4 +524,14 @@ void test_main_after1()
 {
 	printf("\nafter main call %s\n\n",__FUNCTION__);
 }
+
+void test_array_size()
+{
+	ENTER_TEST();
+	int a[] = {1,2,3};
+	const char* b[] = {"aaaaaaaaaaaaaaaa","b","cd"};
+	printf("size: %d %d\n",sizeof(a),sizeof(b));
+
+}
+
 
