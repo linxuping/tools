@@ -41,6 +41,7 @@ void test_struct();
 void test_array();
 void test_bit();
 void test_array_size();
+void test_placement_new();
 //void test_headers_sequence();
 
 int main()
@@ -76,6 +77,7 @@ int main()
     test_array();
     test_bit();
     test_array_size();
+    test_placement_new();
     return 0;    
 }
 
@@ -534,4 +536,21 @@ void test_array_size()
 
 }
 
+class CTest1{
+public:
+	CTest1(){ printf("CTest1::constructor \n"); }
+	void run2() { printf("CTest1::run. . . \n"); }
+};
+void test_placement_new()
+{
+	ENTER_TEST();
+	CTest1 *pt0 = new (nothrow) CTest1;
+
+	void* ptr = malloc(48);
+	CTest1 *pt = new(ptr)CTest1();
+	printf("ptr:%p pt:%p \n",ptr,pt);
+	pt->run2();
+	//CTest1 *pt = (CTest1*)ptr;
+	//pt->CTest1::CTest1();
+}
 
