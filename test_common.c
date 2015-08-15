@@ -530,7 +530,7 @@ void test_array_size()
 	ENTER_TEST();
 	int a[] = {1,2,3};
 	const char* b[] = {"aaaaaaaaaaaaaaaa","b","cd"};
-	printf("size: %d %d\n",sizeof(a),sizeof(b));
+	printf("size: int a[]:%d char*[]%d %p %p\n",sizeof(a),sizeof(b),b,b[0]);
 
 }
 
