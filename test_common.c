@@ -42,6 +42,7 @@ void test_array();
 void test_bit();
 void test_array_size();
 void test_placement_new();
+void test_enum();
 //void test_headers_sequence();
 
 int main()
@@ -78,6 +79,7 @@ int main()
     test_bit();
     test_array_size();
     test_placement_new();
+    test_enum();
     return 0;    
 }
 
@@ -552,5 +554,20 @@ void test_placement_new()
 	pt->run2();
 	//CTest1 *pt = (CTest1*)ptr;
 	//pt->CTest1::CTest1();
+}
+
+typedef enum{
+	t1 = -2,
+	t2 = 0,
+	t3 = 100,
+	t4 = 10000
+}tenum;
+void test_enum()
+{
+	ENTER_TEST();
+	printf("t1:-2: %d \n",t1);
+	printf("t2:0: %d \n",t2);
+	printf("t3:100: %d \n",t3);
+	printf("t4:10000: %d \n",t4);
 }
 
