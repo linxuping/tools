@@ -43,6 +43,7 @@ void test_bit();
 void test_array_size();
 void test_placement_new();
 void test_enum();
+void test_binary_or();
 //void test_headers_sequence();
 
 int main()
@@ -80,6 +81,7 @@ int main()
     test_array_size();
     test_placement_new();
     test_enum();
+    test_binary_or();
     return 0;    
 }
 
@@ -569,5 +571,19 @@ void test_enum()
 	printf("t2:0: %d \n",t2);
 	printf("t3:100: %d \n",t3);
 	printf("t4:10000: %d \n",t4);
+}
+
+void test_binary_or()
+{
+	ENTER_TEST();
+	char buf[] = "hello,world";
+	printf("buf:%s \n",buf);
+	for(int i=1; i<8; ++i)
+		buf[i] = buf[i]^0xb;
+	printf("buf:%s \n",buf);
+	for(int i=1; i<8; ++i)
+		buf[i] = buf[i]^0xb;
+	printf("buf:%s \n",buf);
+
 }
 
