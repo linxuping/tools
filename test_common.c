@@ -43,8 +43,12 @@ void test_bit();
 void test_array_size();
 void test_placement_new();
 void test_enum();
+//用异或加密和解密
 void test_binary_or();
+//定义为goto的part会不会被顺序执行
 void test_go();
+//在delete后指针值还是原值吗
+void test_after_delete();
 //void test_headers_sequence();
 
 int main()
@@ -84,6 +88,7 @@ int main()
     test_enum();
     test_binary_or();
     test_go();
+    test_after_delete();
     return 0;    
 }
 
@@ -604,4 +609,15 @@ __my_go:
 __my_go2:
 	printf("go part 2. . .\n");
 }
+
+void test_after_delete()
+{
+	ENTER_TEST();
+	int *pt = new int;
+	*pt = 12;
+	printf("new int:%p %d\n",pt,*(int*)pt);
+	delete pt;
+	printf("del int:%p %d\n",pt,*(int*)pt);
+}
+
 
