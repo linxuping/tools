@@ -44,6 +44,7 @@ void test_array_size();
 void test_placement_new();
 void test_enum();
 void test_binary_or();
+void test_go();
 //void test_headers_sequence();
 
 int main()
@@ -82,6 +83,7 @@ int main()
     test_placement_new();
     test_enum();
     test_binary_or();
+    test_go();
     return 0;    
 }
 
@@ -585,5 +587,21 @@ void test_binary_or()
 		buf[i] = buf[i]^0xb;
 	printf("buf:%s \n",buf);
 
+}
+
+void test_go()
+{
+	ENTER_TEST();
+
+	{
+		goto __my_go;
+		printf("after __my_go . . .\n");
+	}
+
+__my_go:
+	printf("go part. . .\n");
+
+__my_go2:
+	printf("go part 2. . .\n");
 }
 
