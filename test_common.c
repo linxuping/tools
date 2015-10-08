@@ -49,6 +49,8 @@ void test_binary_or();
 void test_go();
 //在delete后指针值还是原值吗
 void test_after_delete();
+//测试volatile int & int 差别
+void test_volatile_arg();
 //void test_headers_sequence();
 
 int main()
@@ -89,6 +91,7 @@ int main()
     test_binary_or();
     test_go();
     test_after_delete();
+    test_volatile_arg();
     return 0;    
 }
 
@@ -618,6 +621,18 @@ void test_after_delete()
 	printf("new int:%p %d\n",pt,*(int*)pt);
 	delete pt;
 	printf("del int:%p %d\n",pt,*(int*)pt);
+}
+
+void print1(int k){
+	printf("show int: %d \n", k);
+}
+void test_volatile_arg()
+{
+	ENTER_TEST();
+	volatile int m = 2;
+	int n = 3;
+	print1(m);
+	print1(n);
 }
 
 
