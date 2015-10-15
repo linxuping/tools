@@ -51,6 +51,8 @@ void test_go();
 void test_after_delete();
 //测试volatile int & int 差别
 void test_volatile_arg();
+//测试指针数组的打印
+void test_pointers_array_visit();
 //void test_headers_sequence();
 
 int main()
@@ -92,6 +94,7 @@ int main()
     test_go();
     test_after_delete();
     test_volatile_arg();
+		test_pointers_array_visit();
     return 0;    
 }
 
@@ -633,6 +636,23 @@ void test_volatile_arg()
 	int n = 3;
 	print1(m);
 	print1(n);
+}
+
+#define APP_TYPE_ITEM_COUNT 96
+#define STR1 "abc"
+#define STR2 "999999"
+const char g_app_types[][APP_TYPE_ITEM_COUNT] = {
+ STR1,
+ STR2
+};
+void test_pointers_array_visit()
+{
+	ENTER_TEST();
+	int len = sizeof(g_app_types)/APP_TYPE_ITEM_COUNT;
+	printf("len:%d \n", len );
+	for (int i=0; i<len; ++i){
+		printf(" %d %s \n",i,g_app_types[i]);
+	}
 }
 
 
