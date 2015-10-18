@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <vector>
 #include <iostream>
 #include <algorithm> //heap algorithms
@@ -5,11 +6,29 @@
 using namespace std;
 
 void test_heap();
+void test_vector_erase();
 
 int main()
 {
     test_heap();
+    test_vector_erase();
     return 0;
+}
+
+
+void test_vector_erase()
+{
+		vector<int> vecs;
+		vecs.push_back(1);
+		vecs.push_back(2);
+		vecs.push_back(3);
+		vecs.push_back(4);
+		vecs.push_back(5);
+		vector<int>::iterator pos = find(vecs.begin(), vecs.end(), 3);
+		vecs.erase(pos);
+		for (pos=vecs.begin(); pos!=vecs.end(); ++pos){
+			printf("vector item: %d\n",*pos);
+		}
 }
 
 void test_heap()
