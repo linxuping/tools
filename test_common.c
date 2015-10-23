@@ -157,7 +157,7 @@ void test_operator()
     //(a++) = 0; 
     //_test1() = a;
     int b=1,c=2;
-    a = b+++c;
+    a = b+++c; // 1 + 3 = 4? -->  1+2=3 1->2
     printf("%s a=b+++c a:%d b:%d c:%d \n",__FUNCTION__,a,b,c); //operator priority
 }
 
@@ -165,6 +165,7 @@ class Test2{
 public:
     int operator()(){ return 1; }
 };
+//return value can switch also.
 void test_switch()
 {
     ENTER_TEST();
@@ -219,6 +220,7 @@ void test_union_size()
 		printf("sizeof U2:%d string size:%d  \n",sizeof(U2),sizeof(std::string));
 }
 
+//review goon here -------------->
 class Base{};
 class Derived:public Base{
     int m;
@@ -598,6 +600,15 @@ void test_binary_or()
 		buf[i] = buf[i]^0xb;
 	printf("buf:%s \n",buf);
 
+	int a=12,b=23;
+	a ^= b; //swap
+	b ^= a;
+	a ^= b;
+	printf("swap(a,b) a=%d, b=%d \n", a,b);
+	a ^= a; //swap
+	a ^= a;
+	a ^= a;
+	printf("swap(a,a) a=%d, b=%d take care !!!!!!!  \n", a,b);
 }
 
 void test_go()
