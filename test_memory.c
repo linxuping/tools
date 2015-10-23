@@ -10,6 +10,8 @@ void get_memory_temp_pt(char *buf);
 void test_mmap_address();
 void test_stack_overflow();
 void test_stack_4m_overornot();
+void test_free_cookie();
+void test_edata();
 
 int main()
 {
@@ -34,7 +36,10 @@ int main()
     //
     test_stack_overflow();
     
-    test_stack_4m_overornot();
+    //test_stack_4m_overornot();
+
+		test_free_cookie();
+		test_edata();
     return 0;   
 }
 
@@ -55,7 +60,7 @@ char* get_memory_heap()
 {
 	ENTER_TEST();
 	char *p = (char*)malloc(sizeof(char)*4);
-	//*p = "123"; //错误：从类型‘const char*’到类型‘char’的转换无效 [-fpermissive] ??
+	//*p = "123"; //麓铆脦贸拢潞麓脫脌脿脨脥隆庐const char*隆炉碌陆脌脿脨脥隆庐char隆炉碌脛脳陋禄禄脦脼脨搂 [-fpermissive] ??
 	strcpy(p,"123");
 	return p;
 }
@@ -71,8 +76,8 @@ char* get_memory_stack()
 void get_memory_temp_pt(char *buf)
 {
 	ENTER_TEST();
-	//buf 指针变量的拷贝
-	buf = (char*)malloc(sizeof(char)*4); //在一个副本指针上做malloc，而不是原指针
+	//buf 脰赂脮毛卤盲脕驴碌脛驴陆卤麓
+	buf = (char*)malloc(sizeof(char)*4); //脭脷脪禄赂枚赂卤卤戮脰赂脮毛脡脧脳枚malloc拢卢露酶虏禄脢脟脭颅脰赂脮毛
 	strcpy(buf,"789");
 	printf("%s, buf:%s %p \n",__FUNCTION__,buf,&buf);
 }
@@ -123,4 +128,48 @@ void test_stack_4m_overornot()
 	char buf9[4*1024*1024];
 	char buf10[4*1024*1024];
 }
+
+//whereis the memory cookie ???????????????????????????????????
+void test_free_cookie()
+{
+	ENTER_TEST();
+	char* buf = (char*)malloc(5); //0x0101
+	strcpy(buf, "abcd");
+	free(buf);
+	buf = new char(5);
+	delete buf;
+}
+
+#define ALLOC_SIZE 1024
+//from high to low: 1024*1024
+//from low to high: 1024
+void test_edata()
+{
+	ENTER_TEST();
+	for (int i=0; i<10; ++i){
+		char* buf = (char*)malloc(ALLOC_SIZE);
+		printf("buf:%p \n",buf);
+		free(buf);
+	}
+
+	char* buf1 = (char*)malloc(ALLOC_SIZE);
+	printf("alloc: %p\n",buf1);
+	char* buf2 = (char*)malloc(ALLOC_SIZE);
+	char* buf3 = (char*)malloc(ALLOC_SIZE);
+	char* buf4 = (char*)malloc(ALLOC_SIZE);
+	free(buf2);
+	free(buf3);
+	char* buf5 = (char*)malloc(ALLOC_SIZE);
+	free(buf4);
+	printf("alloc: %p\n",buf4);
+
+	char* buf6 = (char*)malloc(ALLOC_SIZE);
+	char* buf7 = (char*)malloc(ALLOC_SIZE);
+	char* buf8 = (char*)malloc(ALLOC_SIZE);
+	free(buf6);
+	free(buf7);
+	printf("alloc: %p\n",buf8);
+
+}
+
 
