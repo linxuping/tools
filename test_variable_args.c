@@ -124,3 +124,9 @@ void printf2(const char* fmt,...)
     va_end(ap);//½«apÖÃÎªNULL
 }
 
+void printf3(const char* fmt, ...)
+{
+	//fmt %d-int %s-void* %c-char ....   
+	//%d p+ sizeof(type) to get args.
+}
+
