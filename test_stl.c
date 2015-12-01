@@ -119,6 +119,8 @@ void test_map_sort(){
 	mymap[5] = 5;
 	for(map<int,int>::iterator pos=mymap.begin();pos!=mymap.end();++pos)
 		printf("0:  %d %d\n",pos->first,pos->second);
+	mymap[3] = 33;
+	printf("the first elem: %d:%d\n",mymap.begin()->first,mymap.begin()->second);
 	
 }
 
