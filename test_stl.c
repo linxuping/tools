@@ -7,11 +7,14 @@ using namespace std;
 
 void test_heap();
 void test_vector_erase();
+//验证map的key值按小到大排序
+void test_map_sort();
 
 int main()
 {
     test_heap();
     test_vector_erase();
+    test_map_sort();
     return 0;
 }
 
@@ -104,4 +107,18 @@ void test_heap()
     //me.比如求前n小，我们比较当前元素与最大堆里的最大元素，如果它小于最大元素，则应该替换那个最大元 素。---- 将最大的都踢了，肯定剩下最小的了
 }
 
+#include<map>
+void test_map_sort(){
+	map<int,int> mymap;
+	mymap[12] = 12;
+	mymap[3] = 3;
+	mymap[23] = 23;
+	mymap[4] = 4;
+	for(map<int,int>::iterator pos=mymap.begin();pos!=mymap.end();++pos)
+		printf("0:  %d %d\n",pos->first,pos->second);
+	mymap[5] = 5;
+	for(map<int,int>::iterator pos=mymap.begin();pos!=mymap.end();++pos)
+		printf("0:  %d %d\n",pos->first,pos->second);
+	
+}
 
