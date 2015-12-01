@@ -102,6 +102,10 @@ void test_heap()
     push_heap(ivec.begin(),ivec.end());
     copy(ivec.begin(),ivec.end(),ostream_iterator<int>(cout," ")); 
     cout<<endl;
+    //最小堆
+    make_heap(ivec.begin(),ivec.end(),greater<int>());
+    copy(ivec.begin(),ivec.end(),ostream_iterator<int>(cout," ")); 
+    cout<<endl;
     //实践证明，push_heap并不会导致前100个是最大的，如何搞？ 对于算法题
     //最大堆求前n小，最小堆求前n大。方法，比如求前n小，我们比较当前元素与最大堆里的最大元素，如果它小于最大元素，则应该替换那个最大元 素。这样最后得到的n个元素就是最小的n个。适合大数据量，求前n小，n的大小比较小的情况，这样可以扫描一遍即可得到所有的前n元素，效率很高。
     //me.比如求前n小，我们比较当前元素与最大堆里的最大元素，如果它小于最大元素，则应该替换那个最大元 素。---- 将最大的都踢了，肯定剩下最小的了
