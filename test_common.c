@@ -2,6 +2,7 @@
 #include "common.h"
 #include "test.h"
 #include "test.h" //multiple
+#pragma pack(push,1)
 
 __attribute__((constructor))
 void test_main_before(){
@@ -54,6 +55,8 @@ void test_volatile_arg();
 //测试指针数组的打印
 void test_pointers_array_visit();
 //void test_headers_sequence();
+void test_format();
+
 
 int main()
 {
@@ -95,6 +98,7 @@ int main()
     test_after_delete();
     test_volatile_arg();
 		test_pointers_array_visit();
+		test_format();
     return 0;    
 }
 
@@ -157,7 +161,7 @@ void test_operator()
     //(a++) = 0; 
     //_test1() = a;
     int b=1,c=2;
-    a = b+++c;
+    a = b+++c; // 1 + 3 = 4? -->  1+2=3 1->2
     printf("%s a=b+++c a:%d b:%d c:%d \n",__FUNCTION__,a,b,c); //operator priority
 }
 
@@ -165,6 +169,7 @@ class Test2{
 public:
     int operator()(){ return 1; }
 };
+//return value can switch also.
 void test_switch()
 {
     ENTER_TEST();
@@ -219,6 +224,7 @@ void test_union_size()
 		printf("sizeof U2:%d string size:%d  \n",sizeof(U2),sizeof(std::string));
 }
 
+//review goon here -------------->
 class Base{};
 class Derived:public Base{
     int m;
@@ -598,6 +604,15 @@ void test_binary_or()
 		buf[i] = buf[i]^0xb;
 	printf("buf:%s \n",buf);
 
+	int a=12,b=23;
+	a ^= b; //swap
+	b ^= a;
+	a ^= b;
+	printf("swap(a,b) a=%d, b=%d \n", a,b);
+	a ^= a; //swap
+	a ^= a;
+	a ^= a;
+	printf("swap(a,a) a=%d, b=%d take care !!!!!!!  \n", a,b);
 }
 
 void test_go()
@@ -656,3 +671,16 @@ void test_pointers_array_visit()
 }
 
 
+void test_format()
+{
+	ENTER_TEST();
+	int len = sizeof(g_app_types)/APP_TYPE_ITEM_COUNT;
+	unsigned int a = 15;
+	printf("12:   %u %2X %2X %4X\n",a,a,1073741826,1073741826);
+	char *buf = "12432423423444444444444";
+	printf("%.2048s \n",buf);
+	printf("%2048s \n",buf);
+	printf(".8:  %.8s \n",buf);
+	printf("8:   %8s \n",buf);
+
+} 
