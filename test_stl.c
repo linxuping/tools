@@ -7,11 +7,13 @@ using namespace std;
 
 void test_heap();
 void test_vector_erase();
+void test_vector_capacity();
 
 int main()
 {
     test_heap();
     test_vector_erase();
+    test_vector_capacity();
     return 0;
 }
 
@@ -105,3 +107,15 @@ void test_heap()
 }
 
 
+void test_vector_capacity()
+{
+	vector<int> vec;
+	int old_cap=0;
+	for(int i=0; i<50; ++i){
+		if (old_cap != vec.capacity()){
+			old_cap = vec.capacity();
+			printf("capacity: %d\n",old_cap);
+		}
+		vec.push_back(i);
+	}
+}
