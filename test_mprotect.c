@@ -23,7 +23,7 @@ handler(int sig, siginfo_t *si, void *unused)
 main(int argc, char *argv[])
 {
 	char *p;
-	int pagesize;
+	long pagesize;
 	struct sigaction sa;
 
 	sa.sa_flags = SA_SIGINFO;
@@ -32,6 +32,7 @@ main(int argc, char *argv[])
 	if (sigaction(SIGSEGV, &sa, NULL) == -1) handle_error("sigaction");
 
 	pagesize = sysconf(_SC_PAGE_SIZE);
+	printf("pagesize:%ld\n",pagesize); //4096
 	if (pagesize == -1)
 		handle_error("sysconf");
 
