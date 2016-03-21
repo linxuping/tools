@@ -263,19 +263,20 @@ class Test2 {
 public:
     Test2() {}
     ~Test2() {}
-    Test2(const Test2 &) { printf("copy construct\n"); }
-    Test2 &operator=(const Test2 &) { printf(" = operator\n"); return *this; }
+    Test2(const Test2 &) { printf("    copy construct\n"); }
+    Test2 &operator=(const Test2 &) { printf("    = operator\n"); return *this; }
 };
 void test_assignment_or_copy()   //A b(a);和A c = a;都调用的是拷贝构造函数  ？？
 {
     ENTER_TEST();
+    printf("init Test2 a:   \n");
     Test2 a;
-    printf("Test2 b(a) =>   ");
+    printf("testing b(a) =>   \n");
     Test2 b(a);
-    printf("Test2 c=a  => ???????????????? "); 
+    printf("testing c=a  =>   \n"); 
     Test2 c = a;        //为什么A c=a;也调用的是拷贝构造函数呢？其实这种写法只是一种语法糖，是为了兼容C的写法。
     Test2 d;
-    printf("d = a      =>   ");
+    printf("testing d=a  =>   \n");
     d = a;
 }
 
