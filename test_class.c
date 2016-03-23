@@ -264,7 +264,9 @@ public:
     Test2() {}
     ~Test2() {}
     Test2(const Test2 &) { printf("    copy construct\n"); }
+    Test2(int m) { printf("    Test2(int m)\n"); }
     Test2 &operator=(const Test2 &) { printf("    = operator\n"); return *this; }
+    Test2 &operator=(int m) { printf("    Test2 &operator=(int m)\n"); return *this; }
 };
 void test_assignment_or_copy()   //A b(a);和A c = a;都调用的是拷贝构造函数  ？？
 {
@@ -278,6 +280,13 @@ void test_assignment_or_copy()   //A b(a);和A c = a;都调用的是拷贝构造
     Test2 d;
     printf("testing d=a  =>   \n");
     d = a;
+    printf("testing e(1)  =>   \n");
+    Test2 e(1);
+    printf("testing Test2 f = 1  =>   \n");
+    Test2 f = 1;
+    printf("testing g = 1  =>   \n");
+    Test2 g;
+    g = 1;
 }
 
 
@@ -335,7 +344,7 @@ class class_test_static
 {
 	void fun_non_static(){ fun_static(); }
 	static void fun_static(){ 
-		fun_non_static(); //cannot call member function ‘void class_test_static::fun_non_static()’ without object.  在类的非静态成员不存在的时候类的静态成员就已经存在了，访问一个内存中不存在的东西当然会出错
+		;//fun_non_static(); //cannot call member function ‘void class_test_static::fun_non_static()’ without object.  在类的非静态成员不存在的时候类的静态成员就已经存在了，访问一个内存中不存在的东西当然会出错
 	} 
 };
 
