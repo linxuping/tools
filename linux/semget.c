@@ -122,3 +122,7 @@ static int semaphore_v()
     return 1;  
 }  
 
+/*
+g++ semget.c
+./a.out 0 & ./a.out
+*/
