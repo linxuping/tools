@@ -21,6 +21,7 @@ void test_unicode(); //中文-char* 和 wchar_t*的差别
 void test_snprintf();
 void test_0();
 void test_printf();
+void test_format();
 
 int main()
 {
@@ -40,6 +41,7 @@ int main()
 	test_base1();
 	test_base2();
 	test_printf();
+	test_format();
 	test_0();
 	return 0;    
 }
@@ -387,4 +389,10 @@ void test_printf()
 	printf(buf);
 }
 
+void test_format(){
+	ENTER_TEST();
+	char* ss="abcdefghafslakflskafjkjdalkefjjfffffffffffjjjjjjjjjjj";
+	printf(".20s: %.20s \n",ss);
+	printf("20s: %20s \n",ss);
+}
 
