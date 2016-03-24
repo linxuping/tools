@@ -2,6 +2,7 @@ from pymongo import *
 #from pymongo.objectid import ObjectId  
 from gridfs import *
 from pprint import pprint  
+#doc: http://blog.csdn.net/w13770269691/article/details/7187657
   
 conn = MongoClient("192.168.29.163", 27017)
 db = conn.test  
