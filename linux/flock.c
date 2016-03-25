@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
 
 /*
 使用mount命令带“mand”参数来重新挂载根文件系统，如下所示。这将在文件系统级别使能强制锁功能,对于“mandatory.txt”使能Set-Group-ID，同时不使能Group-Execute-Bit.
+对于要打开强制锁功能的文件lock_file，必须打开set-group-ID位，关闭group-execute位。（选择此方法的原因是，当你关闭group-execute时，设置set-group-ID就没有实际的意义了
 # mount -oremount,mand /
 # touch advisory.txt
 # touch mandatory.txt
