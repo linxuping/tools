@@ -531,9 +531,9 @@ void test_max_define()
 
 void test_array()
 {
-    ENTER_TEST();
+		ENTER_TEST();
 		int a[3] = { 1,2,3 };
-		printf("a:%p &a:%p &a[0]:%p \n", a,&a,&a[0]);
+		printf("a:%p &a:%p &a[0]:%p \n", a,&a,&a[0]);  //a is address
 }
 
 void test_bit()
@@ -578,7 +578,9 @@ void test_placement_new()
 }
 
 typedef enum{
+	t0 = -1,
 	t1 = -2,
+	t11,
 	t2 = 0,
 	t3 = 100,
 	t4 = 10000
@@ -586,7 +588,9 @@ typedef enum{
 void test_enum()
 {
 	ENTER_TEST();
+	printf("t0:-1: %d \n",t0);
 	printf("t1:-2: %d \n",t1);
+	printf("t11:-1?: %d \n",t11);
 	printf("t2:0: %d \n",t2);
 	printf("t3:100: %d \n",t3);
 	printf("t4:10000: %d \n",t4);
@@ -676,7 +680,7 @@ void test_format()
 	ENTER_TEST();
 	int len = sizeof(g_app_types)/APP_TYPE_ITEM_COUNT;
 	unsigned int a = 15;
-	printf("12:   %u %2X %2X %4X\n",a,a,1073741826,1073741826);
+	printf("12:   %u %2X %2X %4X %.4x\n",a,a,1073741826,1073741826,1280);
 	char *buf = "12432423423444444444444";
 	printf("%.2048s \n",buf);
 	printf("%2048s \n",buf);
