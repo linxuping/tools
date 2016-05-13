@@ -23,18 +23,17 @@ logging.getLogger('').addHandler(console)
 #version.02
 import logging.config
 
-logging.config.fileConfig("logger.config")
-#logger = logging.getLogger("filef_output")
-logger = logging.getLogger("filef")
+logging.config.fileConfig("modules/logger.config")
+logger = logging.getLogger("filef_output")
+#logger = logging.getLogger("filef")
 
 
 
-
+'''
 #examples.
 logger.debug('This is debug message')
 logger.info('This is info message')
 logger.warning('This is warning message')
 logger.error('This is error message')
-
-
+'''
 

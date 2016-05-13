@@ -3,14 +3,16 @@
 #http://www.linuxidc.com/Linux/2012-10/71527.htm
 import os
 import sys
+import socket
 from ftplib import FTP 
  
-def ftp_up(filename = "20120904.rar"):
+def ftp_up(filename,hostname,port,uname,passwd):
+    socket.setdefaulttimeout(60)    #超时FTP时间设置为60秒
     try:
         ftp=FTP() 
         ftp.set_debuglevel(0)#打开调试级别2，显示详细信息;0为关闭调试信息 
-        ftp.connect('localhost','21')#连接 
-        ftp.login('teiron','123456')#登录，如果匿名登录则用空串代替即可 
+        ftp.connect(hostname,port,10)#连接 
+        ftp.login(uname,passwd)#登录，如果匿名登录则用空串代替即可 
         #print ftp.getwelcome()#显示ftp服务器欢迎信息 
         #ftp.cwd('xxx/xxx/') #选择操作目录 
         bufsize = 1024#设置缓冲块大小 
@@ -20,10 +22,10 @@ def ftp_up(filename = "20120904.rar"):
         file_handler.close() 
         ftp.quit()
     except:
-        print sys.exc_info()
-        return False
-    return True
-
-ret = ftp_up("bb.jpg")
-
+        return False,sys.exc_info()
+    return True,None
+'''
+ret = ftp_up("myftp.py","localhost",'21',"teiron","123456")
+print ret
+'''
 
