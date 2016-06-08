@@ -24,7 +24,7 @@ class RMQ_Manager:
 		self.declare()
 	def declare(self):
 		pass
-	def send(self, msg):
+	def send(self, qname, msg):
 		pass
 	def dispatch(self):
 		pass
@@ -35,19 +35,35 @@ class RMQ_DPManager(RMQ_Manager):
 	def __init__(self, _exchange, _qname):
 		RMQ_Manager.__init__(self, _exchange, _qname)
 	def initconn(self):
-		RMQ_Manager.initconn(self)
+		try:
+			RMQ_Manager.initconn(self)
+		except:
+			mo.logger.error("initconn failed: %s"%str(str(sys.exc_info()) + "; " + str(traceback.format_exc())))
 	def declare(self):
 		self.channel.exchange_declare(exchange=self.exchange,type='topic',durable=True)
 		self.channel.queue_declare(queue=self.qname, durable=True, exclusive=False, auto_delete=False, arguments={"x-max-priority":10})
 		self.channel.queue_bind(exchange=self.exchange, queue=self.qname, routing_key=self.qname)
-	def send(self, msg):
-		self.channel.basic_publish(exchange=self.exchange,routing_key=self.qname,body=msg,
-			properties=pika.BasicProperties(
-			delivery_mode=2,priority=5, # make message persistent
-		))
+	def send(self, qname, msg):
+		for i in xrange(3):
+			try:
+				self.channel.basic_publish(exchange=self.exchange,routing_key=qname,body=msg,
+					properties=pika.BasicProperties(
+					delivery_mode=2,priority=5, # make message persistent
+				))
+				mo.logger.info("Put queue %s: %s"%(qname,msg) )
+				break
+			except:
+				mo.logger.error("Put queue failed: %s"%str(str(sys.exc_info()) + "; " + str(traceback.format_exc())))
+				self.initconn()
+		return True
+	def put_back_queue(self, cont):
+		if cont != None:
+			mo.logger.warning("Put back queue: %s"%cont)
+			self.send(self.qname, cont)
 	def dispatch(self):
 		while 1: #blocked reactor
 			cont = None
+			r = None
 			try:
 				self.declare()
 				r = self.channel.basic_get(queue=self.qname, no_ack=False) #0
@@ -59,15 +75,19 @@ class RMQ_DPManager(RMQ_Manager):
 					self.handler(cont)
 			except:
 				mo.logger.error( str(sys.exc_info()) + "; " + str(traceback.format_exc()) )
-				self.initconn()
-				if cont != None:
-					mo.logger.warning("Put back queue: %s"%cont)
-					self.send(cont)
+				#self.initconn()
+				self.put_back_queue(cont)
+			#finally:
+				#print r.__dict__
+				#if r != None:
+				#	self.channel.basic_ack(r.delivery_tag)  
 			time.sleep(1)
+	def handler_register(self, _handler):
+		self.handler = _handler
 	@staticmethod
 	def register_and_run(_exchange, _qname, _handler):
 		g_rmq_mgr = RMQ_DPManager(_exchange, _qname)
-		g_rmq_mgr.handler = _handler		
+		g_rmq_mgr.handler_register(_handler)		
 		g_rmq_mgr.dispatch()
 
 		
