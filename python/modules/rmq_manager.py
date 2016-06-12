@@ -75,7 +75,7 @@ class RMQ_DPManager(RMQ_Manager):
 					self.handler(cont)
 			except:
 				mo.logger.error( str(sys.exc_info()) + "; " + str(traceback.format_exc()) )
-				#self.initconn()
+				self.initconn()
 				self.put_back_queue(cont)
 			#finally:
 				#print r.__dict__
