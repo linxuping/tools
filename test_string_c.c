@@ -5,7 +5,7 @@
 #include "common.h"
 
 void test_strchr();
-void test_base2();
+void test_isalpha();
 
 void test_strcpy();
 void test_strlen();
@@ -19,8 +19,8 @@ void test_loopmove();
 void test_substr();
 void test_unicode(); //中文-char* 和 wchar_t*的差别
 void test_snprintf();
-void test_0();
-void test_printf();
+void test_write_readonly();
+void test_printf_s_S();
 void test_format();
 
 int main()
@@ -39,10 +39,10 @@ int main()
 	test_unicode(); //中文-char* 和 wchar_t*的差别
 	test_snprintf();
 	test_strchr();
-	test_base2();
-	test_printf();
+	test_isalpha();
+	test_printf_s_S();
 	test_format();
-	test_0();
+	test_write_readonly();
 	return 0;    
 }
 
@@ -128,13 +128,13 @@ void test_strchr()
 		b = strtok(NULL, f);
 		c = strtok(NULL, f);
 		d = strtok(NULL, f);
-		printf("[%s][%s][%s][%s]\n", a, b, c, d);
+		printf("strtok [%s][%s][%s][%s]\n", a, b, c, d);
 	}
 
 }
 
 #include <ctype.h>
-void test_base2()
+void test_isalpha()
 {
 	ENTER_TEST();
 	printf("isalpha: a:%d \n", isalpha('a'));
@@ -370,7 +370,7 @@ void test_snprintf()
 	printf("snprintf: %s\n",buf2);
 }
 
-void test_0()
+void test_write_readonly()
 {
 	ENTER_TEST();
 	//char str[] = "hello";
@@ -380,7 +380,7 @@ void test_0()
 	printf("before: %s \n",str);
 }
 
-void test_printf()
+void test_printf_s_S()
 {
 	ENTER_TEST();
 	printf("printf: %s, %S\n","char",L"wchar");
