@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "common.h"
 
-void test_base1();
+void test_strchr();
 void test_base2();
 
 void test_strcpy();
@@ -38,7 +38,7 @@ int main()
 	test_substr();
 	test_unicode(); //中文-char* 和 wchar_t*的差别
 	test_snprintf();
-	test_base1();
+	test_strchr();
 	test_base2();
 	test_printf();
 	test_format();
@@ -50,7 +50,7 @@ int main()
 /*
  *http://www.cnblogs.com/alaigle/archive/2012/05/24/2516062.html
  */
-void test_base1()
+void test_strchr()
 {
 	ENTER_TEST();
 	char* str = "127.0.0.1";
