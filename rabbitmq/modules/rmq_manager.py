@@ -18,7 +18,7 @@ class RMQ_Manager:
 		self.qname = _qname
 		self.initconn()
 	def initconn(self):
-		credentials = pika.PlainCredentials('tei', 'tei')  #to teiron
+		credentials = pika.PlainCredentials('tei', 'tei')  #to tei
 		connection = pika.BlockingConnection(pika.ConnectionParameters(host='queue.local', credentials=credentials))
 		self.channel = connection.channel() 
 		self.declare()

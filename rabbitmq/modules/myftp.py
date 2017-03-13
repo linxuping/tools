@@ -40,7 +40,7 @@ def ftp_up(filenames,hostname,port,uname,passwd,cwd,handler_fetchname):
         return False,sys.exc_info()
     return True,None
 '''
-ret = ftp_up("myftp.py","localhost",'21',"teiron","123456")
+ret = ftp_up("myftp.py","localhost",'21',"tei","123456")
 print ret
 '''
 
