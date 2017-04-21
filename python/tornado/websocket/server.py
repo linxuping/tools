@@ -79,3 +79,15 @@ if __name__ == "__main__":
     main()  
 
 
+'''
+new client opened
+[I 170421 21:55:10 test:66] got message u'Hello World!'
+[I 170421 21:55:10 test:58] sending message to 1 waiters
+new client opened
+[I 170421 21:55:33 test:66] got message u'Hello World!'
+[I 170421 21:55:33 test:58] sending message to 2 waiters
+[I 170421 21:55:35 test:66] got message u'Hello World!'
+[I 170421 21:55:35 test:58] sending message to 2 waiters
+[I 170421 21:55:36 test:66] got message u'Hello World!'
+[I 170421 21:55:36 test:58] sending message to 2 waiters
+'''
