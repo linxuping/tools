@@ -21,5 +21,8 @@ cursor = mdb.book.find({"corrd": {'$near':{'$geometry':{'type':'Point','coordina
 for doc in cursor:
 	print str(doc['_id'])
 
-_id = '597b0990bcb13d7e3eae4548'
-print mdb.book.find_one({'_id':ObjectId(_id)})
+_id = '597b4700bcb13d64f90c33cb'
+print mdb.book.find({'_id':ObjectId(_id)}).sort([('create_time',pymongo.DESCENDING)])
+print mdb.book.remove({'_id':ObjectId(_id)})
+
+
