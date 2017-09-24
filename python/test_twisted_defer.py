@@ -2,7 +2,7 @@
 from twisted.web.client import getPage
 from twisted.internet import reactor
 import socket
-socket.setdefaulttimeout(2)
+socket.setdefaulttimeout(5)
 
 # ---- getPage ----
 def errorHandler(error):
@@ -39,10 +39,10 @@ def CostTimeWork(x):
     '''
     这是一个耗时的任务
     '''
-    for i in xrange(3):
-        print("cost time:%s\t%s" % (i,x))
-        time.sleep(1)
-    return x
+    for i in xrange(1):
+        time.sleep(3+x)
+    print("cost time:%s\t%s" % (i,x))
+    return '%d_%d'%(i,x)
 
 def PrintData(res):
     '''
@@ -51,23 +51,35 @@ def PrintData(res):
     我这里只是简单打印结果而已
     '''
     print res
-
-def test_busy_cpu():
+#单个耗时非阻塞操作
+def test_busy_cpu_1():
     #将耗时函数 放入另一个线程实行，返回一个deferred对象
-    d = threads.deferToThread(CostTimeWork,"loop")
+    d = threads.deferToThread(CostTimeWork,0)
     #添加回调函数
     d.addCallback(PrintData)
+from twisted.internet import defer
+#多个耗时非阻塞操作
+def test_busy_cpu_n():
+    #twisted:调用deferredlist多线程并发执行任务然后收集结果 http://pako.iteye.com/blog/1073977
+    deferList = []
+    for i in range(3):
+        d = threads.deferToThread(CostTimeWork,i)
+        deferList.append(d)
+    dl = defer.DeferredList(deferList)
+    dl.addBoth(PrintData)
 # ---- threads.defer END ----
 
 
 print 'test cpu block.'
-test_busy_cpu()
+#test_busy_cpu_1()
+test_busy_cpu_n()
 print 'test net block.'
 visit_url('http://test.wekuo.com/api/circle/xptest') #blocking
 print 'test net error.'
 visit_url('http://twistedmatrix.com/does-not-exist')
 print 'test net success.'
 visit_url('http://www.baidu.com/')
+
 
 reactor.run()
 
