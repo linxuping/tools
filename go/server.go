@@ -8,6 +8,11 @@ import (
 
 func main() {
     http.HandleFunc("/", mybase.SayhelloName) //设置访问的路由
+    test.Testfunc()
+    if true {
+        test.Test()
+        return
+    }
     go test.Coroutine1()
     go test.Coroutine2()
     err := http.ListenAndServe(":9090", nil) //设置监听的端口
