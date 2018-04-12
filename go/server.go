@@ -1,5 +1,6 @@
 package main
 import (
+    "fmt"
     "net/http"
     "log"
     "./mybase"
@@ -8,8 +9,19 @@ import (
 
 func main() {
     http.HandleFunc("/", mybase.SayhelloName) //设置访问的路由
-    test.Testfunc()
-    if true {
+
+    funcs := map[string]func(){"testfunc":test.Testfunc}
+    //test.Testfunc() //ok
+    //funcs['testfunc']() //error
+    //funcs[`testfunc`]() //ok
+    funcs["testfunc"]() //test.Testfunc()
+
+    str := `
+    你好!
+    world`
+    fmt.Println(str)
+
+    if false {
         test.Test()
         return
     }
