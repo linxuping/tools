@@ -1,5 +1,6 @@
 C:\Python27\python.exe C:\Users\linxu\Desktop\setup.py py2exe
 
+C:\Python27\Lib\site-packages\requests\utils.py
 DEFAULT_CA_BUNDLE_PATH = certs.where()
 #DEFAULT_CA_BUNDLE_PATH = join(abspath('.'),'cacert.pem')
 
