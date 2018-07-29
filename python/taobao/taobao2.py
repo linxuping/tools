@@ -43,8 +43,8 @@ def auth(username,passwd):
 	headers = {'Content-Type': 'application/json'}
 	request = urllib2.Request(url='http://test.66boy.cn/api/circle/login/xtb', headers=headers, data=json.dumps(data))
 	resp = json.loads(urllib2.urlopen(request).read())
-	print resp['code']
-auth(1,2)
+	return resp['data']
+#auth('lucky01','123456')
 #common END
 
 root = Tk()                     # 创建窗口对象的背景色
@@ -283,11 +283,13 @@ class LoginPage(Frame,object):
     def loginCheck(self):
         name = self.username.get()
         secret = self.password.get()
-        if name=='wangliang' and secret=='123456':
+        data = auth(name,secret)
+        print data
+        if data['status']:
             self.destroy()
-            # MainPage()
+            showMain()
         else:
-            showinfo(title='错误', message='账号或密码错误！')
+            showinfo(title='错误', message=data['reason'])
             # print('账号或密码错误！')
 '''  
 root = Tk()
