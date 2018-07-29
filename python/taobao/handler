@@ -52,4 +52,4 @@
         if encryptData == field4:
             #data valid
             ret,reason = auth(field1,field2,field3)
-        self.write_data({'status':ret, 'reason':reason})
+        self.write_data({'status':ret, 'reason':reason, 'domain':''})
