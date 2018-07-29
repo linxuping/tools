@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+import os
 import time
 import hashlib
 import datetime
@@ -7,6 +8,8 @@ import base64
 from Tkinter import *           # 导入 Tkinter 库
 import Tkinter as tk
 from tkMessageBox import *
+fpath = "c1.conf"
+fdomain = "c2.conf"
 
 #common BEGIN
 #en\decode
@@ -20,7 +23,11 @@ def encrypt(key):
 	return code_prefix()+base64.b64encode(key)
 def decrypt(value):
 	value = value[28:]
-	return base64.b64decode(value)
+	try:
+		return base64.b64decode(value)
+	except:
+		pass
+	return None
 print encrypt('hello')
 print decrypt(encrypt('hello'))
 
@@ -28,6 +35,14 @@ def get_mac():
     import uuid
     mac=uuid.UUID(int = uuid.getnode()).hex[-12:].upper()
     return '%s:%s:%s:%s:%s:%s' % (mac[0:2],mac[2:4],mac[4:6],mac[6:8],mac[8:10],mac[10:])
+	
+def get_domain():
+	if os.path.exists(fdomain):
+		f = open(fdomain,'r')
+		tmp = f.read()
+		f.close()
+		return decrypt(tmp)
+	return 'test.66boy.cn'
 
 def auth(username,passwd):
 	import urllib2
@@ -41,9 +56,14 @@ def auth(username,passwd):
 		'field4': encryptData
 	}
 	headers = {'Content-Type': 'application/json'}
-	request = urllib2.Request(url='http://test.66boy.cn/api/circle/login/xtb', headers=headers, data=json.dumps(data))
+	request = urllib2.Request(url='http://%s/api/circle/login/xtb'%get_domain(), headers=headers, data=json.dumps(data))
 	resp = json.loads(urllib2.urlopen(request).read())
-	return resp['data']
+	data = resp['data']
+	if data['domain']:
+		f = open(fdomain, 'w')
+		f.write(encrypt(data['domain']))
+		f.close()
+	return data
 #auth('lucky01','123456')
 #common END
 
@@ -207,6 +227,8 @@ fm1,entry,text,label = None,None,None,None
 def showMain():
 	global fm1,entry,text,label
 	fm1 = Frame(root)
+	label = Label(fm1, text="请输入商品关键字：")
+	label.pack(side=LEFT)
 	entry = Entry(fm1)
 	entry.pack(side=LEFT)
 	Button(fm1, text='生成', command=helloButton).pack(side=LEFT, padx=10)
@@ -283,11 +305,22 @@ class LoginPage(Frame,object):
     def loginCheck(self):
         name = self.username.get()
         secret = self.password.get()
-        data = auth(name,secret)
+        data = None
+        for i in range(3):
+            try:
+                data = auth(name,secret)
+                break
+            except:
+                time.sleep(i)
+        if not data:
+            return showinfo(title='错误', message='服务器忙！请联系技术人员处理')
         print data
         if data['status']:
             self.destroy()
             showMain()
+            f = open(fpath,'w')
+            f.write(encrypt(get_mac()))
+            f.close()
         else:
             showinfo(title='错误', message=data['reason'])
             # print('账号或密码错误！')
@@ -301,7 +334,18 @@ screenheight = root.winfo_screenheight()
 alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth-width)/2, (screenheight-height)/2)
 root.geometry(alignstr)    # 居中对齐
 '''
-page1 = LoginPage()
 
+if os.path.exists(fpath):
+	f = open(fpath,'r')
+	tmp = f.read()
+	f.close()
+	if decrypt(tmp) == get_mac():
+		showMain()
+	else:
+		LoginPage()
+else:
+	LoginPage()
 
 root.mainloop()                 # 进入消息循环
+
+
