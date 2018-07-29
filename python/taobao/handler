@@ -1,0 +1,55 @@
+    def xtb(self):
+        import base64
+        import hashlib
+        def code_prefix():
+            str = datetime.date.today().strftime('%Y-%m-%d')
+            m1 = hashlib.md5()
+            m1.update(str.encode("utf-8"))
+            token = m1.hexdigest()
+            return base64.b64encode(str)[:8]+token[:20]
+        def encrypt(key):
+            return code_prefix()+base64.b64encode(key)
+        def decrypt(value):
+            value = value[28:]
+            return base64.b64decode(value)
+        def auth(field1,field2,field3):
+            f = open('/home/cdb/backup/items.json', 'r')
+            content = f.read()
+            f.close()
+            items = json.loads(content)
+            if field1 in items:
+                if field2 == items[field1]['field2']:
+                    path = '/home/cdb/backup/items/'+field1
+                    if os.path.exists(path):
+                        f = open(path, 'r')
+                        tmp = f.read().strip(' \r\n')
+                        f.close()
+                        if tmp == field3:
+                            logging.error('[xtb]check OK. %s %s %s'%(field1,field2,field3))
+                            return True,None
+                        else:
+                            logging.error('[xtb]field3 error. %s %s %s'%(field1,field2,field3))
+                            return False,"设备校验失败！请联系技术人员处理"
+                    else:
+                        f = open('/home/cdb/backup/items/'+field1, 'w')
+                        f.write(field3)
+                        f.close()
+                        logging.error('[xtb]add OK. %s %s %s'%(field1,field2,field3))
+                        return True,None
+                else:
+                    logging.error('[xtb]field2 error. %s %s'%(field1,field2))
+                    return False,"密码不正确！"
+            else:
+                logging.error('[xtb]no field1: '+field1)
+                return False,"没有该账户！请联系技术人员获取"
+            return False,"网络错误！请联系技术人员处理"
+
+        data = json.loads(self.request.body)
+        field1,field2,field3,field4 = str(data['field1']),str(data['field2']),str(data['field3']),str(data['field4'])
+        field3 = decrypt(field3)
+        encryptData = encrypt(field1+field2+field3)
+        ret,reason = False,''
+        if encryptData == field4:
+            #data valid
+            ret,reason = auth(field1,field2,field3)
+        self.write_data({'status':ret, 'reason':reason})
