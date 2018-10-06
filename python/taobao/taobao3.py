@@ -33,6 +33,7 @@ import re
 import sys
 from os.path import join,abspath
 requests.utils.DEFAULT_CA_BUNDLE_PATH = 'cacert.pem'
+running = False
 
 f = open('cookies.txt')
 cookies_str = f.read()
@@ -46,9 +47,9 @@ def getHTMLText(url):
     try:  
         headers = {'cookie':cookies_str}
         if not cookies:
-            r=requests.get(url,timeout=3,headers=headers) 
+            r=requests.get(url,timeout=15,headers=headers) 
         else:
-            r=requests.get(url,timeout=3,cookies=cookies) 
+            r=requests.get(url,timeout=15,cookies=cookies) 
         cookies = r.cookies		
         #print(cookies)
         r.raise_for_status()  
@@ -58,12 +59,13 @@ def getHTMLText(url):
         print(sys.exc_info(),traceback.print_exc())
 
 
-        
+fail_count = 0
+
 #对获取页面进行解析  
 def parsePage(index,url):
-    global _ins,cookies,text
+    global _ins,cookies,text,fail_count
     ilt = []
-    for x in range(1):
+    for x in range(2):
         html=getHTMLText(url)  
         try:  
             #在爬取下来的网页中进行查找价格  
@@ -83,7 +85,9 @@ def parsePage(index,url):
             print sys.exc_info()
         if len(ilt) > 0:
             winsound.PlaySound('ALARM8', winsound.SND_ASYNC)
+            fail_count = 0
             break
+        fail_count += 1
     _ins[index] = ilt
 
 
@@ -98,15 +102,17 @@ def printGoodsList(ilt):
         #print(g[2])
         _f.write("https://detail.tmall.com/item.htm?id="+g[2].strip(' \r\n')+"\n")
 
-depth=50
+depth=100
 _in = 0
 _out = 0
 _ins = {}
 
 
 def _run(start_url):
-    global _in,_out
+    global _in,_out,running,fail_count,text
     while _in < depth:
+        if not running:
+            break
         try:
             i = 0
             lock.acquire()
@@ -114,7 +120,11 @@ def _run(start_url):
             _in += 1
             #print i,start_url+'&s='+str(44*i)
             lock.release()
-            parsePage( i,start_url+'&s='+str(44*i) )
+            if fail_count < 20:
+                parsePage( i,start_url+'&s='+str(44*i) ) 
+            else:
+                if _in > depth*0.98:
+                    text.insert(tk.END, "后面爬不到的就快速跳过。 \n")
         except:
             try:
                 lock.release()
@@ -125,13 +135,16 @@ def _run(start_url):
         _out += 1
         print _out
         lock.release()
-        time.sleep(4)
+        if fail_count < 20:
+            time.sleep(4)
 
 _num = 0
 def wait_result():
     infoList=[]
-    global _in,_out,depth,_ins,text,_num
+    global _in,_out,depth,_ins,text,_num,running,fail_count
     while True:
+        if not running:
+            break
         _num += 1
         print _out
         #label['text'] = "进行中... %d/%d"%(_out,depth)
@@ -150,18 +163,20 @@ def wait_result():
     print 'result: ',len(infoList)
     printGoodsList(infoList)
     #label['text'] = "生成完毕！"
-    text.insert(tk.END, "生成完毕！\r\n")
+    text.insert(tk.END, "生成完毕！\r\n" if len(infoList)>0 else "没爬到，重启试下！或者换cookies试下！\r\n")
+    running = False
     #winsound.Beep(300,1000)
-    winsound.PlaySound('ALARM8', winsound.SND_ASYNC)
-    winsound.PlaySound('ALARM8', winsound.SND_ASYNC)
+    winsound.Beep(300, 2000)
     _in = 0
     _out = 0
+    fail_count = 0
     _ins = {}
     _f.close()
 
 
 
 def helloButton():
+    global running
     if _in > 0:
         showwarning('Yes', '有任务正在执行！')
         return
@@ -172,6 +187,7 @@ def helloButton():
     #time.sleep(1)
     label['text'] = "正在生成中，请稍候后。。。"
     time.sleep(1)
+    running = True
     gen(entry.get())
 
 _f = None
@@ -188,7 +204,7 @@ label = Label(root,text = '0%')
 
   
 def gen(goods):
-    global tasks,_out,label
+    global tasks,_out,label,running
     #goods='书包'
     global _f
     _f = open(goods+'.txt', 'w+')
@@ -206,8 +222,8 @@ def gen(goods):
     #        thread.start_new_thread( parsePage, (infoList, url, ) )
     #    except:  
     #        print sys.exc_info()
-    for i in xrange(1):
-        thread.start_new_thread( _run, (start_url, ) )
+    #for i in xrange(1):
+    thread.start_new_thread( _run, (start_url, ) )
     thread.start_new_thread(wait_result,())
     return
     infoList=[]
@@ -229,7 +245,7 @@ def gen(goods):
         infoList.extend(v)
     print 'result: ',len(infoList)
     printGoodsList(infoList)
-    label['text'] = "生成完毕！"
+    label['text'] = "爬取成功！" if len(infoList)>0 else "没爬到，换cookies试下！"
     _f.close()
 
 root.mainloop()                 # 进入消息循环
