@@ -23,6 +23,9 @@ for item in movie:              # 第二个小部件插入数据
 #listb.pack()                    # 将小部件放置到主窗口中
 #listb2.pack()
 
+import socket
+socket.setdefaulttimeout(1800)
+
 import thread
 import threading
 lock = threading.Lock()
@@ -46,10 +49,10 @@ def getHTMLText(url):
     global cookies,cookies_str
     try:  
         headers = {'cookie':cookies_str}
-        if not cookies:
-            r=requests.get(url,timeout=15,headers=headers) 
+        if not cookies or True:
+            r=requests.get(url,timeout=3600,headers=headers) 
         else:
-            r=requests.get(url,timeout=15,cookies=cookies) 
+            r=requests.get(url,timeout=3600,cookies=cookies) 
         cookies = r.cookies		
         #print(cookies)
         r.raise_for_status()  
@@ -65,7 +68,7 @@ fail_count = 0
 def parsePage(index,url):
     global _ins,cookies,text,fail_count
     ilt = []
-    for x in range(2):
+    for x in range(4):
         html=getHTMLText(url)  
         try:  
             #在爬取下来的网页中进行查找价格  
@@ -86,7 +89,9 @@ def parsePage(index,url):
         if len(ilt) > 0:
             winsound.PlaySound('ALARM8', winsound.SND_ASYNC)
             fail_count = 0
+            time.sleep(20)
             break
+        time.sleep(15)
         fail_count += 1
     _ins[index] = ilt
 
