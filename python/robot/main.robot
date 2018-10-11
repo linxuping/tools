@@ -1,8 +1,24 @@
+main.robot
+
+*** Settings ***
+Library     NewLibrary
+Library     Selenium2Library
+Test Setup      get config
+
+*** Variables ***
+${test}     123
+
+*** Keywords ***
+get config
+    log     开始获取配置
+    set suite variable     ${config}       config
+
+*** Test Cases ***
 test
     log     ${config}
     print msg     ss
     Open Browser    https://pub.alimama.com/    chrome
-    sleep    10
+    sleep    15
     Go To    https://pub.alimama.com/promo/search/index.htm?q=纸巾&perPageSize=100
     sleep    5
     : FOR    ${i}    IN RANGE    1    2
@@ -19,7 +35,7 @@ test
     \    log    ${decimal}
     \    log    ${sale_count}
     \    log    ${img}
-    \    Click Link    dom=$('.block-search-box:nth-child(${i}) .box-btn-group a')[0]
+    \    execute javascript    $('.block-search-box:nth-child(${i}) .box-btn-group a')[0].click()
     \    sleep    2
     \    Click Button    dom=$('.dropdown-toggle')[4]
     \    sleep    2
