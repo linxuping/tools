@@ -17,8 +17,10 @@ class MyClass(object):
         #print "args: ",title,quanter,integer,decimal,sale_count,img,code
         title,quanter,integer,decimal,sale_count,img,code = str(title),str(quanter),str(integer),str(decimal),str(sale_count),str(img),str(code)
         file = r'/tmp/tb.log'
+        if int(quanter) < 5:
+                return
         with open(file, 'a+') as f:
-                f.write('"%s","%s","%s","%s","%s","%s","%s","%s"\n'%(title,quanter,integer,decimal,sale_count,img,code,type))
+                f.write('"%s","%s","%s.%s","%s","%s","%s","%s"\n'%(title,quanter,integer,decimal,sale_count,img,code,type))
         #import os
         #os.system('mkdir /tmp/lxp.log')
         #print "hello "+msg
