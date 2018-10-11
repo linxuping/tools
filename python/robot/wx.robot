@@ -1,31 +1,57 @@
-*** Settings ***
-Library           Selenium2Library
+main.robot
 
-*** Test Cases ***
-wxtest
-    Open Browser    https://wx.qq.com/    chrome
-    sleep    30
-    click Element    xpath=//*[@class="web_wechat_down_icon"]
-    sleep    2
-    : FOR    ${i}    IN RANGE    249    1000
-    \    click Element    //div[@class="member ng-scope" and position()=${i}]//img
-    \    log    ${i}
-    \    sleep    1
-    \    execute javascript    if ($('.web_wechat_tab_add').length){ $('.web_wechat_tab_add').click(); };
-    \    sleep    1
-    \    ${check} =    Run Keyword And Return Status    Page Should Contain Element    xpath=//*[@class="verify_text ng-pristine ng-valid"]
-    \    Log    ${check}
-    \    run keyword if    ${check}    Try Add User
-    \    click Element    xpath=//*[@class="web_wechat_up_icon"]
-    \    sleep    1
-    \    click Element    xpath=//*[@class="web_wechat_down_icon"]
-    \    sleep    15
-    Close Browser
+*** Settings ***
+Library     NewLibrary
+Library     Selenium2Library
+Test Setup      get config
+
+*** Variables ***
+${test}     123
 
 *** Keywords ***
-Try Add User
-   Log    "into "
-   Input Text    xpath=//*[@class="verify_text ng-pristine ng-valid"]    早上好！
-   sleep    1
-   click Element    xpath=//*[@class="form_area ng-scope"]/a
-   sleep    2
+get config
+    log     开始获取配置
+    set suite variable     ${config}       config
+
+fetch tb
+    [Arguments]    ${keyword}    ${type}
+    log     ${config}
+    print msg     ss
+    Open Browser    https://pub.alimama.com/    chrome
+    sleep    15
+    Go To    https://pub.alimama.com/promo/search/index.htm?q=${keyword}&perPageSize=100&dpyhq=1&hPayRate30=1&freeShipment=1
+    sleep    5
+    : FOR    ${i}    IN RANGE    1    4
+    \    log    '.block-search-box:nth-child(${i}) .integer'
+    \    ${title}    execute javascript    return $('.block-search-box:nth-child(${i}) .content-title').text()
+    \    ${quanter}    execute javascript    return $('.block-search-box:nth-child(${i}) .money span')[0].innerHTML
+    \    ${integer}    execute javascript    return $('.block-search-box:nth-child(${i}) .integer')[0].innerHTML
+    \    ${decimal}    execute javascript    return $('.block-search-box:nth-child(${i}) .decimal')[0].innerHTML
+    \    ${sale_count}    execute javascript    return $('.block-search-box:nth-child(${i}) .color-d span')[4].innerHTML
+    \    ${img}    execute javascript    return $('.block-search-box:nth-child(${i}) .pic-box img')[0].src
+    \    log    ${title}
+    \    log    ${quanter}
+    \    log    ${integer}
+    \    log    ${decimal}
+    \    log    ${sale_count}
+    \    log    ${img}
+    \    execute javascript    $('.block-search-box:nth-child(${i}) .box-btn-group a')[0].click()
+    \    sleep    2
+    \    Click Button    dom=$('.dropdown-toggle')[4]
+    \    sleep    2
+    \    Click Element    dom=$('#zone-form .dropdown-menu-wrapper li')[1]
+    \    sleep    2
+    \    Click Button    dom=$('.mr10')[1]
+    \    sleep    1
+    \    execute javascript    $('.block-code li')[3].click()
+    \    sleep    1
+    \    ${code}    execute javascript    return $('#clipboard-target-2')[0].value
+    \    sleep    1
+    \    writetbLog    ${type}    ${title}    ${quanter}    ${integer}    ${decimal}    ${sale_count}    ${img}    ${code}
+    \    sleep    1
+    \    execute javascript    $('.dialog-ft button')[0].click()
+
+
+
+*** Test Cases ***
+run    fetch tb    k   type
