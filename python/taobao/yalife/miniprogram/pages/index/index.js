@@ -8,7 +8,11 @@ Page({
     logged: false,
     takeSession: false,
     requestResult: '',
-    goods: [ ]
+    goods: [ ],
+    goodsIndex: [],
+    types: ['aa','bb','cc'],
+    showTypes: false,
+    showGoods: true
   },
 
   onLoad: function() {
@@ -22,6 +26,20 @@ Page({
 
     console.log(111111);
     const db = wx.cloud.database()
+    db.collection('goods_index').get({
+      success: res => {
+        // this.setData({
+        //  queryResult: JSON.stringify(res.data, null, 2)
+        //})
+        //console.log('[数据库] [查询记录] 成功: ', res)
+        console.log(res);
+        page.setData({goodsIndex:res.data});
+        
+      },
+      fail: err => {
+        console.log(err);
+      }
+    });
     db.collection('goods').get({
       success: res => {
         // this.setData({
@@ -29,13 +47,13 @@ Page({
         //})
         //console.log('[数据库] [查询记录] 成功: ', res)
         console.log(res);
-        page.setData({goods:res.data});
-        
+        page.setData({ goods: res.data });
+
       },
       fail: err => {
         console.log(err);
       }
-    })
+    });
     
     // 获取用户信息
     wx.getSetting({
@@ -54,6 +72,13 @@ Page({
       }
     })
   },
+  clickSearch: function (e) {
+    this.setData({showTypes:true, showGoods:false});
+  },
+  tbSearch: function (e) {
+    this.setData({ showTypes: false, showGoods: true });
+  },
+
 
   onGetUserInfo: function(e) {
     if (!this.logged && e.detail.userInfo) {
