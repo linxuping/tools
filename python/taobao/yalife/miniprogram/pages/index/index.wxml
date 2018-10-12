@@ -23,12 +23,28 @@
     </view>
   </view>
 
-  <view class="uploader" wx:for="{{goods}}" wx:if="{{showGoods}}">
+  <view class="uploader" wx:for="{{goods}}" wx:if="{{showGoods}}" style="display:none">
     <navigator url="../addFunction/addFunction" open-type="navigate" class="uploader-text">
       <image src="{{item.img}}" style="width:100px;height:100px"></image>
       <text>{{item.title}}</text>
     </navigator>
   </view>
+
+
+  <view class="card" wx:for="{{goods}}" wx:if="{{showGoods}}">
+      <view bindtap="onItemClick">
+          <image class="image" mode="aspectFill" src="{{item.img}}"/>
+          <text class="time">时间</text>
+          <view class="title">{{item.title}}</view>
+          <view class="title">
+            <text style="font-size:0.8em">价格：¥{{item.price}} </text>
+            <text style="font-size:0.8em">销量：{{item.sale_count}} </text>
+            <text style="font-size:0.8em">优惠券：¥{{item.quanter}}  </text>
+            <text style="font-size:0.8em;background:#CDCDCD;margin:30px" bindtap="copyQuanter()">立即领取 </text>
+          </view>
+      </view>
+  </view>
+
 
   <view class="search-types" wx:for="{{types}}" wx:if="{{showTypes}}">
     <text bindtap="tbSearch">{{item}}</text>
