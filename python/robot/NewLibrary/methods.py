@@ -24,3 +24,18 @@ class MyClass(object):
         #import os
         #os.system('mkdir /tmp/lxp.log')
         #print "hello "+msg
+
+    def writeGood(self,fpath,line):
+        head_len = len("J_Itemlist_Pic_")
+        gid = line[head_len:]
+        with open(fpath, 'a+') as f:
+            f.write('https://detail.tmall.com/item.htm?id=%s\n'%(gid))
+        #import os
+
+    def voicePage(self):
+        import winsound
+        winsound.PlaySound('ALARM8', winsound.SND_ASYNC)
+
+    def voiceEnd(self):
+        import winsound
+        winsound.Beep(300, 2000)
