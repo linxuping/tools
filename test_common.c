@@ -56,6 +56,7 @@ void test_volatile_arg();
 void test_pointers_array_visit();
 //void test_headers_sequence();
 void test_format();
+void test_sizeof();
 
 
 int main()
@@ -79,7 +80,7 @@ int main()
     test_if();
     //test_headers_sequence();
     test_pointer();
-    test_typeid();
+    //test_typeid();
     test_normal_function_addr();
 
     test_static(); 
@@ -97,8 +98,9 @@ int main()
     test_go();
     test_after_delete();
     test_volatile_arg();
-		test_pointers_array_visit();
-		test_format();
+    test_pointers_array_visit();
+    test_format();
+    test_sizeof();
     return 0;    
 }
 
@@ -327,11 +329,11 @@ void test_struct()
 		st2.pst1->buf;
     printf("st2={1,2,3} st2 %d %f %d %p \n", st2.i, st2.f, st2.j, &(st2.pst1->buf));
 		//
-		struct STest1 *pst1 = NULL;
+		struct STest1 *pst1;
 		printf("&s = %x \n", &pst1->m);
 		//printf("&s = %x \n", pst1->m);
 		printf("&c = %x \n", &pst1->buf);
-		struct STest11 *pst2 = NULL;
+		struct STest11 *pst2;
 		printf("&s = %x \n", &pst2->m);
 		printf("&c = %x \n", &pst2->buf);
 }
@@ -581,7 +583,7 @@ typedef enum{
 	t0 = -1,
 	t1 = -2,
 	t11,
-	t2 = 0,
+	t12 = 0,
 	t3 = 100,
 	t4 = 10000
 }tenum;
@@ -591,7 +593,7 @@ void test_enum()
 	printf("t0:-1: %d \n",t0);
 	printf("t1:-2: %d \n",t1);
 	printf("t11:-1?: %d \n",t11);
-	printf("t2:0: %d \n",t2);
+	printf("t12:0: %d \n",t12);
 	printf("t3:100: %d \n",t3);
 	printf("t4:10000: %d \n",t4);
 }
@@ -688,3 +690,13 @@ void test_format()
 	printf("8:   %8s \n",buf);
 
 } 
+
+void test_sizeof()
+{
+	ENTER_TEST();
+	int *i1;
+	char *s1="";
+	char s2[]="";
+	printf("*i1:%d *s1:%d s2[]:%d \n",sizeof(i1),sizeof(s1),sizeof(s2));
+
+}
