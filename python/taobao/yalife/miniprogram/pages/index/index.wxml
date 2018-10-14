@@ -18,7 +18,7 @@
     <view class="weui-search-bar__form">
       <view class="weui-search-bar__box">
         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-        <input type="text" class="weui-search-bar__input" placeholder="搜索优惠券" bindtap="clickSearch"/>
+        <input type="text" v-model="keyword" class="weui-search-bar__input" placeholder="搜索优惠券" bindinput="updateKeyword" bindtap="clickSearch" bindconfirm="tbSearch"/>
       </view>
     </view>
   </view>
@@ -32,22 +32,22 @@
 
 
   <view class="card" wx:for="{{goods}}" wx:if="{{showGoods}}">
-      <view bindtap="onItemClick">
+      <view>
           <image class="image" mode="aspectFill" src="{{item.img}}"/>
-          <text class="time">时间</text>
+          <text class="time"></text>
           <view class="title">{{item.title}}</view>
-          <view class="title">
+          <view class="title" style="vertical-aligh:center">
             <text style="font-size:0.8em">价格：¥{{item.price}} </text>
             <text style="font-size:0.8em">销量：{{item.sale_count}} </text>
+            <image src="https://7961-yalife-3e57c3-1257619748.tcb.qcloud.la/fetch.png?sign=59e2757d6536156960fe56368d5ba332&t=1539522610" style="height:40px;width:40px;position:absolute;right:5px;bottom:1px" bindtap="copyQuanter" data-code="{{item.code}}"></image>
             <text style="font-size:0.8em">优惠券：¥{{item.quanter}}  </text>
-            <text style="font-size:0.8em;background:#CDCDCD;margin:30px" bindtap="copyQuanter()">立即领取 </text>
           </view>
       </view>
   </view>
 
 
   <view class="search-types" wx:for="{{types}}" wx:if="{{showTypes}}">
-    <text bindtap="tbSearch">{{item}}</text>
+    <text bindtap="typeSearch" data-type="{{item}}" style="border:50px">{{item}}</text>
   </view>
 
   <!-- 上传图片 -->

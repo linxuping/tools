@@ -10,9 +10,11 @@ Page({
     requestResult: '',
     goods: [ ],
     goodsIndex: [],
-    types: ['aa','bb','cc'],
+    types: ['衣服','鞋子'],
+    types_titles: {},
     showTypes: false,
-    showGoods: true
+    showGoods: true,
+    keyword: ""
   },
 
   onLoad: function() {
@@ -54,6 +56,23 @@ Page({
         console.log(err);
       }
     });
+    console.log(this.data.types);
+    for (var i = 0; i < this.data.types.length; i++) {
+      let _type = this.data.types[i];
+      console.log(_type);
+      db.collection('goods_index').where(
+        { type: _type }
+      ).get({
+        success: res => {
+          console.log('get titles:'+_type);
+          console.log(res.data);
+          page.data.types_titles[_type] = res.data[0].titles;
+        },
+        fail: err => {
+          console.log(err);
+        }
+      });
+    }
     
     // 获取用户信息
     wx.getSetting({
@@ -75,13 +94,75 @@ Page({
   clickSearch: function (e) {
     this.setData({showTypes:true, showGoods:false});
   },
-  tbSearch: function (e) {
-    this.setData({ showTypes: false, showGoods: true });
+  updateKeyword: function(e){
+    var val = e.detail.value;
+    this.setData({
+      keyword: val
+    });
   },
-  copyQuanter: function (e, quanter) {
+  tbSearch: function (e) {
+    var page = this;
+    this.setData({ showTypes: false, showGoods: true });
+    const db = wx.cloud.database();
+    console.log("----titles--->");
+    console.log(this.data.types_titles);
+    page.setData({
+      goods: []
+    });
+    for (var i=0; i<this.data.types.length; i++){
+      let _type = page.data.types[i];
+      let _value = page.data.types_titles[_type];
+      let goods = [];
+      if (_value.indexOf(page.data.keyword) >= 0){
+        console.log('search hit....'+page.data.keyword);
+        db.collection('goods').where(
+          { type: _type }
+        ).get({
+          success: res => {
+            console.log(res.data);
+            for (var j=0; j<res.data.length; j++){
+              if (res.data[j].title.indexOf(page.data.keyword) >= 0){
+                console.log('hithit');
+                goods.push(res.data[j]);
+              }
+            }
+            page.setData({
+              goods: page.data.goods.concat(goods)
+            });
+          },
+          fail: err => {
+            console.log(err);
+          }
+        }); 
+      }
+    }
+  },
+  typeSearch: function(e){
+    this.setData({ showTypes: false, showGoods: true });
+    var page=this;
+    const db = wx.cloud.database();
+    let _type = e.currentTarget.dataset.type;
+    console.log(_type);
+    db.collection('goods').where(
+      { type: _type }
+    ).get({
+      success: res => {
+        page.setData({
+          goods: res.data
+        });
+      },
+      fail: err => {
+        console.log(err);
+      }
+    }); 
+  },
+  copyQuanter: function (e, code) {
+    wx.setClipboardData({
+      data: e.currentTarget.dataset.code,
+    });
     wx.showModal({
-      title: '提示',
-      content: '这是一个模态弹窗',
+      title: '温馨提示',
+      content: "复制成功！打开手机淘宝下单吧～",
       success: function (res) {
         if (res.confirm) {
           console.log('用户点击确定')
@@ -91,7 +172,98 @@ Page({
       }
     })
   },
+  update_goods_index: function(e) {
+    const db = wx.cloud.database();
+    console.log(this.data.types);
+    for(var i=0;i<this.data.types.length;i++)
+    {
+      var _type = this.data.types[i];
+      console.log(_type);
+      db.collection('goods').where(
+        {type:_type}
+      ).get({
+        success: res => {
+          // this.setData({
+          //  queryResult: JSON.stringify(res.data, null, 2)
+          //})
+          //console.log('[数据库] [查询记录] 成功: ', res)
+          var titles = "";
+          for (var j=0;j<res.data.length;j++){
+            titles += res.data[j].title + "__";
+          }
+          console.log(titles);
+          db.collection('goods_index').where(
+            { type: _type }
+          ).get({
+            success: res2 => {
+              console.log('res2');
+              console.log(res2.data);
+              if (res2.data.length > 0){
+                console.log("hit---->");
+              }
+            }
+          });
+          db.collection('goods_index').where(
+            { type: _type }
+          ).update({data:
+          {
+            titles:titles
+          }});
+          //page.setData({ goodsIndex: res.data });
 
+        },
+        fail: err => {
+          console.log(err);
+        }
+      });      
+    }
+  },
+    update_goods_index: function(e) {
+    const db = wx.cloud.database();
+    console.log(this.data.types);
+    for(var i=0;i<this.data.types.length;i++)
+    {
+      var _type = this.data.types[i];
+      console.log(_type);
+      db.collection('goods').where(
+        {type:_type}
+      ).get({
+        success: res => {
+          // this.setData({
+          //  queryResult: JSON.stringify(res.data, null, 2)
+          //})
+          //console.log('[数据库] [查询记录] 成功: ', res)
+          var titles = "";
+          for (var j=0;j<res.data.length;j++){
+            titles += res.data[j].title + "__";
+          }
+          console.log(titles);
+          db.collection('goods_index').where(
+            { type: _type }
+          ).get({
+            success: res2 => {
+              console.log('res2');
+              console.log(res2.data);
+              if (res2.data.length > 0){
+                console.log("hit---->");
+              }
+            }
+          });
+          db.collection('goods_index').where(
+            { type: _type }
+          ).update({data:
+          {
+            titles:titles
+          }});
+          //page.setData({ goodsIndex: res.data });
+
+        },
+        fail: err => {
+          console.log(err);
+        }
+      });      
+    }
+  },
 
   onGetUserInfo: function(e) {
     if (!this.logged && e.detail.userInfo) {
