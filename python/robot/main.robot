@@ -18,7 +18,8 @@ fetch tb
     log     ${config}
     Go To    https://pub.alimama.com/promo/search/index.htm?q=${keyword}&perPageSize=100&dpyhq=1&hPayRate30=1&freeShipment=1
     sleep    5
-    : FOR    ${i}    IN RANGE    1    2
+    : FOR    ${i}    IN RANGE    1    30
+    \    execute javascript    document.documentElement.scrollTop=${i}00
     \    log    '.block-search-box:nth-child(${i}) .integer'
     \    ${title}    execute javascript    return $('.block-search-box:nth-child(${i}) .content-title').text()
     \    ${quanter}    execute javascript    return $('.block-search-box:nth-child(${i}) .money span')[0].innerHTML
@@ -39,7 +40,7 @@ fetch tb
     \    Click Element    dom=$('#zone-form .dropdown-menu-wrapper li')[1]
     \    sleep    2
     \    Click Button    dom=$('.mr10')[1]
-    \    sleep    1
+    \    sleep    2
     \    execute javascript    $('.block-code li')[3].click()
     \    sleep    1
     \    ${code}    execute javascript    return $('#clipboard-target-2')[0].value
@@ -52,5 +53,14 @@ fetch tb
 
 *** Test Cases ***
 Test
+    close all browsers
     Open Browser    https://pub.alimama.com/    chrome
-    sleep    15
+    sleep    40
+    @{items}    set variable    小米手机    耐克    荣耀   华为    vivo    oppo    魅族    三星
+    :FOR    ${item}    IN    @{items}
+    \    fetch tb    ${item}
+    @{items}    set variable    优衣库    韩都衣舍    zara    波司登    裂帛    七匹狼
+    :FOR    ${item}    IN    @{items}
+    \    fetch tb    ${item}
+    close all browsers
+

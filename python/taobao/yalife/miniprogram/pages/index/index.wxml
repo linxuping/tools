@@ -46,8 +46,10 @@
   </view>
 
 
-  <view class="search-types" wx:for="{{types}}" wx:if="{{showTypes}}">
-    <text bindtap="typeSearch" data-type="{{item}}" style="border:50px">{{item}}</text>
+  <view class="search-types" wx:if="{{showTypes}}">
+    <view style="margin:30px;display:inline-block" wx:for="{{types}}">
+      <text bindtap="typeSearch" data-type="{{item}}">{{item}}</text>
+    </view>
   </view>
 
   <!-- 上传图片 -->

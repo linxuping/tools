@@ -10,7 +10,7 @@ Page({
     requestResult: '',
     goods: [ ],
     goodsIndex: [],
-    types: ['衣服','鞋子'],
+    types: [], //'衣服', '鞋子'
     types_titles: {},
     showTypes: false,
     showGoods: true,
@@ -34,9 +34,14 @@ Page({
         //  queryResult: JSON.stringify(res.data, null, 2)
         //})
         //console.log('[数据库] [查询记录] 成功: ', res)
-        console.log(res);
+        console.log(res.data);
         page.setData({goodsIndex:res.data});
-        
+        for (var i=0;i<res.data.length;i++){
+          page.data.types.push(res.data[i].type);
+        }
+        page.setData({
+          types: page.data.types
+        });
       },
       fail: err => {
         console.log(err);
@@ -66,6 +71,7 @@ Page({
         success: res => {
           console.log('get titles:'+_type);
           console.log(res.data);
+          page.data.types.push(_type);
           page.data.types_titles[_type] = res.data[0].titles;
         },
         fail: err => {
