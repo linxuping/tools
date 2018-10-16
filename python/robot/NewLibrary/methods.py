@@ -15,12 +15,16 @@ class MyClass(object):
 
     def writetbLog(self,type,title,quanter,integer,decimal,sale_count,img,code):
         #print "args: ",title,quanter,integer,decimal,sale_count,img,code
-        title,quanter,integer,decimal,sale_count,img,code = str(title),str(quanter),str(integer),str(decimal),str(sale_count),str(img),str(code)
-        file = r'/tmp/tb.log'
+        title,quanter,integer,decimal,sale_count,code = str(title),str(quanter),str(integer),str(decimal),str(sale_count),str(code)
+        img = str(img)[:-14]+"_400x400"
+        file = r'/tmp/tb_%s.log'%type
+        file_key = r'/tmp/tb_%s_key.log'%type
         if int(quanter) < 5:
                 return
         with open(file, 'a+') as f:
                 f.write('"%s","%s","%s.%s","%s","%s","%s","%s"\n'%(title,quanter,integer,decimal,sale_count,img,code,type))
+        with open(file_key, 'a+') as f:
+                f.write('%s_'%(title))
         #import os
         #os.system('mkdir /tmp/lxp.log')
         #print "hello "+msg
