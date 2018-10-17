@@ -1,6 +1,13 @@
 //index.js
 const app = getApp()
 var types_titles = {};
+var pages = 0;
+
+function sort(arr){
+  var d=new Date();
+  //return arr.sort(function () { return d.getHours()/25 - Math.random() });
+  return arr.sort(function () { return 0.5 - Math.random() });
+}
 
 Page({
   data: {
@@ -15,6 +22,7 @@ Page({
     //types_titles: {},
     showTypes: false,
     showGoods: true,
+    typeClicked: false,
     keyword: ""
   },
 
@@ -45,8 +53,8 @@ Page({
             { type: _type }
           ).get({
             success: res => {
-              console.log('get titles:' + _type);
-              console.log(res.data);
+              //console.log('get titles:' + _type);
+              //console.log(res.data);
               page.data.types.push(_type);
               types_titles[_type] = res.data[0].titles;
             },
@@ -55,6 +63,7 @@ Page({
             }
           });
         }
+        //page.data.types.push("全部");
         page.setData({
           types: page.data.types
         });
@@ -65,13 +74,7 @@ Page({
     });
     db.collection('goods').get({
       success: res => {
-        // this.setData({
-        //  queryResult: JSON.stringify(res.data, null, 2)
-        //})
-        //console.log('[数据库] [查询记录] 成功: ', res)
-        console.log(res);
-        page.setData({ goods: res.data });
-
+        page.setData({ goods: sort(res.data) });
       },
       fail: err => {
         console.log(err);
@@ -85,8 +88,8 @@ Page({
         { type: _type }
       ).get({
         success: res => {
-          console.log('get titles:'+_type);
-          console.log(res.data);
+          //console.log('get titles:'+_type);
+          //console.log(res.data);
           page.data.types.push(_type);
           types_titles[_type] = res.data[0].titles;
         },
@@ -124,17 +127,32 @@ Page({
     });
   },
   tbSearch: function (e) {
+    pages = 0;
     var page = this;
     this.setData({ showTypes: false, showGoods: true });
     const db = wx.cloud.database();
     console.log("----titles--->");
     console.log(types_titles);
+    if (page.data.keyword.trim().length==0){
+      db.collection('goods').get({
+        success: res => {
+          page.setData({ goods: res.data });
+        },
+        fail: err => {
+          console.log(err);
+        }
+      });
+      return;
+    }
     page.setData({
       goods: []
     });
     wx.showLoading({
       title: '查询中，等等哈...',
     })
+    setTimeout(function(){
+      wx.hideLoading();
+    },2000);
     var hit = false;
     var _len = this.data.types.length;
     for (var i=0; i<_len; i++){
@@ -172,11 +190,24 @@ Page({
       wx.hideLoading();
   },
   typeSearch: function(e){
-    this.setData({ showTypes: false, showGoods: true });
+    pages = -1;
+    this.setData({ showTypes: false, showGoods: true, typeClicked: true });
     var page=this;
     const db = wx.cloud.database();
     let _type = e.currentTarget.dataset.type;
     console.log(_type);
+    if (_type == "全部"){
+      pages = 0;
+      db.collection('goods').get({
+        success: res => {
+          page.setData({ goods: res.data });
+        },
+        fail: err => {
+          console.log(err);
+        }
+      });
+      return;
+    }
     db.collection('goods').where(
       { type: _type }
     ).get({
@@ -205,6 +236,30 @@ Page({
         }
       }
     })
+  },
+  onReachBottom: function(){
+    if (pages == -1)
+      return;
+    this.setData({ typeClicked:false });
+    var page = this;
+    if (page.data.keyword.trim().length > 0)
+      return;
+    const db = wx.cloud.database();
+    pages += 10;
+    console.log("offset: "+pages);
+    wx.showLoading({
+      title: '记载中，稍等哈',
+    })
+    db.collection('goods').skip(pages).limit(10).get({
+      success: res => {
+        page.setData({ goods: page.data.goods.concat(res.data) });
+        wx.hideLoading();
+      },
+      fail: err => {
+        console.log(err);
+        wx.hideLoading();
+      }
+    });
   },
   update_goods_index: function(e) {
     const db = wx.cloud.database();
