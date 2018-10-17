@@ -353,6 +353,14 @@ Page({
       });      
     }
   },
+  onShareAppMessage: function () {
+    return {
+      title: '淘宝优惠券今日分享',
+      desc: '各种类别都有哦～',
+      path: '/pages/index/index'
+    }
+  },
+
 
   onGetUserInfo: function(e) {
     if (!this.logged && e.detail.userInfo) {

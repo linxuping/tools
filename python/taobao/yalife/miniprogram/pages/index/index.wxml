@@ -53,7 +53,9 @@
       <view style="margin:30px;display:inline-block">
         <text bindtap="typeSearch" data-type="全部">全部</text>
       </view>
+      <view style="position:fixed;bottom:4px;right:8px"><text style="color:#CDCDCD">客服微信号：lttlovefm</text></view>
     </view>  
+    
   </view>
 
 
@@ -78,6 +80,6 @@
       <text>快速新建云函数</text>
     </navigator>
   </view>
-
+  
 
 </view>
