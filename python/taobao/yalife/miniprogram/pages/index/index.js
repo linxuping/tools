@@ -1,5 +1,6 @@
 //index.js
 const app = getApp()
+var types_titles = {};
 
 Page({
   data: {
@@ -11,7 +12,7 @@ Page({
     goods: [ ],
     goodsIndex: [],
     types: [], //'衣服', '鞋子'
-    types_titles: {},
+    //types_titles: {},
     showTypes: false,
     showGoods: true,
     keyword: ""
@@ -38,6 +39,21 @@ Page({
         page.setData({goodsIndex:res.data});
         for (var i=0;i<res.data.length;i++){
           page.data.types.push(res.data[i].type);
+          let _type = res.data[i].type;
+          console.log(_type);
+          db.collection('goods_index').where(
+            { type: _type }
+          ).get({
+            success: res => {
+              console.log('get titles:' + _type);
+              console.log(res.data);
+              page.data.types.push(_type);
+              types_titles[_type] = res.data[0].titles;
+            },
+            fail: err => {
+              console.log(err);
+            }
+          });
         }
         page.setData({
           types: page.data.types
@@ -62,7 +78,7 @@ Page({
       }
     });
     console.log(this.data.types);
-    for (var i = 0; i < this.data.types.length; i++) {
+    for (var i = 0; i < this.data.types.length && false; i++) {
       let _type = this.data.types[i];
       console.log(_type);
       db.collection('goods_index').where(
@@ -72,13 +88,14 @@ Page({
           console.log('get titles:'+_type);
           console.log(res.data);
           page.data.types.push(_type);
-          page.data.types_titles[_type] = res.data[0].titles;
+          types_titles[_type] = res.data[0].titles;
         },
         fail: err => {
           console.log(err);
         }
       });
     }
+
     
     // 获取用户信息
     wx.getSetting({
@@ -111,16 +128,24 @@ Page({
     this.setData({ showTypes: false, showGoods: true });
     const db = wx.cloud.database();
     console.log("----titles--->");
-    console.log(this.data.types_titles);
+    console.log(types_titles);
     page.setData({
       goods: []
     });
-    for (var i=0; i<this.data.types.length; i++){
+    wx.showLoading({
+      title: '查询中，等等哈...',
+    })
+    var hit = false;
+    var _len = this.data.types.length;
+    for (var i=0; i<_len; i++){
       let _type = page.data.types[i];
-      let _value = page.data.types_titles[_type];
+      let _value = types_titles[_type];
       let goods = [];
+      console.log(types_titles);
       if (_value.indexOf(page.data.keyword) >= 0){
+        hit = true;
         console.log('search hit....'+page.data.keyword);
+        
         db.collection('goods').where(
           { type: _type }
         ).get({
@@ -135,6 +160,7 @@ Page({
             page.setData({
               goods: page.data.goods.concat(goods)
             });
+            wx.hideLoading();
           },
           fail: err => {
             console.log(err);
@@ -142,6 +168,8 @@ Page({
         }); 
       }
     }
+    if (!hit)
+      wx.hideLoading();
   },
   typeSearch: function(e){
     this.setData({ showTypes: false, showGoods: true });

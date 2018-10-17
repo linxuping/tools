@@ -60,6 +60,10 @@ page {
   color: #007aff;
 }
 
+.container {
+  margin-top:45px
+}
+
 .uploader-container {
   width: 100%;
   height: 400rpx;
@@ -331,4 +335,15 @@ page {
     top: 0;
     z-index: 1;
     font-size: 12px;
+}
+
+.title {
+  font-size: 32rpx;
+  margin-left: 8px;
+  margin-right:8px;
+}
+
+.title {
+  font-size: 30rpx;
+  margin-left: 4px;
 }
