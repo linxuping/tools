@@ -21,7 +21,10 @@ class MyClass(object):
         file_key = r'/tmp/tb_%s_key.log'%type
         if int(quanter) < 5:
                 return
+        line = 'title,quanter,price,sale_count,img,code,type'
         with open(file, 'a+') as f:
+                if not line in f.read():
+                        f.write('%s\n'%line)
                 f.write('"%s","%s","%s.%s","%s","%s","%s","%s"\n'%(title,quanter,integer,decimal,sale_count,img,code,type))
         with open(file_key, 'a+') as f:
                 f.write('%s_'%(title))
