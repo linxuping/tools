@@ -9,6 +9,26 @@ function sort(arr){
   return arr.sort(function () { return 0.5 - Math.random() });
 }
 
+function formatDate(time) {
+  var date = new Date(time);
+
+  var year = date.getFullYear(),
+    month = date.getMonth() + 1,//月份是从0开始的
+    day = date.getDate(),
+    hour = date.getHours(),
+    min = date.getMinutes(),
+    sec = date.getSeconds();
+  var newTime = year + '-' +
+    (month < 10 ? '0' + month : month) + '-' +
+    (day < 10 ? '0' + day : day) + ' ' +
+    (hour < 10 ? '0' + hour : hour) + ':' +
+    (min < 10 ? '0' + min : min) + ':' +
+    (sec < 10 ? '0' + sec : sec);
+
+  return newTime;
+}
+
+
 Page({
   data: {
     avatarUrl: './user-unlogin.png',
@@ -132,6 +152,19 @@ Page({
     this.setData({ showTypes: false, showGoods: true });
     const db = wx.cloud.database();
     console.log("----titles--->");
+
+    db.collection('search_keywords').add({
+      // data 字段表示需新增的 JSON 数据
+      data: {
+        keyword: page.data.keyword,
+        type: 'tb search',
+        create_time: formatDate(new Date().getTime())
+      }
+    }).then(res => {
+      console.log(res)
+    })
+      .catch(console.error)
+
     console.log(types_titles);
     if (page.data.keyword.trim().length==0){
       db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
@@ -186,8 +219,12 @@ Page({
         }); 
       }
     }
-    if (!hit)
+    if (!hit){
       wx.hideLoading();
+      wx.showToast({
+        title: '换个词试试吧～',
+      })
+    }
   },
   typeSearch: function(e){
     pages = -1;
@@ -196,6 +233,19 @@ Page({
     const db = wx.cloud.database();
     let _type = e.currentTarget.dataset.type;
     console.log(_type);
+
+    db.collection('search_keywords').add({
+      // data 字段表示需新增的 JSON 数据
+      data: {
+        keyword: _type,
+        type: 'type',
+        create_time: formatDate(new Date().getTime())
+      }
+    }).then(res => {
+      console.log(res)
+    })
+      .catch(console.error)
+
     if (_type == "全部"){
       pages = 0;
       db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
