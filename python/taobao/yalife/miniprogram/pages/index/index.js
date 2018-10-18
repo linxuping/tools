@@ -248,7 +248,7 @@ Page({
     pages += 10;
     console.log("offset: "+pages);
     wx.showLoading({
-      title: '记载中，稍等哈',
+      title: '加载中！稍等哈',
     })
     db.collection('goods').skip(pages).limit(10).get({
       success: res => {
@@ -355,7 +355,7 @@ Page({
   },
   onShareAppMessage: function () {
     return {
-      title: '淘宝优惠券今日分享',
+      title: '大额优惠券每日更新',
       desc: '各种类别都有哦～',
       path: '/pages/index/index'
     }
