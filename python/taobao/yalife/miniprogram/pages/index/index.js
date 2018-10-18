@@ -2,6 +2,7 @@
 const app = getApp()
 var types_titles = {};
 var pages = 0;
+var openid = '';
 
 function sort(arr){
   var d=new Date();
@@ -47,6 +48,14 @@ Page({
   },
 
   onLoad: function() {
+    wx.cloud.callFunction({
+      name: 'login',
+      complete: res => {
+        console.log('云函数获取到的openid: ', res.result.openid);
+        openid = res.result.openid;
+      }
+    });
+
     var page = this;
     if (!wx.cloud) {
       wx.redirectTo({
@@ -153,17 +162,20 @@ Page({
     const db = wx.cloud.database();
     console.log("----titles--->");
 
-    db.collection('search_keywords').add({
-      // data 字段表示需新增的 JSON 数据
-      data: {
-        keyword: page.data.keyword,
-        type: 'tb search',
-        create_time: formatDate(new Date().getTime())
-      }
-    }).then(res => {
-      console.log(res)
-    })
-      .catch(console.error)
+    if (openid != "oV5MQ5aN_i_ea9dGxZOHHBC8Bosg"){
+      db.collection('search_keywords').add({
+        // data 字段表示需新增的 JSON 数据
+        data: {
+          keyword: page.data.keyword,
+          type: 'tb search',
+          create_time: formatDate(new Date().getTime())
+        }
+      }).then(res => {
+        console.log(res)
+      })
+        .catch(console.error)      
+    }
+
 
     console.log(types_titles);
     if (page.data.keyword.trim().length==0){
@@ -234,17 +246,20 @@ Page({
     let _type = e.currentTarget.dataset.type;
     console.log(_type);
 
-    db.collection('search_keywords').add({
-      // data 字段表示需新增的 JSON 数据
-      data: {
-        keyword: _type,
-        type: 'type',
-        create_time: formatDate(new Date().getTime())
-      }
-    }).then(res => {
-      console.log(res)
-    })
-      .catch(console.error)
+    if (openid != "oV5MQ5aN_i_ea9dGxZOHHBC8Bosg"){
+      db.collection('search_keywords').add({
+        // data 字段表示需新增的 JSON 数据
+        data: {
+          keyword: _type,
+          type: 'type',
+          create_time: formatDate(new Date().getTime())
+        }
+      }).then(res => {
+        console.log(res)
+      })
+        .catch(console.error)      
+    }
+
 
     if (_type == "全部"){
       pages = 0;
