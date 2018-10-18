@@ -34,9 +34,8 @@ Page({
       })
       return
     }
-
-    console.log(111111);
     const db = wx.cloud.database()
+
     db.collection('goods_index').get({
       success: res => {
         // this.setData({
@@ -72,9 +71,10 @@ Page({
         console.log(err);
       }
     });
-    db.collection('goods').get({
+    db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
       success: res => {
         page.setData({ goods: sort(res.data) });
+        console.log(res.data);
       },
       fail: err => {
         console.log(err);
@@ -134,7 +134,7 @@ Page({
     console.log("----titles--->");
     console.log(types_titles);
     if (page.data.keyword.trim().length==0){
-      db.collection('goods').get({
+      db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
         success: res => {
           page.setData({ goods: res.data });
         },
@@ -164,7 +164,7 @@ Page({
         hit = true;
         console.log('search hit....'+page.data.keyword);
         
-        db.collection('goods').where(
+        db.collection('goods').orderBy('quanter', 'desc').where(
           { type: _type }
         ).get({
           success: res => {
@@ -198,7 +198,7 @@ Page({
     console.log(_type);
     if (_type == "全部"){
       pages = 0;
-      db.collection('goods').get({
+      db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
         success: res => {
           page.setData({ goods: res.data });
         },
@@ -208,7 +208,7 @@ Page({
       });
       return;
     }
-    db.collection('goods').where(
+    db.collection('goods').orderBy('quanter', 'desc').where(
       { type: _type }
     ).get({
       success: res => {
@@ -250,7 +250,7 @@ Page({
     wx.showLoading({
       title: '加载中！稍等哈',
     })
-    db.collection('goods').skip(pages).limit(10).get({
+    db.collection('goods').orderBy('quanter', 'desc').skip(pages).limit(10).get({
       success: res => {
         page.setData({ goods: page.data.goods.concat(res.data) });
         wx.hideLoading();
@@ -268,7 +268,7 @@ Page({
     {
       var _type = this.data.types[i];
       console.log(_type);
-      db.collection('goods').where(
+      db.collection('goods').orderBy('quanter', 'desc').where(
         {type:_type}
       ).get({
         success: res => {
@@ -314,7 +314,7 @@ Page({
     {
       var _type = this.data.types[i];
       console.log(_type);
-      db.collection('goods').where(
+      db.collection('goods').orderBy('quanter', 'desc').where(
         {type:_type}
       ).get({
         success: res => {
