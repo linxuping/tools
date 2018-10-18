@@ -38,7 +38,7 @@
           <view class="title">{{item.title}}</view>
           <view class="title" style="vertical-aligh:center">
             <text style="font-size:0.8em">销量：{{item.sale_count}} </text>
-            <text style="font-size:0.8em">价格：¥{{item.price}}  </text>
+            <text style="font-size:0.8em">价格：¥{{item.price}} </text>
             <image src="https://7961-yalife-3e57c3-1257619748.tcb.qcloud.la/fetch.png?sign=59e2757d6536156960fe56368d5ba332&t=1539522610" style="height:40px;width:40px;position:absolute;right:5px;bottom:1px" bindtap="copyQuanter" data-code="{{item.code}}"></image>
             <text style="font-size:1em;position:absolute;right:50px;bottom:1px;color:red"data-code="{{item.code}}" bindtap="copyQuanter" > 优惠券：¥{{item.quanter}}  </text>
           </view>
@@ -47,7 +47,7 @@
 
   <view class="search-types">
     <view wx:if="{{showTypes}}" style="">
-      <view style="margin:20px;display:inline-block;background-color:#CDCDCD" wx:for="{{types}}">
+      <view style="margin:20px;display:inline-block;background-color:#CDCDCD;border-radius:8px" wx:for="{{types}}">
         <text bindtap="typeSearch" data-type="{{item}}" style="margin:10px">{{item}}</text>
       </view>
       <view style="margin:30px;display:inline-block">
