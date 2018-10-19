@@ -347,3 +347,7 @@ page {
   font-size: 30rpx;
   margin-left: 4px;
 }
+
+.card {
+  width:95%;
+}

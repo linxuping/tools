@@ -153,6 +153,9 @@ Page({
     })
   },
   clickSearch: function (e) {
+    wx.pageScrollTo({
+      scrollTop: 0
+    })
     this.setData({showTypes:true, showGoods:false});
   },
   updateKeyword: function(e){
@@ -164,6 +167,10 @@ Page({
   tbSearch: function (e) {
     pages = 0;
     var page = this;
+    //page.setData({ goods: [] });
+    wx.pageScrollTo({
+      scrollTop: 0
+    })
     this.setData({ showTypes: false, showGoods: true });
     //const db = wx.cloud.database();
     console.log("----titles--->");
@@ -181,7 +188,6 @@ Page({
       })
         .catch(console.error)      
     }
-
 
     console.log(types_titles);
     if (page.data.keyword.trim().length==0){
@@ -247,12 +253,13 @@ Page({
     }
   },
   typeSearch: function(e){
+    var page = this;
+    //page.setData({ goods: [] });
     wx.pageScrollTo({
       scrollTop: 0
     })
     pages = -1;
     this.setData({ showTypes: false, showGoods: true, typeClicked: true });
-    var page=this;
     
     let _type = e.currentTarget.dataset.type;
     console.log(_type);
