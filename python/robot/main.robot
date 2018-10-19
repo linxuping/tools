@@ -56,10 +56,7 @@ Test
     close all browsers
     Open Browser    https://pub.alimama.com/    chrome
     sleep    40
-    @{items}    set variable    小米手机    耐克    荣耀   华为    vivo    oppo    魅族    三星
-    :FOR    ${item}    IN    @{items}
-    \    fetch tb    ${item}
-    @{items}    set variable    优衣库    韩都衣舍    zara    波司登    裂帛    七匹狼
+    @{items}    set variable    运动裤    点读笔     羽绒服   
     :FOR    ${item}    IN    @{items}
     \    fetch tb    ${item}
     close all browsers
