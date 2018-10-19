@@ -1,8 +1,10 @@
 //index.js
 const app = getApp()
+var types = [];
 var types_titles = {};
 var pages = 0;
 var openid = '';
+const db = wx.cloud.database();
 
 function sort(arr){
   var d=new Date();
@@ -77,43 +79,33 @@ Page({
       })
       return
     }
-    const db = wx.cloud.database()
+    //const db = wx.cloud.database()
+    for (var i=0; i<4; i++){  //max 20*4
+      var query = null;
+      if (i==0)
+        query = db.collection('goods_index').limit(20);
+      else
+        query = db.collection('goods_index').skip(i*20).limit(20);
+      query.get({
+        success: res => {
+          for (var i=0;i<res.data.length;i++){
+            types.push(res.data[i].type);
+            let _type = res.data[i].type;
+            db.collection('goods_index').where(
+              { type: _type }
+            ).get({
+              success: res => {
+                types_titles[_type] = res.data[0].titles;
+              },
+              fail: err => { console.log(err); }
+            });
+          }
+          page.setData({ types: types });
+        },
+        fail: err => { console.log(err); }
+      });      
+    }
 
-    db.collection('goods_index').get({
-      success: res => {
-        // this.setData({
-        //  queryResult: JSON.stringify(res.data, null, 2)
-        //})
-        //console.log('[数据库] [查询记录] 成功: ', res)
-        console.log(res.data);
-        page.setData({goodsIndex:res.data});
-        for (var i=0;i<res.data.length;i++){
-          page.data.types.push(res.data[i].type);
-          let _type = res.data[i].type;
-          console.log(_type);
-          db.collection('goods_index').where(
-            { type: _type }
-          ).get({
-            success: res => {
-              //console.log('get titles:' + _type);
-              //console.log(res.data);
-              page.data.types.push(_type);
-              types_titles[_type] = res.data[0].titles;
-            },
-            fail: err => {
-              console.log(err);
-            }
-          });
-        }
-        //page.data.types.push("全部");
-        page.setData({
-          types: page.data.types
-        });
-      },
-      fail: err => {
-        console.log(err);
-      }
-    });
     db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
       success: res => {
         page.setData({ goods: sort(res.data) });
@@ -173,7 +165,7 @@ Page({
     pages = 0;
     var page = this;
     this.setData({ showTypes: false, showGoods: true });
-    const db = wx.cloud.database();
+    //const db = wx.cloud.database();
     console.log("----titles--->");
 
     if (openid != "oV5MQ5aN_i_ea9dGxZOHHBC8Bosg"){
@@ -213,9 +205,11 @@ Page({
       wx.hideLoading();
     },2000);
     var hit = false;
-    var _len = this.data.types.length;
+    var all_types = this.data.types;
+    all_types.push('预留1');
+    var _len = all_types.length;
     for (var i=0; i<_len; i++){
-      let _type = page.data.types[i];
+      let _type = all_types[i];
       let _value = types_titles[_type];
       let goods = [];
       console.log(types_titles);
@@ -248,15 +242,18 @@ Page({
     if (!hit){
       wx.hideLoading();
       wx.showToast({
-        title: '换个词试试吧～',
+        title: '尝试搜下其他次哈～',
       })
     }
   },
   typeSearch: function(e){
+    wx.pageScrollTo({
+      scrollTop: 0
+    })
     pages = -1;
     this.setData({ showTypes: false, showGoods: true, typeClicked: true });
     var page=this;
-    const db = wx.cloud.database();
+    
     let _type = e.currentTarget.dataset.type;
     console.log(_type);
 
@@ -301,12 +298,25 @@ Page({
     }); 
   },
   copyQuanter: function (e, code) {
+    if (openid == "oV5MQ5aN_i_ea9dGxZOHHBC8Bosg") {
+      db.collection('click_quanter').add({
+        // data 字段表示需新增的 JSON 数据
+        data: {
+          title: e.currentTarget.dataset.title,
+          create_time: formatDate(new Date().getTime())
+        }
+      }).then(res => {
+        console.log(res)
+      })
+        .catch(console.error)
+    }
     wx.setClipboardData({
       data: e.currentTarget.dataset.code,
     });
     wx.showModal({
       title: '温馨提示',
       content: "复制成功！打开手机淘宝下单吧～",
+      showCancel: false,
       success: function (res) {
         if (res.confirm) {
           console.log('用户点击确定')
@@ -321,9 +331,9 @@ Page({
       return;
     this.setData({ typeClicked:false });
     var page = this;
-    if (page.data.keyword.trim().length > 0)
+    if (page.data.keyword.trim().length > 0 || page.data.showTypes)
       return;
-    const db = wx.cloud.database();
+    //const db = wx.cloud.database();
     pages += 10;
     console.log("offset: "+pages);
     wx.showLoading({
@@ -341,7 +351,7 @@ Page({
     });
   },
   update_goods_index: function(e) {
-    const db = wx.cloud.database();
+    //const db = wx.cloud.database();
     console.log(this.data.types);
     for(var i=0;i<this.data.types.length;i++)
     {
@@ -387,7 +397,7 @@ Page({
     }
   },
     update_goods_index: function(e) {
-    const db = wx.cloud.database();
+    //const db = wx.cloud.database();
     console.log(this.data.types);
     for(var i=0;i<this.data.types.length;i++)
     {
@@ -434,7 +444,7 @@ Page({
   },
   onShareAppMessage: function () {
     return {
-      title: '大额优惠券每日更新',
+      title: '至少5元，优惠券每日自动更新',
       desc: '各种类别都有哦～',
       path: '/pages/index/index'
     }

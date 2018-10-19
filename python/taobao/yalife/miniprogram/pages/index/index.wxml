@@ -40,23 +40,22 @@
             <text style="font-size:0.8em">销量：{{item.sale_count}} </text>
             <text style="font-size:0.8em">价格：¥{{item.price}} </text>
             <image src="https://7961-yalife-3e57c3-1257619748.tcb.qcloud.la/fetch.png?sign=59e2757d6536156960fe56368d5ba332&t=1539522610" style="height:40px;width:40px;position:absolute;right:5px;bottom:1px" bindtap="copyQuanter" data-code="{{item.code}}"></image>
-            <text style="font-size:1em;position:absolute;right:50px;bottom:1px;color:red"data-code="{{item.code}}" bindtap="copyQuanter" > 优惠券：¥{{item.quanter}}  </text>
+            <text style="font-size:1em;position:absolute;right:50px;bottom:1px;color:red" data-code="{{item.code}}" data-title="{{item.title}}" bindtap="copyQuanter" > 优惠券：¥{{item.quanter}}  </text>
           </view>
       </view>
   </view>
 
   <view class="search-types">
-    <view wx:if="{{showTypes}}" style="">
-      <view style="margin:20px;display:inline-block;background-color:#CDCDCD;border-radius:8px" wx:for="{{types}}">
+    <view wx:if="{{showTypes}}" style="margin-top:15px">
+      <view style="margin:15px;display:inline-block;background-color:#CDCDCD;border-radius:8px" wx:for="{{types}}" wx:if="{{item != '预留1'}}">
         <text bindtap="typeSearch" data-type="{{item}}" style="margin:10px">{{item}}</text>
       </view>
-      <view style="margin:30px;display:inline-block">
+      <view style="margin:15px;display:inline-block">
         <text bindtap="typeSearch" data-type="全部">全部</text>
       </view>
       <contact-button style="position:fixed;bottom:16px;right:16px">联系我</contact-button>
       <view style="position:fixed;bottom:16px;right:16px;display:none"><text style="color:#CDCDCD">客服微信号：lttlovefm</text></view>
     </view>  
-    
   </view>
 
 
