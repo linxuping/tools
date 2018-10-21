@@ -14,12 +14,13 @@ get config
     set suite variable     ${config}       config
 
 fetch tb
-    [Arguments]    ${keyword}    ${page}
+    [Arguments]    ${keyword}    ${page}    ${pos}
     log     ${config}
     Go To    https://pub.alimama.com/promo/search/index.htm?q=${keyword}&perPageSize=100&dpyhq=1&toPage=${page}&queryType=0&sortType=9
     sleep    5
     ${len}    execute javascript    return $('.block-search-box').length
     : FOR    ${i}    IN RANGE    1    ${len}
+    \    Continue For Loop If    ${i}<${pos}
     \    execute javascript    document.documentElement.scrollTop=${i}00
     \    log    '.block-search-box:nth-child(${i}) .integer'
     \    ${title}    execute javascript    return $('.block-search-box:nth-child(${i}) .content-title').text()
@@ -59,12 +60,10 @@ Test
     close all browsers
     Open Browser    https://pub.alimama.com/    chrome
     sleep    40
-    @{items}    set variable     海底捞    波司登    周黑鸭    三星    vivo    大益    伊利    五谷磨房    荣耀    耐克    百雀羚    玉兰油    小米手机    华为    羽绒服    点读笔    卫衣    预留1    马克华菲    飞科    飞利浦    长虹    贝亲    西门子    裂帛    英氏    苏泊尔    花花公子    老板电器    美的    美特斯邦威    海尔    海信    森马    格兰仕    松下    杰克琼斯    思莱德    巴拉巴拉    安奈儿    好奇    太平鸟    夏普    全棉时代    九阳    七匹狼    tcl    魅族    裂帛    oppo    雀巢    蒙牛   
+    @{items}    set variable     儿童绘画本    英氏    全棉时代    好奇    贝亲    巴拉巴拉    可优比    百雀羚    玉兰油    安奈儿    优衣库    运动裤    波司登    耐克    羽绒服    卫衣    马克华>菲    裂帛    花花公子    美特斯邦威    森马    杰克琼斯    思莱德    太平鸟    七匹狼    裂帛    良品铺子    百草味    三只松鼠    海底捞    周黑鸭    大益    伊利    五谷磨房    雀巢    蒙牛    格力    史密斯    创维    三星    vivo    荣耀    小米手机    华为    飞科    飞利浦    长虹    西门子    苏泊尔    老板电器    美的    海尔    海信    格兰仕    松下    夏普    九阳    oppo    tcl    魅族
     :FOR    ${item}    IN    @{items}
-    \    fetch tb    ${item}    1
-    \    fetch tb    ${item}    2
-    \    fetch tb    ${item}    3
-    \    fetch tb    ${item}    4
-    \    fetch tb    ${item}    5
+    \    fetch tb    ${item}    1    0
+    \    fetch tb    ${item}    2    0
+    \    fetch tb    ${item}    3    0
     close all browsers
 
