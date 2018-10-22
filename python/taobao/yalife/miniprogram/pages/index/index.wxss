@@ -351,3 +351,29 @@ page {
 .card {
   width:95%;
 }
+
+
+
+
+.tab-list {
+width: 100%;
+height: 88rpx;
+border-bottom: 1rpx solid #e5e5e5;
+display: inline-block;
+white-space: nowrap;
+ 
+}
+ 
+.tab-item {
+width: 140rpx;
+height: 85rpx;
+display: inline-block;
+line-height: 85rpx;
+vertical-align: middle;
+text-align: center;
+}
+ 
+.selected-tab {
+color: #1aae18;
+border-bottom: 5rpx solid #1aae18;
+}

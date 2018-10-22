@@ -18,7 +18,7 @@
     <view class="weui-search-bar__form">
       <view class="weui-search-bar__box">
         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-        <input type="text" v-model="keyword" class="weui-search-bar__input" placeholder="淘宝优惠券" bindinput="updateKeyword" bindtap="clickSearch" bindconfirm="tbSearch"/>
+        <input type="text" value="{{keyword}}" class="weui-search-bar__input" placeholder="淘宝优惠券" bindinput="updateKeyword" bindtap="clickSearch" bindconfirm="tbSearch" autocomplete="on"/>
       </view>
     </view>
   </view>
@@ -31,7 +31,7 @@
   </view>
 
 
-  <view class="card" wx:for="{{goods}}" wx:if="{{showGoods}}">
+  <view class="card" wx:for="{{goods}}" wx:if="{{showGoods}}" wx:key="*this">
       <view>
           <image class="image" mode="aspectFill" src="{{item.img}}"/>
           <text class="time"></text>
@@ -45,18 +45,37 @@
       </view>
   </view>
 
-  <view class="search-types">
-    <view wx:if="{{showTypes}}" style="margin-top:15px">
-      <view style="margin:10px;display:inline-block;background-color:#CDCDCD;border-radius:8px" wx:for="{{types}}" wx:if="{{item != '预留1'}}">
-        <text bindtap="typeSearch" data-type="{{item}}" style="margin:10px">{{item}}</text>
-      </view>
-      <view style="margin:10px;display:inline-block">
-        <text bindtap="typeSearch" data-type="全部">全部</text>
-      </view>
+  <view class="search-types"  style="width:95%">
+
+  <view wx:if="{{showTypes}}" style="height:100px">
+    <scroll-view class="tab-list" scroll-x scroll-with-animation>
+      <view wx:for="{{tabList}}" class="tab-item {{curTab===index ? 'selected-tab':''}}" data-index="{{index}}" bindtap="selectTab">{{item.name}}</view>
+    </scroll-view>
+    <swiper current="{{current}}" bindchange="swiperChange" style="height:500px">
+      <block wx:for="{{tabList}}">
+      <swiper-item>
+      
+      <view style="margin-top:15px;height:auto">
+        <view bindtap="typeSearch" data-type="{{item}}" style="margin:10px;display:inline-block;background-color:#CDCDCD;border-radius:8px" wx:for="{{types_class[index]}}" wx:if="{{item != '预留1'}}">
+          <text style="margin:10px">{{item}}</text>
+        </view>
+        <view bindtap="typeSearch" data-type="全部" wx:if="{{index==6}}" style="margin:10px;display:inline-block">
+          <text>全部</text>
+        </view>
+      </view>  
+    
+      
+      </swiper-item>
+      </block>
+    </swiper>
+
       <contact-button style="position:fixed;bottom:16px;right:16px">联系我</contact-button>
       <view style="position:fixed;bottom:16px;right:16px;display:none"><text style="color:#CDCDCD">客服微信号：lttlovefm</text></view>
-    </view>  
   </view>
+
+
+  </view>  
+
 
 
   <!-- 上传图片 -->
