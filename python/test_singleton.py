@@ -34,3 +34,8 @@ __new__出实例obj，然后多次__call__均返回obj
 test_equal(MyClass(),MyClass())
 test_equal(Normal(),Normal())
 print MyClass().__class__
+
+print '''
+hello #word
+'''
+
