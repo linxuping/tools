@@ -44,6 +44,20 @@ function formatDate(time) {
   return newTime;
 }
 
+function goods_distinct(goods){
+  var goods_names = [];
+  var result = []
+  for (var i=0; i<goods.length; i++){
+    if (goods_names.indexOf(goods[i].title) == -1){
+      result.push(goods[i]);
+      goods_names.push(goods[i].title);
+      continue
+    }
+    console.log(goods[i].title);
+  }
+  return result;
+}
+
 Page({
   data: {
     avatarUrl: './user-unlogin.png',
@@ -292,7 +306,7 @@ Page({
                 }
               }
               page.setData({
-                goods: page.data.goods.concat(goods)
+                goods: page.data.goods.concat( goods_distinct(goods) )
               });
               console.log(_type + ": " + offset.toString() + "->" + res.data.length.toString());
               if (res.data.length == 20){
@@ -357,7 +371,7 @@ Page({
       pages = 0;
       db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
         success: res => {
-          page.setData({ goods: res.data, keyword:'' });
+          page.setData({ goods: goods_distinct(res.data), keyword:'' });
           wx.hideLoading();
         },
         fail: err => {
@@ -372,7 +386,7 @@ Page({
     ).get({
       success: res => {
         page.setData({
-          goods: page.data.goods.concat(res.data)
+          goods: page.data.goods.concat( goods_distinct(res.data) )
         });
         wx.hideLoading();
       },
@@ -384,7 +398,7 @@ Page({
       ).get({
         success: res => {
           page.setData({
-            goods: page.data.goods.concat(res.data)
+            goods: page.data.goods.concat( goods_distinct(res.data) )
           });
           console.log(offset.toString() + '->' + res.data.length.toString());
           if (res.data.length == 20)
@@ -439,7 +453,7 @@ Page({
     })
     db.collection('goods').orderBy('quanter', 'desc').skip(pages).limit(10).get({
       success: res => {
-        page.setData({ goods: page.data.goods.concat(res.data) });
+        page.setData({ goods: page.data.goods.concat( goods_distinct(res.data) )  });
         wx.hideLoading();
       },
       fail: err => {
