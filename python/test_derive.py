@@ -1,3 +1,4 @@
+#encoding:utf-8
 #doc: https://www.cnblogs.com/attitudeY/p/6789370.html
 #新式类 广度优先
 class A:
