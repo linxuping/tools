@@ -123,10 +123,18 @@ Page({
     wx.cloud.callFunction({
       name: 'login',
       complete: res => {
+        console.log(res);
         console.log('云函数获取到的openid: ', res.result.openid);
         openid = res.result.openid;
       }
     });
+/*
+    wx.cloud.callFunction({
+      name: 'db2mgr',
+      complete: res => {
+        console.log(res);
+      }
+    });*/
 
     this.setData({
       types_class: types_class
@@ -139,7 +147,6 @@ Page({
       })
       return
     }
-    
 
     db.collection('goods').orderBy('quanter', 'desc').limit(10).get({
       success: res => {
@@ -314,7 +321,9 @@ Page({
                   console.log(_type + " excceed!");
                 }
                 else
-                  query_goods(offset+20);
+                  setTimeout(function(){
+                    query_goods(offset + 20);
+                  },1000);
               }
               else{
                 wx.hideLoading();
@@ -401,8 +410,11 @@ Page({
             goods: page.data.goods.concat( goods_distinct(res.data) )
           });
           console.log(offset.toString() + '->' + res.data.length.toString());
-          if (res.data.length == 20)
-            get_goods(offset+20)
+          if (res.data.length == 20){
+            setTimeout(function(){
+              get_goods(offset + 20);
+            },1000);
+          }
         },
         fail: err => { console.log(err); }
       });      
