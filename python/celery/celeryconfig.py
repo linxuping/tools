@@ -16,12 +16,13 @@ CELERY_ENABLE_UTC = True
 
 # 定义一个默认交换机 和 一个媒体交换机
 default_exchange = Exchange('dedfault', type='direct')
-media_exchange = Exchange('media', type='direct')
+media_exchange = Exchange('media', type='topic')
 
 # 创建三个队列，一个是默认队列，一个是video、一个image
 CELERY_QUEUES = (
     Queue('default', default_exchange, routing_key='default',  consumer_arguments={'x-priority': 3}),
     Queue('test2', media_exchange, routing_key='media.*', consumer_arguments={'x-priority': 4}),
+    Queue('test3', media_exchange, routing_key='media.*', consumer_arguments={'x-priority': 5}),
 )
 
 CELERY_DEFAULT_QUEUE = 'default'
@@ -34,12 +35,10 @@ CELERY_ROUTES = ({'tasks.sendmail': {
                         'routing_key': 'media.test'
                  }},
                  {'tasks.sendqq': {
-                        'queue': 'test2',
                         'routing_key': 'media.test1'
                  }},
                  {'tasks.sendwx': {
-                        'queue': 'test3',
-                        'routing_key': 'media.test2'
+                        'routing_key': 'media.test1'
                  }})
 
 
@@ -51,12 +50,13 @@ from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {
     'taskA_schedule' : {
         'task':'tasks.sendqq',
-        'schedule': 3,#crontab(hour=15, minute=26),
+        'schedule': 5,#crontab(hour=15, minute=26),
         'args':(5,6)
     }
 }
 
-
+#CELERYD_MAX_TASKS_PER_CHILD = 1
+#CELERY_DISABLE_RATE_LIMITS = True #http://www.voidcn.com/article/p-tchgbnfc-mn.html
 
 # 在出现worker接受到的message出现没有注册的错误时，使用下面一句能解决
 CELERY_IMPORTS = ("tasks",)

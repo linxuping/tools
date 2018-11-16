@@ -1,10 +1,10 @@
 #pip install celery\celery-with-redis
 import sys
 import time
-from tasks import sendmail,sendqq
+from tasks import *
 print 'send'
 #r = sendmail.delay(dict(to='celery@python.org'), None)
-r = sendqq.delay('jim', 'hello')
+r = sendwx.delay('jim', 'hello')
 print 'sended'
 for i in range(0,10):
     try:
