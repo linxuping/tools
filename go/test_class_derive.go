@@ -39,11 +39,16 @@ func (p *Train) String() string {
     return str
 }
 
+func Now() time.Time {
+    return time.Now()
+}
+
 func main() {
     var b Train
     //b.weight = 100
     //b.name = "train"
     b.Set(100, "train")
+    b.createTime = Now() 
     b.lunzi = 2
     b.Run()
     fmt.Println(b)
