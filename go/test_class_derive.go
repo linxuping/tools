@@ -2,7 +2,9 @@ package main
 
 import (
     "fmt"
-    "time"
+    "strconv"
+    . "time"     //省略前缀的包名(https://wlcacc.iteye.com/blog/2427700)
+    _ "net/http" //无法通过包名来调用包中的导出函数，而是只是为了简单的调用其init函数()。
 )
 
 /*
@@ -17,7 +19,8 @@ import (
 type Car struct {
     weight int
     name   string
-    createTime  time.Time
+    createTime  Time
+    timeStamp  int
 }
 
 func (c *Car) Set(weight int, name string) {
@@ -39,8 +42,17 @@ func (p *Train) String() string {
     return str
 }
 
-func Now() time.Time {
-    return time.Now()
+func GetNow() Time { //time.Time
+    return Now()     //time.Now()
+}
+
+//多参数同类型、多返回值、return默认返回传参数
+func GetReturnMulti(v1,v2 int) (var1,var2 string) {
+    s1 := strconv.Itoa(v1)
+    s2 := strconv.Itoa(v2)
+    s2 = s2[ 0:len(s2)-2 ] //1999 -> 19
+    var1,var2 = s1+s2+"_a\na1",s1+"_s_"+`_a\na2`
+    return
 }
 
 func main() {
@@ -48,10 +60,13 @@ func main() {
     //b.weight = 100
     //b.name = "train"
     b.Set(100, "train")
-    b.createTime = Now() 
+    b.createTime = GetNow()
+    b.timeStamp = int(Now().Unix())
     b.lunzi = 2
     b.Run()
     fmt.Println(b)
     fmt.Printf("%s", &b)
+    fmt.Println("[test] multi return func ---->")
+    fmt.Println( GetReturnMulti(8,1999) )
 }
 
