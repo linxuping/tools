@@ -9,7 +9,15 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", mybase.SayhelloName) //设置访问的路由
+	if true {
+		http.HandleFunc("/ptest", test.FetchPage)      //压测:ab -c 100 -n 100  http://localhost:9090/ptest
+		http.HandleFunc("/hello", mybase.SayhelloName) //设置访问的路由
+		err := http.ListenAndServe(":9090", nil) //设置监听的端口
+		if err != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
+		log.Fatal("ListenAndServer 9090.")
+	}
 
 	if true {
 		//test.RedisTest()
@@ -33,9 +41,5 @@ func main() {
 
 	go test.Coroutine1()
 	go test.Coroutine2()
-	err := http.ListenAndServe(":9090", nil) //设置监听的端口
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
-	log.Fatal("ListenAndServer 9090.")
+
 }
