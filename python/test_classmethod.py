@@ -27,3 +27,18 @@ e=EuroDate.now1()
 print(e)
 e=EuroDate.now2()
 print(e)
+
+#-------------- 加了self的属性就是类实例的属性，不加就是类的属性 ----------------
+class Car1:
+    wheel = 4 
+
+class Car2:
+    def __init__(self):
+        self.wheel = 4
+
+print "来看下__dict__的差别吧："
+c1 = Car1()
+c2 = Car2()
+print dir(c1), c1.__dict__
+print dir(c2), c2.__dict__
+
