@@ -25,6 +25,21 @@ void visit_tree(Node *node) {
     }
 }
 
+void pre_visit_tree(Node *node) {
+    if (node == NULL) {
+        printf("visit tree fin.\n");
+        return;
+    }
+    printf("%d\n",node->m);
+    if (node->left) {
+        pre_visit_tree(node->left);
+    }
+    if (node->right) {
+        pre_visit_tree(node->right);
+    }
+}
+
+/* error version must +1 */
 int get_tree_len(Node *node, int depth) {
     if (node == NULL) {
         printf("visit tree fin.\n");
@@ -57,15 +72,15 @@ int main(){
     Node *root = new Node();
     root->m = 0;
     Node *n1 = new Node();
-    n1->m = 1;
+    n1->m = 11;
     Node *n2 = new Node();
-    n2->m = 2;
+    n2->m = 12;
     Node *n3 = new Node();
-    n3->m = 3;
+    n3->m = 32;
     Node *n4 = new Node();
-    n4->m = 40;
+    n4->m = 41;
     Node *n5 = new Node();
-    n5->m = 5;
+    n5->m = 51;
 
     root->left = n1;
     root->right = n2;
@@ -81,4 +96,6 @@ int main(){
     printf("depth: %d\n", len);
     int len2 = get_tree_len2(root);
     printf("depth 2: %d\n", len2);
+    printf("+++ pre_visit_tree: \n");
+    pre_visit_tree(root);
 }
