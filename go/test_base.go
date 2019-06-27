@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"container/list"
 )
 
 func main() {
@@ -92,4 +93,55 @@ func main() {
 	arr2 = append(arr2, 201) 
 	fmt.Printf("arr[0:1:1] append后地址: %p type:%T 现数组:%v 原数组ri:%p （不影响原数组）\n", arr2, arr2, arr2, arr)
 
+	//inner func
+	test := func(s... string) int {
+		return 123
+	}
+	fmt.Println( test("aa") )
+
+	//回调
+	cb := func() int {
+		fmt.Println("cb running.")
+		return 0
+	}
+
+	/*type CB func() int
+	func2 := func( _c CB ) { */
+	func2 := func( _c (func() int) ) {
+		_c()
+	}
+	func2(cb)
+
+	//map传参改内容后，外部是否变化
+	m := make(map[int]string)
+	m[1] = "v_1"
+	m[2] = "v_2"
+	update_map := func(m map[int]string) {
+		m[3] = "v_3"
+	}
+	update_map(m)
+	for i,v := range(m) {
+		fmt.Println("updated map item: ",i,v)
+	}
+	
+	//list传参改内容后，外部是否变化
+	//var li []int={1,2}
+	var li = []int{1,2}
+	update_list := func(li []int) {
+		li[0] = 111         //有变化
+		li = append(li, 10) //没有变化  遇到数组append: first argument to append must be slice; have [2]int
+	}
+	update_list(li)
+	//li = append(li, 10) //[1,2,10]
+	fmt.Println(li, reflect.TypeOf(li))
+
+	//container.list
+	l := list.New()
+	l.PushBack("cannon")
+	fmt.Println(l)
+	for i:=l.Front(); i!=nil; i=i.Next() {
+		fmt.Println("list item: ", i.Value)
+	}
 }
+
+

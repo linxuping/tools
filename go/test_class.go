@@ -2,53 +2,60 @@ package main
 
 import "fmt"
 
-type Animal interface {
+//基类？？？
+type IAnimal interface {
     Speak() string
 }
 
 type Cat struct{}
 func (c Cat) Speak() string {
-    return "cat"
+    return "cat speak"
 }
 
 type Dog struct{}
-//func (d *Dog) Speak() string { //cannot use Dog literal (type Dog) as type Animal in array or slice literal: Dog does not implement Animal (Speak method has pointer receiver)
+//func (d *Dog) Speak() string { //cannot use Dog literal (type Dog) as type IAnimal in array or slice literal: Dog does not implement IAnimal (Speak method has pointer receiver)
+//  细节：  *Dog对应下文：animals := []IAnimal{Cat{}, &Dog{}}
 func (d Dog) Speak() string {
-    return "dog"
+    return "dog speak"
 }
 
-func Test(params interface{}) {
-    fmt.Println(params)
-}
 
-func PrintAll_Strings(vals []string) {
-    for _, val := range vals {
-        fmt.Println(val)
-    }
-}
-func PrintAll_Interfaces(vals []interface{}) {
-    for _, val := range vals {
-        fmt.Println(val)
-    }
-}
 
 func main() {
-    animals := []Animal{Cat{}, Dog{}}
+    animals := []IAnimal{Cat{}, Dog{}}
     for _, animal := range animals {
-        fmt.Println(animal.Speak())
+        fmt.Println("animal item: ", animal.Speak())
     }
 
-    Test(123)
-    Test(true)
-    Test("print Strings test start: ")
-
     names := []string{"stanley", "david", "oscar"}
-    PrintAll_Strings(names)
-    Test("pirnt Interfaces test start: ")
+    for i,v := range names {
+        fmt.Println("item: ", i, v)
+    }
     vals := make([]interface{}, len(names))
     for i, v := range names {
         fmt.Println(i,v)
         vals[i] = v
     }
-    PrintAll_Interfaces(vals)
+
+    //测试接口嵌入
+    fmt.Println("接口继承与组合：https://www.jianshu.com/p/150523db21a9")
+    a := Ant{}
+    b := Beef{ &a }
+    fmt.Println( b.Speak() )
+    b.IAnimal = &a
+    fmt.Println( b.Speak() )
 }
+
+type Ant struct{}
+func (a *Ant) Speak() string {
+    return "ant speak"
+}
+
+type Beef struct{
+    IAnimal
+}
+func (b *Beef) Speak() string {
+    return "beef speak"
+}
+
+

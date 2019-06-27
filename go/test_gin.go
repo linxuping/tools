@@ -38,7 +38,7 @@ func main() {
         //nick := c.DefaultPostForm("nick", "anonymous")
 
         c.JSON(200, gin.H{
-            "status":  "posted",
+            "status":  2,
             "message": "message",
             "nick":    "nick",
         })
